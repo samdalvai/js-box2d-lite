@@ -54,15 +54,15 @@ export default class Mat22 {
     };
 
     /** Operator + */
-    static add = (A: Mat22, B: Mat22): Mat22 => {
-        return new Mat22(Vec2.add(A.col1, B.col1), Vec2.add(A.col2, B.col2));
+    static add = (a: Mat22, B: Mat22): Mat22 => {
+        return new Mat22(Vec2.add(a.col1, B.col1), Vec2.add(a.col2, B.col2));
     };
 
     /** Operator * for matrix-vector multiplication */
-    static multiply(A: Mat22, v: Vec2): Vec2;
+    static multiply(a: Mat22, v: Vec2): Vec2;
 
     /** Operator * for matrix-matrix multiplication */
-    static multiply(A: Mat22, B: Mat22): Mat22;
+    static multiply(a: Mat22, B: Mat22): Mat22;
 
     static multiply(a: Mat22, b: Mat22 | Vec2): Vec2 | Mat22 {
         if (a instanceof Mat22 && b instanceof Mat22) {
@@ -75,12 +75,8 @@ export default class Mat22 {
 
         throw new Error('Invalid arguments');
     }
-}
 
-/*
-
-inline Mat22 Abs(const Mat22& A)
-{
-	return Mat22(Abs(A.col1), Abs(A.col2));
+    static abs = (a: Mat22): Mat22 => {
+        return new Mat22(Vec2.abs(a.col1), Vec2.abs(a.col2));
+    };
 }
-*/

@@ -110,4 +110,14 @@ describe('Mat22', () => {
         expect(result.col2.x).toBe(22);
         expect(result.col2.y).toBe(50);
     });
+
+    test('abs() should return the matrix with positive sign', () => {
+        const a1 = new Mat22(new Vec2(-1, -3), new Vec2(-2, -4));
+
+        const result = Mat22.abs(a1);
+        expect(result.col1.x).toBe(1);
+        expect(result.col1.y).toBe(3);
+        expect(result.col2.x).toBe(2);
+        expect(result.col2.y).toBe(4);
+    });
 });
