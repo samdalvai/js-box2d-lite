@@ -1,4 +1,5 @@
 import Vec2 from '../math/Vec2';
+import Body from './Body';
 
 export type Edges = {
     inEdge1: number;
@@ -51,25 +52,22 @@ export class Contact {
     }
 }
 
+export class ArbiterKey {
+    body1: Body;
+    body2: Body;
+
+    constructor(b1: Body, b2: Body) {
+        if (b1.id < b2.id) {
+            this.body1 = b1;
+            this.body2 = b2;
+        } else {
+            this.body1 = b2;
+            this.body2 = b1;
+        }
+    }
+}
+
 /*
-
-struct ArbiterKey
-{
-	ArbiterKey(Body* b1, Body* b2)
-	{
-		if (b1 < b2)
-		{
-			body1 = b1; body2 = b2;
-		}
-		else
-		{
-			body1 = b2; body2 = b1;
-		}
-	}
-
-	Body* body1;
-	Body* body2;
-};
 
 struct Arbiter
 {
