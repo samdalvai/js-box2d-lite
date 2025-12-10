@@ -7,6 +7,11 @@ export default class Vec2 {
         this.y = y;
     }
 
+    set = (x: number, y: number): void => {
+        this.x = x;
+        this.y = y;
+    };
+
     /** Operator - */
     negate = (): Vec2 => {
         return new Vec2(-this.x, -this.y);

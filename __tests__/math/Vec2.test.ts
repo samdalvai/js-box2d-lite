@@ -13,6 +13,14 @@ describe('Vec2', () => {
         expect(v.y).toBe(0);
     });
 
+    test('set() sets vector values in place', () => {
+        const v = new Vec2(1, 2);
+        v.set(2, 3);
+
+        expect(v.x).toBe(2);
+        expect(v.y).toBe(3);
+    });
+
     test('add() adds vector values', () => {
         const v = new Vec2(1, 2);
         v.add(new Vec2(3, 4));
