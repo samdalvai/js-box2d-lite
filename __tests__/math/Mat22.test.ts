@@ -36,6 +36,16 @@ describe('Mat22', () => {
         expect(m.col2.y).toBeCloseTo(c);
     });
 
+    test('constructor creates correct rotation matrix if rotation is 0', () => {
+        const angle = 0;
+        const m = new Mat22(angle);
+
+        expect(m.col1.x).toBe(1);
+        expect(m.col1.y).toBe(0);
+        expect(m.col2.x).toBe(-0);
+        expect(m.col2.y).toBe(1);
+    });
+
     test('transpose swaps rows and columns', () => {
         const m = new Mat22(
             new Vec2(1, 2), // col1
