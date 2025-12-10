@@ -4,9 +4,9 @@ Development plan
 
 80% of Box2D Lite relies on correct math.
 
-* Step 2 — Port Body 
+* Step 2 — Port Body OK
 
-* Step 3 — Port collision shapes & broadphase
+* Step 3 — Port collision shapes & broadphase 
 
 Start with circles and boxes.
 
