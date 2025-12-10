@@ -47,3 +47,16 @@ export default class Mat22 {
         return B;
     };
 }
+
+/*
+
+inline Mat22 operator + (const Mat22& A, const Mat22& B)
+{
+	return Mat22(A.col1 + B.col1, A.col2 + B.col2);
+}
+
+inline Mat22 operator * (const Mat22& A, const Mat22& B)
+{
+	return Mat22(A * B.col1, A * B.col2);
+}
+*/
