@@ -70,4 +70,13 @@ describe('Mat22', () => {
 
         expect(() => m.invert()).toThrow('Determinant in 2x2 matrix cannot be 0');
     });
+
+    test('multiply() should multiply a 2x2 matrix by a vector and return a 2x1 vector', () => {
+        const a1 = new Mat22(new Vec2(2, 1), new Vec2(3, 4));
+        const v1 = new Vec2(5, 6);
+
+        const result = Mat22.multiply(a1, v1);
+        expect(result.x).toBe(28);
+        expect(result.y).toBe(29);
+    });
 });

@@ -46,6 +46,11 @@ export default class Mat22 {
 
         return B;
     };
+
+    /** Operator * for matrix-vector multiplication */
+    static multiply = (A: Mat22, v: Vec2): Vec2 => {
+        return new Vec2(A.col1.x * v.x + A.col2.x * v.y, A.col1.y * v.x + A.col2.y * v.y);
+    };
 }
 
 /*

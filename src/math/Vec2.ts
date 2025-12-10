@@ -84,11 +84,6 @@ export default class Vec2 {
 /*
 
 
-inline Vec2 operator * (const Mat22& A, const Vec2& v)
-{
-	return Vec2(A.col1.x * v.x + A.col2.x * v.y, A.col1.y * v.x + A.col2.y * v.y);
-}
-
 inline Vec2 Abs(const Vec2& a)
 {
 	return Vec2(fabsf(a.x), fabsf(a.y));
