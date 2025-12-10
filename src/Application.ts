@@ -1,5 +1,7 @@
 import Graphics from './Graphics';
 import InputManager, { MouseButton } from './InputManager';
+import Vec2 from './math/Vec2';
+import Body from './physics/Body';
 
 export default class Application {
     private running = false;
@@ -8,6 +10,9 @@ export default class Application {
     private debug = true;
     private FPS = 0;
     private lastFPSUpdate = 0;
+
+    // TODO: to be moved to World class
+    private bodies: Body[] = [];
 
     constructor() {}
 
@@ -22,6 +27,16 @@ export default class Application {
     setup = async (): Promise<void> => {
         InputManager.initialize();
         this.running = Graphics.openWindow();
+
+        const floor = new Body();
+        floor.set(new Vec2(Graphics.width() + 100, 200), Number.MAX_VALUE);
+        floor.position.set(Graphics.width() / 2, Graphics.height() - 50);
+        this.bodies.push(floor);
+
+        const box = new Body();
+        box.set(new Vec2(60, 60), 200);
+        box.position.set(Graphics.width() / 2, Graphics.height() - 400);
+        this.bodies.push(box);
     };
 
     input = (): void => {
@@ -85,7 +100,7 @@ export default class Application {
             this.lastFPSUpdate = performance.now();
             this.FPS = 1 / deltaTime;
         }
-        
+
         // TODO: update entities
     };
 
@@ -95,6 +110,11 @@ export default class Application {
         if (this.debug) {
             Graphics.drawText(`FPS: ${this.FPS.toFixed(2)}`, Graphics.width() - 100, 50, 25, 'arial', 'red');
         }
-        // TODO: render entities
+
+        for (const body of this.bodies) {
+            Graphics.drawBody(body);
+
+            // Graphics.drawRect(body.position.x, body.position.y, body.width.x, body.width.y, 'white');
+        }
     };
 }
