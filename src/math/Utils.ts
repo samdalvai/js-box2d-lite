@@ -24,6 +24,32 @@ export default class Utils {
 
 /*
 
+This is not needed, probable implementation would be
+
+type Edges = {
+  inEdge1: number;
+  outEdge1: number;
+  inEdge2: number;
+  outEdge2: number;
+};
+
+type FeaturePair = {
+  e: Edges;
+  value?: number; // optional, could be computed separately
+};
+
+function flip(fp: FeaturePair): void {
+  // Swap inEdge1 <-> inEdge2
+  [fp.e.inEdge1, fp.e.inEdge2] = [fp.e.inEdge2, fp.e.inEdge1];
+
+  // Swap outEdge1 <-> outEdge2
+  [fp.e.outEdge1, fp.e.outEdge2] = [fp.e.outEdge2, fp.e.outEdge1];
+}
+
+See Collide.cpp and Arbiter.h
+
+No swap should be needed
+
 template<typename T> inline void Swap(T& a, T& b)
 {
 	T tmp = a;
@@ -31,20 +57,4 @@ template<typename T> inline void Swap(T& a, T& b)
 	b = tmp;
 }
 
-// Random number in range [-1,1]
-inline float Random()
-{
-	float r = (float)rand();
-	r /= RAND_MAX;
-	r = 2.0f * r - 1.0f;
-	return r;
-}
-
-inline float Random(float lo, float hi)
-{
-	float r = (float)rand();
-	r /= RAND_MAX;
-	r = (hi - lo) * r + lo;
-	return r;
-}
 */
