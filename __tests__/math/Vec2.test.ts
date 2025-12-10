@@ -1,4 +1,3 @@
-import Mat22 from '../../src/math/Mat22';
 import Vec2 from '../../src/math/Vec2';
 
 describe('Vec2', () => {
@@ -96,5 +95,13 @@ describe('Vec2', () => {
         const result = Vec2.scale(2, v1);
         expect(result.x).toBe(2);
         expect(result.y).toBe(2);
+    });
+
+    test('abs() should return the vector with positive sign', () => {
+        const v1 = new Vec2(-1, -1);
+
+        const result = Vec2.abs(v1);
+        expect(result.x).toBe(1);
+        expect(result.y).toBe(1);
     });
 });
