@@ -1,0 +1,29 @@
+Development plan
+
+* Step 1 — Port Vec2, Mat22, Rotation
+
+80% of Box2D Lite relies on correct math.
+
+* Step 2 — Port Body
+
+* Step 3 — Port collision shapes & broadphase
+
+Start with circles and boxes.
+
+* Step 4 — Port contact generation
+
+This step requires careful translation.
+
+* Step 5 — Port impulse solver
+
+Most bugs will happen here—test repeatedly.
+
+* Step 6 — Write a visual test harness
+
+A tiny HTML Canvas viewer to see how objects move.
+
+* Step 7 - Add integration tests
+
+* Step 8 - Optimize collision detection
+
+* Step 9 - Implement contact caching
