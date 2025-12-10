@@ -81,19 +81,20 @@ export default class Application {
     };
 
     update = (deltaTime: number): void => {
-        Graphics.clearScreen();
-
-        if (this.debug) {
-            Graphics.drawText(`FPS: ${this.FPS.toFixed(2)}`, Graphics.width() - 100, 50, 25, 'arial', 'red');
-            if (!this.lastFPSUpdate || performance.now() - this.lastFPSUpdate > 1000) {
-                this.lastFPSUpdate = performance.now();
-                this.FPS = 1 / deltaTime;
-            }
+        if (this.debug && (!this.lastFPSUpdate || performance.now() - this.lastFPSUpdate > 1000)) {
+            this.lastFPSUpdate = performance.now();
+            this.FPS = 1 / deltaTime;
         }
+        
         // TODO: update entities
     };
 
     render = (): void => {
+        Graphics.clearScreen();
+
+        if (this.debug) {
+            Graphics.drawText(`FPS: ${this.FPS.toFixed(2)}`, Graphics.width() - 100, 50, 25, 'arial', 'red');
+        }
         // TODO: render entities
     };
 }
