@@ -43,10 +43,10 @@ export default class Vec2 {
     /** Scalar 2D cross product */
     static cross(a: Vec2, b: Vec2): number;
 
-    /** Vector in the +90° (counterclockwise) perpendicular direction scaled by a*/
+    /** Vector in the +90° (counterclockwise) perpendicular direction scaled by a */
     static cross(a: Vec2, s: number): Vec2;
 
-    /** Vector in the -90° (clockwise) perpendicular direction scaled by a*/
+    /** Vector in the -90° (clockwise) perpendicular direction scaled by a */
     static cross(s: number, a: Vec2): Vec2;
 
     static cross(a: Vec2 | number, b: Vec2 | number): number | Vec2 {
@@ -55,11 +55,11 @@ export default class Vec2 {
         }
 
         if (a instanceof Vec2 && typeof b === 'number') {
-            return new Vec2(a.y * b, -a.x * b);
+            return new Vec2(b * a.y, -b * a.x);
         }
 
         if (typeof a === 'number' && b instanceof Vec2) {
-            return new Vec2(a * b.y, -a * b.x);
+            return new Vec2(-a * b.y, a * b.x);
         }
 
         throw new Error('Invalid arguments');
