@@ -1,4 +1,6 @@
+import Mat22 from './math/Mat22';
 import Vec2 from './math/Vec2';
+import Body from './physics/Body';
 
 export default class Graphics {
     static windowWidth: number;
@@ -167,4 +169,54 @@ export default class Graphics {
         this.ctx.fillText(text, x, y);
         this.ctx.restore();
     };
+
+    static drawBody = (body: Body): void => {
+        const R = new Mat22(body.rotation);
+        const x = body.position;
+        const h = Vec2.scale(0.5, body.width);
+
+        const v1 = Vec2.add(x, Mat22.multiply(R, new Vec2(-h.x, -h.y)));
+        const v2 = Vec2.add(x, Mat22.multiply(R, new Vec2(h.x, -h.y)));
+        const v3 = Vec2.add(x, Mat22.multiply(R, new Vec2(h.x, h.y)));
+        const v4 = Vec2.add(x, Mat22.multiply(R, new Vec2(-h.x, h.y)));
+
+        this.ctx.strokeStyle = 'white'; // Make it changeable?
+        this.ctx.beginPath();
+        this.ctx.moveTo(v1.x, v1.y);
+        this.ctx.lineTo(v2.x, v2.y);
+        this.ctx.lineTo(v3.x, v3.y);
+        this.ctx.lineTo(v4.x, v4.y);
+        this.ctx.lineTo(v1.x, v1.y);
+        this.ctx.closePath();
+        this.ctx.stroke();
+    };
 }
+
+/*
+Body and Joint rendering
+
+TOOD: implement joint rendering
+static void DrawJoint(Joint* joint)
+{
+	Body* b1 = joint->body1;
+	Body* b2 = joint->body2;
+
+	Mat22 R1(b1->rotation);
+	Mat22 R2(b2->rotation);
+
+	Vec2 x1 = b1->position;
+	Vec2 p1 = x1 + R1 * joint->localAnchor1;
+
+	Vec2 x2 = b2->position;
+	Vec2 p2 = x2 + R2 * joint->localAnchor2;
+
+	glColor3f(0.5f, 0.5f, 0.8f);
+	glBegin(GL_LINES);
+	glVertex2f(x1.x, x1.y);
+	glVertex2f(p1.x, p1.y);
+	glVertex2f(x2.x, x2.y);
+	glVertex2f(p2.x, p2.y);
+	glEnd();
+}
+
+*/
