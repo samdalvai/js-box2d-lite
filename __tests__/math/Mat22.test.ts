@@ -2,6 +2,15 @@ import Mat22 from '../../src/math/Mat22';
 import Vec2 from '../../src/math/Vec2';
 
 describe('Mat22', () => {
+    test('constructor defaults to 0,0 vectors', () => {
+        const m = new Mat22();
+
+        expect(m.col1.x).toBe(0);
+        expect(m.col1.y).toBe(0);
+        expect(m.col2.x).toBe(0);
+        expect(m.col2.y).toBe(0);
+    });
+
     test('constructor initializes columns correctly', () => {
         const v1 = new Vec2(1, 2);
         const v2 = new Vec2(3, 4);
@@ -14,9 +23,9 @@ describe('Mat22', () => {
         expect(m.col2.y).toBe(4);
     });
 
-    test('fromAngle creates correct rotation matrix', () => {
+    test('constructor creates correct rotation matrix', () => {
         const angle = Math.PI / 4; // 45 degrees
-        const m = new Mat22().fromAngle(angle);
+        const m = new Mat22(angle);
 
         const c = Math.cos(angle);
         const s = Math.sin(angle);

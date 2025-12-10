@@ -4,21 +4,27 @@ export default class Mat22 {
     col1: Vec2;
     col2: Vec2;
 
-    constructor(col1 = new Vec2(), col2 = new Vec2()) {
-        this.col1 = col1;
-        this.col2 = col2;
+    constructor();
+    constructor(col1: Vec2, col2: Vec2);
+    constructor(angle: number);
+
+    constructor(a?: Vec2 | number, b?: Vec2) {
+        if (!a && !b) {
+            this.col1 = new Vec2();
+            this.col2 = new Vec2();
+        } else if (typeof a === 'number' && !b) {
+            const c = Math.cos(a);
+            const s = Math.sin(a);
+
+            this.col1 = new Vec2(c, s);
+            this.col2 = new Vec2(-s, c);
+        } else if (a instanceof Vec2 && b instanceof Vec2) {
+            this.col1 = a;
+            this.col2 = b;
+        } else {
+            throw new Error('Invalid constructor arguments');
+        }
     }
-
-    /** Constructor overloading for angular matrix */
-    fromAngle = (angle: number): Mat22 => {
-        const c = Math.cos(angle);
-        const s = Math.sin(angle);
-
-        const col1 = new Vec2(c, s);
-        const col2 = new Vec2(-s, c);
-
-        return new Mat22(col1, col2);
-    };
 
     transpose = (): Mat22 => {
         return new Mat22(new Vec2(this.col1.x, this.col2.x), new Vec2(this.col1.y, this.col2.y));
