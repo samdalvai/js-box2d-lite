@@ -38,36 +38,25 @@ export default class Vec2 {
         return a.x * b.x + a.y * b.y;
     };
 
+    // TODO: can we merge these three into one method?
+
     /** Scalar 2D cross product */
     static cross = (a: Vec2, b: Vec2): number => {
         return a.x * b.y - a.y * b.x;
     };
+
+    /** Vector in the +90° (counterclockwise) perpendicular direction scaled */
+    static perpScale = (a: Vec2, s: number): Vec2 => {
+        return new Vec2(s * a.y, -s * a.x);
+    };
+
+    /** Vector in the -90° (clockwise) perpendicular direction scaled */
+    static perpScaleNeg = (s: number, a: Vec2): Vec2 => {
+        return new Vec2(-s * a.y, s * a.x);
+    };
 }
 
 /*
-// Vector perpendicular to a, scaled
-// This is the vector in the +90° (counterclockwise) perpendicular direction.
-inline float Cross(const Vec2& a, const Vec2& b)
-{
-	return a.x * b.y - a.y * b.x;
-}
-
-// Vector perpendicular to a, scaled in the opposite direction
-// This is the vector in the –90° (clockwise) perpendicular direction.
-inline Vec2 Cross(const Vec2& a, float s)
-{
-	return Vec2(s * a.y, -s * a.x);
-}
-
-inline Vec2 Cross(float s, const Vec2& a)
-{
-	return Vec2(-s * a.y, s * a.x);
-}
-
-inline Vec2 operator * (const Mat22& A, const Vec2& v)
-{
-	return Vec2(A.col1.x * v.x + A.col2.x * v.y, A.col1.y * v.x + A.col2.y * v.y);
-}
 
 inline Vec2 operator + (const Vec2& a, const Vec2& b)
 {
@@ -83,4 +72,10 @@ inline Vec2 operator * (float s, const Vec2& v)
 {
 	return Vec2(s * v.x, s * v.y);
 }
+
+inline Vec2 operator * (const Mat22& A, const Vec2& v)
+{
+	return Vec2(A.col1.x * v.x + A.col2.x * v.y, A.col1.y * v.x + A.col2.y * v.y);
+}
+
 */
