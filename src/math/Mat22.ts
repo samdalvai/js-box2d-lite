@@ -9,7 +9,7 @@ export default class Mat22 {
     constructor(angle: number);
 
     constructor(a?: Vec2 | number, b?: Vec2) {
-        if (!a && !b) {
+        if (a === undefined && !b) {
             this.col1 = new Vec2();
             this.col2 = new Vec2();
         } else if (typeof a === 'number' && !b) {
