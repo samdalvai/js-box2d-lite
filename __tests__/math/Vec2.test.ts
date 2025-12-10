@@ -38,4 +38,36 @@ describe('Vec2', () => {
         const v = new Vec2(3, 4);
         expect(v.length()).toBe(5);
     });
+
+    test('dot() returns dot product between two vectors', () => {
+        const v1 = new Vec2(2, 2);
+        const v2 = new Vec2(2, 2);
+
+        expect(Vec2.dot(v1, v2)).toBe(8);
+    });
+
+    test('cross() returns scalar 2D cross product between two vectors', () => {
+        const v1 = new Vec2(1, 1);
+        const v2 = new Vec2(1, 2);
+
+        expect(Vec2.cross(v1, v2)).toBe(1);
+    });
+
+    test('cross() returns vector in the +90° (counterclockwise) perpendicular direction scaled by a', () => {
+        const v1 = new Vec2(1, 2);
+        const a = 2;
+
+        const result = Vec2.cross(v1, a);
+        expect(result.x).toBe(4);
+        expect(result.y).toBe(-2);
+    });
+
+    test('cross() returns vector in the -90° (clockwise) perpendicular direction scaled by a', () => {
+        const v1 = new Vec2(1, 2);
+        const a = 2;
+
+        const result = Vec2.cross(a, v1);
+        expect(result.x).toBe(-4);
+        expect(result.y).toBe(2);
+    });
 });
