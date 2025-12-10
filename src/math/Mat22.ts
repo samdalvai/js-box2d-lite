@@ -59,4 +59,9 @@ inline Mat22 operator * (const Mat22& A, const Mat22& B)
 {
 	return Mat22(A * B.col1, A * B.col2);
 }
+
+inline Mat22 Abs(const Mat22& A)
+{
+	return Mat22(Abs(A.col1), Abs(A.col2));
+}
 */

@@ -12,16 +12,6 @@ inline float Abs(float a)
 	return a > 0.0f ? a : -a;
 }
 
-inline Vec2 Abs(const Vec2& a)
-{
-	return Vec2(fabsf(a.x), fabsf(a.y));
-}
-
-inline Mat22 Abs(const Mat22& A)
-{
-	return Mat22(Abs(A.col1), Abs(A.col2));
-}
-
 inline float Sign(float x)
 {
 	return x < 0.0f ? -1.0f : 1.0f;
