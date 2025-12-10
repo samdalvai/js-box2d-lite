@@ -79,14 +79,8 @@ export default class Vec2 {
     static scale = (s: number, v: Vec2): Vec2 => {
         return new Vec2(s * v.x, s * v.y);
     };
+
+    static abs = (a: Vec2): Vec2 => {
+        return new Vec2(Math.abs(a.x), Math.abs(a.y));
+    };
 }
-
-/*
-
-
-inline Vec2 Abs(const Vec2& a)
-{
-	return Vec2(fabsf(a.x), fabsf(a.y));
-}
-
-*/
