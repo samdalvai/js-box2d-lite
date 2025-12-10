@@ -1,36 +1,28 @@
-import Vec2 from './Vec2';
-
-// TODO: put as static helper methods to Vec2 or Mat22
 export default class Utils {
-    
+    static clamp = (value: number, low: number, high: number): number => {
+        return Math.max(low, Math.min(value, high));
+    };
+
+    /** Random number in range [-1,1] */
+    static random(): number;
+
+    /** Random number in range [low,high] */
+    static random(low: number, high: number): number;
+
+    static random(low?: number, high?: number): number {
+        if (low === undefined && high === undefined) {
+            return Math.random() * 2 - 1;
+        }
+
+        if (low !== undefined && high !== undefined) {
+            return Math.random() * (high - low) + low;
+        }
+
+        throw new Error('Invalid arguments');
+    }
 }
 
 /*
-
-inline float Abs(float a)
-{
-	return a > 0.0f ? a : -a;
-}
-
-inline float Sign(float x)
-{
-	return x < 0.0f ? -1.0f : 1.0f;
-}
-
-inline float Min(float a, float b)
-{
-	return a < b ? a : b;
-}
-
-inline float Max(float a, float b)
-{
-	return a > b ? a : b;
-}
-
-inline float Clamp(float a, float low, float high)
-{
-	return Max(low, Min(a, high));
-}
 
 template<typename T> inline void Swap(T& a, T& b)
 {
