@@ -67,7 +67,7 @@ export class ArbiterKey {
     }
 
     /** Operator < */
-    static lessThan = (a1: ArbiterKey, a2: ArbiterKey): boolean => {
+    static lessThen = (a1: ArbiterKey, a2: ArbiterKey): boolean => {
         if (a1.body1.id < a2.body1.id) {
             return true;
         }
@@ -80,49 +80,44 @@ export class ArbiterKey {
     };
 }
 
-/*
+export class Arbiter {
+    MAX_POINTS = 2;
 
-struct Arbiter
-{
-	enum {MAX_POINTS = 2};
+    contacts: Contact[];
+    numContacts: number;
 
-	Arbiter(Body* b1, Body* b2);
+    body1: Body;
+    body2: Body;
 
-	void Update(Contact* contacts, int numContacts);
+    // Combined friction
+    friction: number;
 
-	void PreStep(float inv_dt);
-	void ApplyImpulse();
+    constructor(b1: Body, b2: Body) {
+        this.contacts = [new Contact(), new Contact()];
 
-	Contact contacts[MAX_POINTS];
-	int numContacts;
+        if (b1.id < b2.id) {
+            this.body1 = b1;
+            this.body2 = b2;
+        } else {
+            this.body1 = b2;
+            this.body2 = b1;
+        }
 
-	Body* body1;
-	Body* body2;
+        // TODO: to be implementd and substituted
+        this.numContacts = 0;
+        //this.numContacts = Collide(contacts, body1, body2);
 
-	// Combined friction
-	float friction;
-};
+        this.friction = Math.sqrt(this.body1.friction * this.body2.friction);
+    }
 
-int Collide(Contact* contacts, Body* body1, Body* body2);
+    update = (contacts: Contact[], numContacts: number): void => {};
 
+    preStep = (invDt: number): void => {};
 
-Arbiter::Arbiter(Body* b1, Body* b2)
-{
-	if (b1 < b2)
-	{
-		body1 = b1;
-		body2 = b2;
-	}
-	else
-	{
-		body1 = b2;
-		body2 = b1;
-	}
-
-	numContacts = Collide(contacts, body1, body2);
-
-	friction = sqrtf(body1->friction * body2->friction);
+    applyImpulse = (): void => {};
 }
+
+/*
 
 void Arbiter::Update(Contact* newContacts, int numNewContacts)
 {
