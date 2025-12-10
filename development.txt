@@ -1,10 +1,10 @@
 Development plan
 
-* Step 1 — Port Vec2, Mat22, Rotation
+* Step 1 — Port Vec2, Mat22, Rotation OK
 
 80% of Box2D Lite relies on correct math.
 
-* Step 2 — Port Body
+* Step 2 — Port Body 
 
 * Step 3 — Port collision shapes & broadphase
 
