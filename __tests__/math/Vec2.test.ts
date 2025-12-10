@@ -70,4 +70,30 @@ describe('Vec2', () => {
         expect(result.x).toBe(-4);
         expect(result.y).toBe(2);
     });
+
+    test('add() should add two vectors', () => {
+        const v1 = new Vec2(2, 2);
+        const v2 = new Vec2(2, 2);
+
+        const result = Vec2.add(v1, v2);
+        expect(result.x).toBe(4);
+        expect(result.y).toBe(4);
+    });
+
+    test('sub() should subtract two vectors', () => {
+        const v1 = new Vec2(2, 2);
+        const v2 = new Vec2(1, 1);
+
+        const result = Vec2.sub(v1, v2);
+        expect(result.x).toBe(1);
+        expect(result.y).toBe(1);
+    });
+
+    test('scale() should scale a vector', () => {
+        const v1 = new Vec2(1, 1);
+
+        const result = Vec2.scale(2, v1);
+        expect(result.x).toBe(2);
+        expect(result.y).toBe(2);
+    });
 });
