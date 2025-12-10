@@ -1,6 +1,9 @@
 import Vec2 from '../math/Vec2';
 
 export default class Body {
+    static _nextId = 0;
+    id: number;
+
     position: Vec2;
     rotation: number;
 
@@ -19,6 +22,8 @@ export default class Body {
     invI: number;
 
     constructor() {
+        this.id = Body._nextId++;
+
         this.position = new Vec2();
         this.rotation = 0.0;
         this.velocity = new Vec2();
