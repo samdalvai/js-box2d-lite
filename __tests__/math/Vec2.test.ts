@@ -1,3 +1,4 @@
+import Mat22 from '../../src/math/Mat22';
 import Vec2 from '../../src/math/Vec2';
 
 describe('Vec2', () => {
