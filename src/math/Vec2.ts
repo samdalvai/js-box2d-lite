@@ -64,24 +64,25 @@ export default class Vec2 {
 
         throw new Error('Invalid arguments');
     }
+
+    /** Operator + */
+    static add = (a: Vec2, b: Vec2): Vec2 => {
+        return new Vec2(a.x + b.x, a.y + b.y);
+    };
+
+    /** Operator - */
+    static sub = (a: Vec2, b: Vec2): Vec2 => {
+        return new Vec2(a.x - b.x, a.y - b.y);
+    };
+
+    /** Operator * */
+    static scale = (s: number, v: Vec2): Vec2 => {
+        return new Vec2(s * v.x, s * v.y);
+    };
 }
 
 /*
 
-inline Vec2 operator + (const Vec2& a, const Vec2& b)
-{
-	return Vec2(a.x + b.x, a.y + b.y);
-}
-
-inline Vec2 operator - (const Vec2& a, const Vec2& b)
-{
-	return Vec2(a.x - b.x, a.y - b.y);
-}
-
-inline Vec2 operator * (float s, const Vec2& v)
-{
-	return Vec2(s * v.x, s * v.y);
-}
 
 inline Vec2 operator * (const Mat22& A, const Vec2& v)
 {
