@@ -65,6 +65,19 @@ export class ArbiterKey {
             this.body2 = b1;
         }
     }
+
+    /** Operator < */
+    static lessThan = (a1: ArbiterKey, a2: ArbiterKey): boolean => {
+        if (a1.body1.id < a2.body1.id) {
+            return true;
+        }
+
+        if (a1.body1.id === a2.body1.id && a1.body2.id < a2.body2.id) {
+            return true;
+        }
+
+        return false;
+    };
 }
 
 /*
@@ -89,18 +102,6 @@ struct Arbiter
 	// Combined friction
 	float friction;
 };
-
-// This is used by std::set
-inline bool operator < (const ArbiterKey& a1, const ArbiterKey& a2)
-{
-	if (a1.body1 < a2.body1)
-		return true;
-
-	if (a1.body1 == a2.body1 && a1.body2 < a2.body2)
-		return true;
-
-	return false;
-}
 
 int Collide(Contact* contacts, Body* body1, Body* body2);
 
