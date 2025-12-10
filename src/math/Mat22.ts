@@ -1,6 +1,5 @@
 import Vec2 from './Vec2';
 
-// TODO: use lowecase variable names if possible
 export default class Mat22 {
     col1: Vec2;
     col2: Vec2;
@@ -37,7 +36,7 @@ export default class Mat22 {
         const c = this.col1.y;
         const d = this.col2.y;
 
-        const B = new Mat22();
+        const m = new Mat22();
         let det = a * d - b * c;
 
         if (det === 0) {
@@ -46,24 +45,24 @@ export default class Mat22 {
 
         det = 1 / det;
 
-        B.col1.x = det * d;
-        B.col1.y = -det * c;
-        B.col2.x = -det * b;
-        B.col2.y = det * a;
+        m.col1.x = det * d;
+        m.col1.y = -det * c;
+        m.col2.x = -det * b;
+        m.col2.y = det * a;
 
-        return B;
+        return m;
     };
 
     /** Operator + */
-    static add = (a: Mat22, B: Mat22): Mat22 => {
-        return new Mat22(Vec2.add(a.col1, B.col1), Vec2.add(a.col2, B.col2));
+    static add = (a: Mat22, b: Mat22): Mat22 => {
+        return new Mat22(Vec2.add(a.col1, b.col1), Vec2.add(a.col2, b.col2));
     };
 
     /** Operator * for matrix-vector multiplication */
     static multiply(a: Mat22, v: Vec2): Vec2;
 
     /** Operator * for matrix-matrix multiplication */
-    static multiply(a: Mat22, B: Mat22): Mat22;
+    static multiply(a: Mat22, b: Mat22): Mat22;
 
     static multiply(a: Mat22, b: Mat22 | Vec2): Vec2 | Mat22 {
         if (a instanceof Mat22 && b instanceof Mat22) {
