@@ -1,5 +1,6 @@
 import Vec2 from './Vec2';
 
+// TODO: use lowecase variable names if possible
 export default class Mat22 {
     col1: Vec2;
     col2: Vec2;
