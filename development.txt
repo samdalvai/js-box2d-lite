@@ -10,11 +10,11 @@ Development plan
 
 Start with circles and boxes.
 
-* Step 4 — Port contact generation
+* Step 4 — Port contact generation OK
 
 This step requires careful translation.
 
-* Step 5 — Port impulse solver
+* Step 5 — Port impulse solver OK
 
 Most bugs will happen here—test repeatedly.
 
