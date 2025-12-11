@@ -1,6 +1,7 @@
 import Mat22 from '../math/Mat22';
 import Vec2 from '../math/Vec2';
 import Body from './Body';
+import World from './World';
 
 export default class Joint {
     M: Mat22;
@@ -50,8 +51,7 @@ export default class Joint {
         this.biasFactor = 0.2;
     };
 
-    // TODO: remove positionCorrection and warmStarting
-    preStep = (invDt: number, positionCorrection = true, warmStarting = true): void => {
+    preStep = (invDt: number): void => {
         if (!this.body1 || !this.body2) {
             throw new Error('One or more bodies not initialized in Joint');
         }
@@ -95,13 +95,13 @@ export default class Joint {
         const p2 = Vec2.add(this.body2.position, this.r2);
         const dp = Vec2.sub(p2, p1);
 
-        if (positionCorrection) {
+        if (World.positionCorrection) {
             this.bias = Vec2.scale(-this.biasFactor * invDt, dp);
         } else {
             this.bias.set(0.0, 0.0);
         }
 
-        if (warmStarting) {
+        if (World.warmStarting) {
             // Apply accumulated impulse.
             this.body1.velocity.sub(Vec2.scale(this.body1.invMass, this.P));
             this.body1.angularVelocity -= this.body1.invI * Vec2.cross(this.r1, this.P);

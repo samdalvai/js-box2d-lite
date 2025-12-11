@@ -1,6 +1,7 @@
 import Utils from '../math/Utils';
 import Vec2 from '../math/Vec2';
 import Body from './Body';
+import World from './World';
 
 export type Edges = {
     inEdge1: number;
@@ -112,8 +113,7 @@ export class Arbiter {
         this.friction = Math.sqrt(this.body1.friction * this.body2.friction);
     }
 
-    // TODO: warmStarting needs to be removed from here
-    update = (newContacts: Contact[], numNewContacts: number, warmStarting = true): void => {
+    update = (newContacts: Contact[], numNewContacts: number): void => {
         const mergedContacts = [new Contact(), new Contact()];
 
         for (let i = 0; i < numNewContacts; i++) {
@@ -132,9 +132,8 @@ export class Arbiter {
                 mergedContacts[i] = new Contact();
                 Object.assign(mergedContacts[i], newContacts[i]);
                 const c = mergedContacts[i];
-                // TODO: to be implemented
-                // if (World::warmStarting)
-                if (warmStarting) {
+
+                if (World.warmStarting) {
                     c.Pn = cOld.Pn;
                     c.Pt = cOld.Pt;
                     c.Pnb = cOld.Pnb;
@@ -155,11 +154,10 @@ export class Arbiter {
         this.numContacts = numNewContacts;
     };
 
-    // TODO: remove positionCorrection and accumulateImpulses
-    preStep = (invDt: number, positionCorrection = true, accumulateImpulses = true): void => {
+    preStep = (invDt: number): void => {
         // Allowed penetration & bias factor
         const kAllowedPenetration = 0.01;
-        const kBiasFactor = positionCorrection ? 0.2 : 0.0;
+        const kBiasFactor = World.positionCorrection ? 0.2 : 0.0;
 
         for (let i = 0; i < this.numContacts; ++i) {
             const c = this.contacts[i];
@@ -188,7 +186,7 @@ export class Arbiter {
             // Bias computation
             c.bias = -kBiasFactor * invDt * Math.min(0, c.separation + kAllowedPenetration);
 
-            if (accumulateImpulses) {
+            if (World.accumulateImpulses) {
                 // Apply accumulated impulses
                 const P = Vec2.add(Vec2.scale(c.Pn, c.normal), Vec2.scale(c.Pt, tangent));
 
@@ -201,8 +199,7 @@ export class Arbiter {
         }
     };
 
-    // TODO: remove accumulateImpulses
-    applyImpulse = (accumulateImpulses = true): void => {
+    applyImpulse = (): void => {
         const b1 = this.body1;
         const b2 = this.body2;
 
@@ -222,7 +219,7 @@ export class Arbiter {
             const vn = Vec2.dot(dv, c.normal);
             let dPn = c.massNormal * (-vn + c.bias);
 
-            if (accumulateImpulses) {
+            if (World.accumulateImpulses) {
                 // Clamp the accumulated impulse
                 const Pn0 = c.Pn;
                 c.Pn = Math.max(Pn0 + dPn, 0);
@@ -251,7 +248,7 @@ export class Arbiter {
             const vt = Vec2.dot(dv, tangent);
             let dPt = c.massTangent * -vt;
 
-            if (accumulateImpulses) {
+            if (World.accumulateImpulses) {
                 // Compute friction impulse
                 const maxPt = this.friction * c.Pn;
 

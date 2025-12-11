@@ -1,5 +1,6 @@
 import { Arbiter, Contact } from '../../src/physics/Arbiter';
 import Body from '../../src/physics/Body';
+import World from '../../src/physics/World';
 
 const makeContact = (value: number, Pn = 0, Pt = 0, Pnb = 0): Contact => {
     const c = new Contact();
@@ -56,7 +57,8 @@ describe('Arbiter', () => {
         arbiter.contacts[0] = makeContact(10, 3, 4, 5);
 
         const updated = makeContact(10);
-        arbiter.update([updated], 1, false);
+        World.warmStarting = false;
+        arbiter.update([updated], 1);
 
         expect(arbiter.contacts[0].Pn).toBe(0);
         expect(arbiter.contacts[0].Pt).toBe(0);
