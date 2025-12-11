@@ -156,16 +156,18 @@ export class Arbiter {
 
     // TODO: remove positionCorrection and accumulateImpulses
     preStep = (invDt: number, positionCorrection = true, accumulateImpulses = true): void => {
+        // Allowed penetration & bias factor
         const kAllowedPenetration = 0.01;
         const kBiasFactor = positionCorrection ? 0.2 : 0.0;
 
         for (let i = 0; i < this.numContacts; ++i) {
             const c = this.contacts[i];
 
+            // Relative positions
             const r1 = Vec2.sub(c.position, this.body1.position);
             const r2 = Vec2.sub(c.position, this.body2.position);
 
-            // Precompute normal mass, tangent mass, and bias.
+            // Normal mass computation
             const rn1 = Vec2.dot(r1, c.normal);
             const rn2 = Vec2.dot(r2, c.normal);
             let kNormal = this.body1.invMass + this.body2.invMass;
@@ -173,6 +175,7 @@ export class Arbiter {
                 this.body1.invI * (Vec2.dot(r1, r1) - rn1 * rn1) + this.body2.invI * (Vec2.dot(r2, r2) - rn2 * rn2);
             c.massNormal = 1.0 / kNormal;
 
+            // Tangent mass computation
             const tangent = Vec2.cross(c.normal, 1);
             const rt1 = Vec2.dot(r1, tangent);
             const rt2 = Vec2.dot(r2, tangent);
@@ -181,10 +184,11 @@ export class Arbiter {
                 this.body1.invI * (Vec2.dot(r1, r1) - rt1 * rt1) + this.body2.invI * (Vec2.dot(r2, r2) - rt2 * rt2);
             c.massTangent = 1 / kTangent;
 
+            // Bias computation
             c.bias = -kBiasFactor * invDt * Math.min(0, c.separation + kAllowedPenetration);
 
             if (accumulateImpulses) {
-                //     Apply normal + friction impulse
+                // Apply accumulated impulses
                 const P = Vec2.add(Vec2.scale(c.Pn, c.normal), Vec2.scale(c.Pt, tangent));
 
                 this.body1.velocity.sub(Vec2.scale(this.body1.invMass, P));
