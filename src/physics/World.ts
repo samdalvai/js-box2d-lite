@@ -6,6 +6,8 @@ import Joint from './Joint';
 export default class World {
     bodies: Body[] = [];
     joints: Joint[] = [];
+
+    // TODO: CRITICAL ISSUE: ArbiterKey cannot be a key in a JS Map
     arbiters: Map<ArbiterKey, Arbiter> = new Map();
 
     gravity: Vec2;
