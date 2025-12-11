@@ -12,6 +12,8 @@ export default class Application {
     private FPS = 0;
     private lastFPSUpdate = 0;
 
+    // TODO: the original simulation uses real Y coordinates, so gravity is negative
+    // private world: World = new World(new Vec2(0, -9.8), 10);
     private world: World = new World(new Vec2(0, 9.8), 10);
 
     constructor() {}
@@ -101,7 +103,7 @@ export default class Application {
             this.FPS = 1 / deltaTime;
         }
 
-        this.world.step(deltaTime * 10);
+        this.world.step(deltaTime);
     };
 
     render = (): void => {
