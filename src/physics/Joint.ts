@@ -55,7 +55,26 @@ export default class Joint {
     };
 
     applyImpulse = (): void => {
-        //
+        if (!this.body1 || !this.body2) {
+            throw new Error('One or more bodies not initialized in Joint');
+        }
+
+        // Linear velocity of the center of mass of body 1 and 2.
+        const lv1 = Vec2.sub(this.body1.velocity, Vec2.cross(this.body1.angularVelocity, this.r1));
+        const lv2 = Vec2.add(this.body2.velocity, Vec2.cross(this.body2.angularVelocity, this.r2));
+
+        // Relative velocity at contact
+        const dv = Vec2.sub(lv2, lv1);
+
+        const impulse = Mat22.multiply(this.M, Vec2.sub(Vec2.sub(this.bias, dv), Vec2.scale(this.softness, this.P)));
+
+        this.body1.velocity.sub(Vec2.scale(this.body1.invMass, impulse));
+        this.body1.angularVelocity -= this.body1.invI * Vec2.cross(this.r1, impulse);
+
+        this.body2.velocity.add(Vec2.scale(this.body2.invMass, impulse));
+        this.body2.angularVelocity += this.body2.invI * Vec2.cross(this.r2, impulse);
+
+        this.P.add(impulse);
     };
 }
 
@@ -120,20 +139,4 @@ void Joint::PreStep(float inv_dt)
 	}
 }
 
-void Joint::ApplyImpulse()
-{
-    Vec2 dv = body2->velocity + Cross(body2->angularVelocity, r2) - body1->velocity - Cross(body1->angularVelocity, r1);
-
-	Vec2 impulse;
-
-	impulse = M * (bias - dv - softness * P);
-
-	body1->velocity -= body1->invMass * impulse;
-	body1->angularVelocity -= body1->invI * Cross(r1, impulse);
-
-	body2->velocity += body2->invMass * impulse;
-	body2->angularVelocity += body2->invI * Cross(r2, impulse);
-
-	P += impulse;
-}
 */
