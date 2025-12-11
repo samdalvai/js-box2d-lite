@@ -10,7 +10,7 @@ const makeContact = (value: number, Pn = 0, Pt = 0, Pnb = 0): Contact => {
     return c;
 };
 
-describe('Arbiter.update', () => {
+describe('Arbiter', () => {
     let bodyA: Body;
     let bodyB: Body;
     let arbiter: Arbiter;
@@ -21,7 +21,7 @@ describe('Arbiter.update', () => {
         arbiter = new Arbiter(bodyA, bodyB);
     });
 
-    test('non-matching contacts are simply inserted', () => {
+    test('update() non-matching contacts are simply inserted', () => {
         arbiter.numContacts = 1;
         arbiter.contacts[0] = makeContact(10, 5, 6, 7);
 
@@ -35,7 +35,7 @@ describe('Arbiter.update', () => {
         expect(arbiter.contacts[0].Pnb).toBe(0);
     });
 
-    test('matching contacts copy old impulses when warm starting is enabled', () => {
+    test('update() matching contacts copy old impulses when warm starting is enabled', () => {
         arbiter.numContacts = 1;
         arbiter.contacts[0] = makeContact(10, 3, 4, 5);
 
@@ -51,7 +51,7 @@ describe('Arbiter.update', () => {
         expect(arbiter.contacts[0].Pnb).toBe(5);
     });
 
-    test('matching contacts reset impulses when warm starting is disabled', () => {
+    test('update() matching contacts reset impulses when warm starting is disabled', () => {
         arbiter.numContacts = 1;
         arbiter.contacts[0] = makeContact(10, 3, 4, 5);
 
@@ -63,7 +63,7 @@ describe('Arbiter.update', () => {
         expect(arbiter.contacts[0].Pnb).toBe(0);
     });
 
-    test('multiple contacts merged correctly', () => {
+    test('update() multiple contacts merged correctly', () => {
         arbiter.numContacts = 2;
         arbiter.contacts[0] = makeContact(1, 10, 11, 12);
         arbiter.contacts[1] = makeContact(2, 20, 21, 22);
@@ -80,4 +80,6 @@ describe('Arbiter.update', () => {
 
         expect(arbiter.numContacts).toBe(2);
     });
+
+    // TODO: add unit tests on preStep method
 });
