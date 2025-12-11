@@ -154,57 +154,52 @@ export class Arbiter {
         this.numContacts = numNewContacts;
     };
 
-    preStep = (invDt: number): void => {};
+    // TODO: remove positionCorrection and accumulateImpulses
+    preStep = (invDt: number, positionCorrection = true, accumulateImpulses = true): void => {
+        const kAllowedPenetration = 0.01;
+        const kBiasFactor = positionCorrection ? 0.2 : 0.0;
+
+        for (let i = 0; i < this.numContacts; ++i) {
+            const c = this.contacts[i];
+
+            const r1 = Vec2.sub(c.position, this.body1.position);
+            const r2 = Vec2.sub(c.position, this.body2.position);
+
+            // Precompute normal mass, tangent mass, and bias.
+            const rn1 = Vec2.dot(r1, c.normal);
+            const rn2 = Vec2.dot(r2, c.normal);
+            let kNormal = this.body1.invMass + this.body2.invMass;
+            kNormal +=
+                this.body1.invI * (Vec2.dot(r1, r1) - rn1 * rn1) + this.body2.invI * (Vec2.dot(r2, r2) - rn2 * rn2);
+            c.massNormal = 1.0 / kNormal;
+
+            const tangent = Vec2.cross(c.normal, 1);
+            const rt1 = Vec2.dot(r1, tangent);
+            const rt2 = Vec2.dot(r2, tangent);
+            let kTangent = this.body1.invMass + this.body2.invMass;
+            kTangent +=
+                this.body1.invI * (Vec2.dot(r1, r1) - rt1 * rt1) + this.body2.invI * (Vec2.dot(r2, r2) - rt2 * rt2);
+            c.massTangent = 1 / kTangent;
+
+            c.bias = -kBiasFactor * invDt * Math.min(0, c.separation + kAllowedPenetration);
+
+            if (accumulateImpulses) {
+                //     Apply normal + friction impulse
+                const P = Vec2.add(Vec2.scale(c.Pn, c.normal), Vec2.scale(c.Pt, tangent));
+
+                this.body1.velocity.sub(Vec2.scale(this.body1.invMass, P));
+                this.body1.angularVelocity -= this.body1.invI * Vec2.cross(r1, P);
+
+                this.body2.velocity.add(Vec2.scale(this.body2.invMass, P));
+                this.body2.angularVelocity += this.body2.invI * Vec2.cross(r2, P);
+            }
+        }
+    };
 
     applyImpulse = (): void => {};
 }
 
 /*
-
-
-
-void Arbiter::PreStep(float inv_dt)
-{
-	const float k_allowedPenetration = 0.01f;
-	float k_biasFactor = World::positionCorrection ? 0.2f : 0.0f;
-
-	for (int i = 0; i < numContacts; ++i)
-	{
-		Contact* c = contacts + i;
-
-		Vec2 r1 = c->position - body1->position;
-		Vec2 r2 = c->position - body2->position;
-
-		// Precompute normal mass, tangent mass, and bias.
-		float rn1 = Dot(r1, c->normal);
-		float rn2 = Dot(r2, c->normal);
-		float kNormal = body1->invMass + body2->invMass;
-		kNormal += body1->invI * (Dot(r1, r1) - rn1 * rn1) + body2->invI * (Dot(r2, r2) - rn2 * rn2);
-		c->massNormal = 1.0f / kNormal;
-
-		Vec2 tangent = Cross(c->normal, 1.0f);
-		float rt1 = Dot(r1, tangent);
-		float rt2 = Dot(r2, tangent);
-		float kTangent = body1->invMass + body2->invMass;
-		kTangent += body1->invI * (Dot(r1, r1) - rt1 * rt1) + body2->invI * (Dot(r2, r2) - rt2 * rt2);
-		c->massTangent = 1.0f /  kTangent;
-
-		c->bias = -k_biasFactor * inv_dt * Min(0.0f, c->separation + k_allowedPenetration);
-
-		if (World::accumulateImpulses)
-		{
-			// Apply normal + friction impulse
-			Vec2 P = c->Pn * c->normal + c->Pt * tangent;
-
-			body1->velocity -= body1->invMass * P;
-			body1->angularVelocity -= body1->invI * Cross(r1, P);
-
-			body2->velocity += body2->invMass * P;
-			body2->angularVelocity += body2->invI * Cross(r2, P);
-		}
-	}
-}
-
 void Arbiter::ApplyImpulse()
 {
 	Body* b1 = body1;
