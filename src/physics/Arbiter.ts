@@ -10,7 +10,7 @@ export type Edges = {
 
 export type FeaturePair = {
     e: Edges;
-    value?: number;
+    value: number;
 };
 
 export class Contact {
@@ -48,6 +48,7 @@ export class Contact {
                 inEdge2: 0,
                 outEdge2: 0,
             },
+            value: 0,
         };
     }
 }
@@ -110,7 +111,46 @@ export class Arbiter {
         this.friction = Math.sqrt(this.body1.friction * this.body2.friction);
     }
 
-    update = (contacts: Contact[], numContacts: number): void => {};
+    // TODO: warmStarting needs to be removed from here
+    update = (newContacts: Contact[], numNewContacts: number, warmStarting = true): void => {
+        const mergedContacts = [new Contact(), new Contact()];
+
+        for (let i = 0; i < numNewContacts; i++) {
+            const cNew = newContacts[i];
+            let k = -1;
+            for (let j = 0; j < this.numContacts; ++j) {
+                const cOld = this.contacts[j];
+                if (cNew.feature.value === cOld.feature.value) {
+                    k = j;
+                    break;
+                }
+            }
+            if (k > -1) {
+                const cOld = this.contacts[k];
+                mergedContacts[i] = newContacts[i];
+                const c = mergedContacts[i];
+                // TODO: to be implemented
+                // if (World::warmStarting)
+                if (warmStarting) {
+                    c.Pn = cOld.Pn;
+                    c.Pt = cOld.Pt;
+                    c.Pnb = cOld.Pnb;
+                } else {
+                    c.Pn = 0.0;
+                    c.Pt = 0.0;
+                    c.Pnb = 0.0;
+                }
+            } else {
+                mergedContacts[i] = newContacts[i];
+            }
+        }
+
+        for (let i = 0; i < numNewContacts; i++) {
+            this.contacts[i] = mergedContacts[i];
+        }
+
+        this.numContacts = numNewContacts;
+    };
 
     preStep = (invDt: number): void => {};
 
