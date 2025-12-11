@@ -25,45 +25,55 @@ export default class World {
 
     add(element: Body | Joint): void {
         if (element instanceof Body) {
-            //
+            this.bodies.push(element);
         } else if (element instanceof Joint) {
-            //
+            this.joints.push(element);
         } else {
             throw new Error('Invalid argument');
         }
     }
 
     clear = (): void => {
-        //
-    };
-
-    step = (dt: number) => {
-        //
+        this.bodies.length = 0;
+        this.joints.length = 0;
+        this.arbiters.clear();
     };
 
     broadPhase = () => {
+        // O(n^2) broad-phase
+        for (let i = 0; i < this.bodies.length; i++) {
+            const bi = this.bodies[i];
+
+            for (let j = i + 1; j < this.bodies.length; j++) {
+                const bj = this.bodies[j];
+
+                if (bi.invMass === 0 && bj.invMass === 0) {
+                    continue;
+                }
+
+                const newArb = new Arbiter(bi, bj);
+                const key = new ArbiterKey(bi, bj);
+
+                if (newArb.numContacts > 0) {
+                    if (!this.arbiters.has(key)) {
+                        this.arbiters.set(key, newArb);
+                    } else {
+                        this.arbiters.get(key)!.update(newArb.contacts, newArb.numContacts);
+                    }
+                } else {
+                    this.arbiters.delete(key);
+                }
+            }
+        }
+    };
+
+    step = (dt: number) => {
         //
     };
 }
 
 /*
 
-void World::Add(Body* body)
-{
-	bodies.push_back(body);
-}
-
-void World::Add(Joint* joint)
-{
-	joints.push_back(joint);
-}
-
-void World::Clear()
-{
-	bodies.clear();
-	joints.clear();
-	arbiters.clear();
-}
 
 void World::BroadPhase()
 {
