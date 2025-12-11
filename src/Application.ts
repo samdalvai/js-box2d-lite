@@ -35,10 +35,20 @@ export default class Application {
         floor.position.set(Graphics.width() / 2, Graphics.height() - 50);
         this.world.add(floor);
 
-        const box = new Body();
-        box.set(new Vec2(60, 60), 200);
-        box.position.set(Graphics.width() / 2, Graphics.height() - 400);
-        this.world.add(box);
+        const box1 = new Body();
+        box1.set(new Vec2(60, 60), 200);
+        box1.position.set(Graphics.width() / 2 - 200, Graphics.height() - 400);
+        this.world.add(box1);
+
+        const box2 = new Body();
+        box2.set(new Vec2(60, 60), Number.MAX_VALUE);
+        box2.position.set(Graphics.width() / 2, Graphics.height() - 400);
+        this.world.add(box2);
+
+        const box3 = new Body();
+        box3.set(new Vec2(60, 60), Number.MAX_VALUE);
+        box3.position.set(Graphics.width() / 2 + 200, Graphics.height() - 400);
+        this.world.add(box3);
     };
 
     input = (): void => {
@@ -68,7 +78,9 @@ export default class Application {
                 return;
             }
 
-            // TODO: do something
+            const controlledBox = this.world.bodies[3];
+            controlledBox.position.x = inputEvent.x;
+            controlledBox.position.y = inputEvent.y;
         }
 
         // Handle mouse click events
