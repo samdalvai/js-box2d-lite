@@ -1,3 +1,4 @@
+import Utils from '../math/Utils';
 import Vec2 from '../math/Vec2';
 import Body from './Body';
 
@@ -200,83 +201,77 @@ export class Arbiter {
         }
     };
 
-    applyImpulse = (): void => {};
+    // TODO: remove accumulateImpulses
+    applyImpulse = (accumulateImpulses = true): void => {
+        const b1 = this.body1;
+        const b2 = this.body2;
+
+        for (let i = 0; i < this.numContacts; ++i) {
+            const c = this.contacts[i];
+            c.r1 = Vec2.sub(c.position, b1.position);
+            c.r2 = Vec2.sub(c.position, b2.position);
+
+            // Linear velocity of the center of mass of body 1 and 2.
+            let lv1 = Vec2.sub(b1.velocity, Vec2.cross(b1.angularVelocity, c.r1));
+            let lv2 = Vec2.add(b2.velocity, Vec2.cross(b2.angularVelocity, c.r2));
+
+            // Relative velocity at contact
+            let dv = Vec2.sub(lv2, lv1);
+
+            // Compute normal impulse
+            const vn = Vec2.dot(dv, c.normal);
+            let dPn = c.massNormal * (-vn + c.bias);
+
+            if (accumulateImpulses) {
+                // Clamp the accumulated impulse
+                const Pn0 = c.Pn;
+                c.Pn = Math.max(Pn0 + dPn, 0);
+                dPn = c.Pn - Pn0;
+            } else {
+                dPn = Math.max(dPn, 0);
+            }
+
+            // Apply contact impulse
+            const Pn = Vec2.scale(dPn, c.normal);
+
+            b1.velocity.sub(Vec2.scale(b1.invMass, Pn));
+            b1.angularVelocity -= b1.invI * Vec2.cross(c.r1, Pn);
+
+            b2.velocity.add(Vec2.scale(b2.invMass, Pn));
+            b2.angularVelocity += b2.invI * Vec2.cross(c.r2, Pn);
+
+            // Linear velocity of the center of mass of body 1 and 2.
+            lv1 = Vec2.sub(b1.velocity, Vec2.cross(b1.angularVelocity, c.r1));
+            lv2 = Vec2.add(b2.velocity, Vec2.cross(b2.angularVelocity, c.r2));
+
+            // Relative velocity at contact
+            dv = Vec2.sub(lv2, lv1);
+
+            const tangent = Vec2.cross(c.normal, 1);
+            const vt = Vec2.dot(dv, tangent);
+            let dPt = c.massTangent * -vt;
+
+            if (accumulateImpulses) {
+                // Compute friction impulse
+                const maxPt = this.friction * c.Pn;
+
+                // Clamp friction
+                const oldTangentImpulse = c.Pt;
+                c.Pt = Utils.clamp(oldTangentImpulse + dPt, -maxPt, maxPt);
+                dPt = c.Pt - oldTangentImpulse;
+            } else {
+                const maxPt = this.friction * dPn;
+                dPt = Utils.clamp(dPt, -maxPt, maxPt);
+            }
+
+            // Apply contact impulse
+            const Pt = Vec2.scale(dPt, tangent);
+
+            b1.velocity.sub(Vec2.scale(b1.invMass, Pt));
+            b1.angularVelocity -= b1.invI * Vec2.cross(c.r1, Pt);
+
+            b2.velocity.add(Vec2.scale(b2.invMass, Pt));
+            b2.angularVelocity += b2.invI * Vec2.cross(c.r2, Pt);
+        }
+    };
 }
-
-/*
-void Arbiter::ApplyImpulse()
-{
-	Body* b1 = body1;
-	Body* b2 = body2;
-
-	for (int i = 0; i < numContacts; ++i)
-	{
-		Contact* c = contacts + i;
-		c->r1 = c->position - b1->position;
-		c->r2 = c->position - b2->position;
-
-		// Relative velocity at contact
-		Vec2 dv = b2->velocity + Cross(b2->angularVelocity, c->r2) - b1->velocity - Cross(b1->angularVelocity, c->r1);
-
-		// Compute normal impulse
-		float vn = Dot(dv, c->normal);
-
-		float dPn = c->massNormal * (-vn + c->bias);
-
-		if (World::accumulateImpulses)
-		{
-			// Clamp the accumulated impulse
-			float Pn0 = c->Pn;
-			c->Pn = Max(Pn0 + dPn, 0.0f);
-			dPn = c->Pn - Pn0;
-		}
-		else
-		{
-			dPn = Max(dPn, 0.0f);
-		}
-
-		// Apply contact impulse
-		Vec2 Pn = dPn * c->normal;
-
-		b1->velocity -= b1->invMass * Pn;
-		b1->angularVelocity -= b1->invI * Cross(c->r1, Pn);
-
-		b2->velocity += b2->invMass * Pn;
-		b2->angularVelocity += b2->invI * Cross(c->r2, Pn);
-
-		// Relative velocity at contact
-		dv = b2->velocity + Cross(b2->angularVelocity, c->r2) - b1->velocity - Cross(b1->angularVelocity, c->r1);
-
-		Vec2 tangent = Cross(c->normal, 1.0f);
-		float vt = Dot(dv, tangent);
-		float dPt = c->massTangent * (-vt);
-
-		if (World::accumulateImpulses)
-		{
-			// Compute friction impulse
-			float maxPt = friction * c->Pn;
-
-			// Clamp friction
-			float oldTangentImpulse = c->Pt;
-			c->Pt = Clamp(oldTangentImpulse + dPt, -maxPt, maxPt);
-			dPt = c->Pt - oldTangentImpulse;
-		}
-		else
-		{
-			float maxPt = friction * dPn;
-			dPt = Clamp(dPt, -maxPt, maxPt);
-		}
-
-		// Apply contact impulse
-		Vec2 Pt = dPt * tangent;
-
-		b1->velocity -= b1->invMass * Pt;
-		b1->angularVelocity -= b1->invI * Cross(c->r1, Pt);
-
-		b2->velocity += b2->invMass * Pt;
-		b2->angularVelocity += b2->invI * Cross(c->r2, Pt);
-	}
-}
-
-
-*/
