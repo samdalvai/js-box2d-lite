@@ -68,106 +68,52 @@ export default class World {
     };
 
     step = (dt: number) => {
-        //
+        const invDt = dt > 0.0 ? 1.0 / dt : 0.0;
+
+        // Determine overlapping bodies and update contact points.
+        this.broadPhase();
+
+        // Integrate forces.
+        for (let i = 0; i < this.bodies.length; i++) {
+            const b = this.bodies[i];
+
+            if (b.invMass === 0.0) {
+                continue;
+            }
+
+            b.velocity.add(Vec2.scale(dt, Vec2.add(this.gravity, Vec2.scale(b.invMass, b.force))));
+            b.angularVelocity += dt * b.invI * b.torque;
+        }
+
+        // Perform pre-steps.
+        for (const [_, arbiter] of this.arbiters) {
+            arbiter.preStep(invDt);
+        }
+
+        for (const joint of this.joints) {
+            joint.preStep(invDt);
+        }
+
+        // Perform iterations
+        for (let i = 0; i < this.iterations; i++) {
+            for (const [_, arbiter] of this.arbiters) {
+                arbiter.applyImpulse();
+            }
+
+            for (const joint of this.joints) {
+                joint.applyImpulse();
+            }
+        }
+
+        // Integrate Velocities
+        for (let i = 0; i < this.bodies.length; i++) {
+            const b = this.bodies[i];
+
+            b.position.add(Vec2.scale(dt, b.velocity));
+            b.rotation += dt * b.angularVelocity;
+
+            b.force.set(0, 0);
+            b.torque = 0.0;
+        }
     };
 }
-
-/*
-
-
-void World::BroadPhase()
-{
-	// O(n^2) broad-phase
-	for (int i = 0; i < (int)bodies.size(); ++i)
-	{
-		Body* bi = bodies[i];
-
-		for (int j = i + 1; j < (int)bodies.size(); ++j)
-		{
-			Body* bj = bodies[j];
-
-			if (bi->invMass == 0.0f && bj->invMass == 0.0f)
-				continue;
-
-			Arbiter newArb(bi, bj);
-			ArbiterKey key(bi, bj);
-
-			if (newArb.numContacts > 0)
-			{
-				ArbIter iter = arbiters.find(key);
-				if (iter == arbiters.end())
-				{
-					arbiters.insert(ArbPair(key, newArb));
-				}
-				else
-				{
-					iter->second.Update(newArb.contacts, newArb.numContacts);
-				}
-			}
-			else
-			{
-				arbiters.erase(key);
-			}
-		}
-	}
-}
-
-void World::Step(float dt)
-{
-	float inv_dt = dt > 0.0f ? 1.0f / dt : 0.0f;
-
-	// Determine overlapping bodies and update contact points.
-	BroadPhase();
-
-	// Integrate forces.
-	for (int i = 0; i < (int)bodies.size(); ++i)
-	{
-		Body* b = bodies[i];
-
-		if (b->invMass == 0.0f)
-			continue;
-
-		b->velocity += dt * (gravity + b->invMass * b->force);
-		b->angularVelocity += dt * b->invI * b->torque;
-	}
-
-	// Perform pre-steps.
-	for (ArbIter arb = arbiters.begin(); arb != arbiters.end(); ++arb)
-	{
-		arb->second.PreStep(inv_dt);
-	}
-
-	for (int i = 0; i < (int)joints.size(); ++i)
-	{
-		joints[i]->PreStep(inv_dt);	
-	}
-
-	// Perform iterations
-	for (int i = 0; i < iterations; ++i)
-	{
-		for (ArbIter arb = arbiters.begin(); arb != arbiters.end(); ++arb)
-		{
-			arb->second.ApplyImpulse();
-		}
-
-		for (int j = 0; j < (int)joints.size(); ++j)
-		{
-			joints[j]->ApplyImpulse();
-		}
-	}
-
-	// Integrate Velocities
-	for (int i = 0; i < (int)bodies.size(); ++i)
-	{
-		Body* b = bodies[i];
-
-		b->position += dt * b->velocity;
-		b->rotation += dt * b->angularVelocity;
-
-		b->force.Set(0.0f, 0.0f);
-		b->torque = 0.0f;
-	}
-}
-
-
-*/
