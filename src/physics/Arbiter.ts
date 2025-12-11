@@ -127,7 +127,9 @@ export class Arbiter {
             }
             if (k > -1) {
                 const cOld = this.contacts[k];
-                mergedContacts[i] = newContacts[i];
+                // TODO: check if mergedContacts[i] = newContacts[i]; would be equivalent to next two lines
+                mergedContacts[i] = new Contact();
+                Object.assign(mergedContacts[i], newContacts[i]);
                 const c = mergedContacts[i];
                 // TODO: to be implemented
                 // if (World::warmStarting)
@@ -159,53 +161,6 @@ export class Arbiter {
 
 /*
 
-void Arbiter::Update(Contact* newContacts, int numNewContacts)
-{
-	Contact mergedContacts[2];
-
-	for (int i = 0; i < numNewContacts; ++i)
-	{
-		Contact* cNew = newContacts + i;
-		int k = -1;
-		for (int j = 0; j < numContacts; ++j)
-		{
-			Contact* cOld = contacts + j;
-			if (cNew->feature.value == cOld->feature.value)
-			{
-				k = j;
-				break;
-			}
-		}
-
-		if (k > -1)
-		{
-			Contact* c = mergedContacts + i;
-			Contact* cOld = contacts + k;
-			*c = *cNew;
-			if (World::warmStarting)
-			{
-				c->Pn = cOld->Pn;
-				c->Pt = cOld->Pt;
-				c->Pnb = cOld->Pnb;
-			}
-			else
-			{
-				c->Pn = 0.0f;
-				c->Pt = 0.0f;
-				c->Pnb = 0.0f;
-			}
-		}
-		else
-		{
-			mergedContacts[i] = newContacts[i];
-		}
-	}
-
-	for (int i = 0; i < numNewContacts; ++i)
-		contacts[i] = mergedContacts[i];
-
-	numContacts = numNewContacts;
-}
 
 
 void Arbiter::PreStep(float inv_dt)
