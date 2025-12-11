@@ -55,6 +55,8 @@ export class Contact {
     }
 }
 
+// TODO: this arbiter key is inefficient, can we just use the two bodies ids
+// Using a bitmask might be useful
 export class ArbiterKey {
     body1: Body;
     body2: Body;
