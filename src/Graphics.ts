@@ -8,6 +8,9 @@ export default class Graphics {
     static canvas: HTMLCanvasElement;
     static ctx: CanvasRenderingContext2D;
 
+    static zoom = 50; // pixels per world unit
+    static pan = new Vec2(0, 0);
+
     static width = (): number => {
         return this.windowWidth;
     };
@@ -170,15 +173,22 @@ export default class Graphics {
         this.ctx.restore();
     };
 
+    static worldToScreen(v: Vec2): Vec2 {
+        return new Vec2(
+            (v.x - this.pan.x) * this.zoom + this.windowWidth / 2,
+            this.windowHeight / 2 - (v.y - this.pan.y) * this.zoom,
+        );
+    }
+
     static drawBody = (body: Body): void => {
         const R = new Mat22(body.rotation);
         const x = body.position;
         const h = Vec2.scale(0.5, body.width);
 
-        const v1 = Vec2.add(x, Mat22.multiply(R, new Vec2(-h.x, -h.y)));
-        const v2 = Vec2.add(x, Mat22.multiply(R, new Vec2(h.x, -h.y)));
-        const v3 = Vec2.add(x, Mat22.multiply(R, new Vec2(h.x, h.y)));
-        const v4 = Vec2.add(x, Mat22.multiply(R, new Vec2(-h.x, h.y)));
+        const v1 = this.worldToScreen(Vec2.add(x, Mat22.multiply(R, new Vec2(-h.x, -h.y))));
+        const v2 = this.worldToScreen(Vec2.add(x, Mat22.multiply(R, new Vec2(h.x, -h.y))));
+        const v3 = this.worldToScreen(Vec2.add(x, Mat22.multiply(R, new Vec2(h.x, h.y))));
+        const v4 = this.worldToScreen(Vec2.add(x, Mat22.multiply(R, new Vec2(-h.x, h.y))));
 
         this.ctx.strokeStyle = 'white'; // Make it changeable?
         this.ctx.beginPath();
