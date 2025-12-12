@@ -4,8 +4,10 @@ export class Body {
         let w = setup.w || 1.0;
         let h = setup.h || 1.0;
 
-        this.px = setup.x || 0.0;
+        // Position
+        this.px = setup.x || 0.0;   
         this.py = setup.y || 0.0;
+        
         this.vx = setup.vx || 0.0;
         this.vy = setup.vy || 0.0;
         this.hw = w * 0.5;

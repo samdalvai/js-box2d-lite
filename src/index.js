@@ -7,10 +7,21 @@ let ctx = canvas.ctx;
 let pointer = new Pointer(canvas);
 
 function run() {
-    requestAnimationFrame(run);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.lineWidth = 1.5;
-    world.step();
+    let timePreviousFrame = performance.now();
+
+    const loop = now => {
+        const deltaTime = (now - timePreviousFrame) / 1000;
+        timePreviousFrame = now;
+        console.log(deltaTime);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.lineWidth = 1.5;
+        world.step();
+
+        requestAnimationFrame(loop);
+    };
+
+    requestAnimationFrame(loop);
 }
 
 // init the world
