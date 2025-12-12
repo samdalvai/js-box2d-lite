@@ -25,6 +25,14 @@ describe('Body', () => {
         expect(body.invI).toBe(0);
     });
 
+    test('body id is correctly increased when new body is created', () => {
+        const body1 = new Body();
+        const body2 = new Body();
+
+        expect(body1.id).toBe(1);
+        expect(body2.id).toBe(2);
+    });
+
     test('set() updates width, mass, and computes inertia when mass is finite', () => {
         const body = new Body();
         const w = new Vec2(2, 3);
