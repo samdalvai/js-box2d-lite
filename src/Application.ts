@@ -38,34 +38,34 @@ export default class Application {
         this.running = Graphics.openWindow();
 
         // Demo1: Single box
-        // const floor = new Body();
-        // floor.set(new Vec2(100, 20), Number.MAX_VALUE);
-        // floor.position.set(0, -0.8 * floor.width.y);
-        // this.world.add(floor);
-
-        // const box1 = new Body();
-        // box1.set(new Vec2(1, 1), 200);
-        // box1.position.set(0, 1);
-        // this.world.add(box1);
-
-        // Demo 2: A simple pendulum
         const floor = new Body();
         floor.set(new Vec2(100, 20), Number.MAX_VALUE);
-        floor.friction = 0.2;
         floor.position.set(0, -0.8 * floor.width.y);
-        floor.rotation = 0;
         this.world.add(floor);
 
-        const box = new Body();
-        box.set(new Vec2(1, 1), 100);
-        box.friction = 0.2;
-        box.position.set(9, 5);
-        box.rotation = 0;
-        this.world.add(box);
+        const box1 = new Body();
+        box1.set(new Vec2(1, 1), 200);
+        box1.position.set(0, 1);
+        this.world.add(box1);
 
-        const j = new Joint();
-        j.set(floor, box, new Vec2(0, 5));
-        this.world.add(j);
+        // Demo 2: A simple pendulum
+        // const floor = new Body();
+        // floor.set(new Vec2(100, 20), Number.MAX_VALUE);
+        // floor.friction = 0.2;
+        // floor.position.set(0, -0.8 * floor.width.y);
+        // floor.rotation = 0;
+        // this.world.add(floor);
+
+        // const box = new Body();
+        // box.set(new Vec2(1, 1), 100);
+        // box.friction = 0.2;
+        // box.position.set(9, 5);
+        // box.rotation = 0;
+        // this.world.add(box);
+
+        // const j = new Joint();
+        // j.set(floor, box, new Vec2(0, 5));
+        // this.world.add(j);
     };
 
     input = (): void => {
@@ -90,7 +90,7 @@ export default class Application {
                             this.world.add(bomb);
                         }
 
-                        this.bomb.position.set(Utils.random(-15, 10), 15);
+                        this.bomb.position.set(Utils.random(-15, 10), 10);
                         this.bomb.rotation = Utils.random(-1.5, 1.5);
                         this.bomb.velocity = Vec2.scale(-1.5, this.bomb.position);
                         this.bomb.angularVelocity = Utils.random(-20, 20);
