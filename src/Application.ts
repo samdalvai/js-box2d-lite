@@ -2,6 +2,7 @@ import Graphics from './Graphics';
 import InputManager, { MouseButton } from './InputManager';
 import Vec2 from './math/Vec2';
 import Body from './physics/Body';
+import Joint from './physics/Joint';
 import World from './physics/World';
 
 export default class Application {
@@ -33,15 +34,35 @@ export default class Application {
         InputManager.initialize();
         this.running = Graphics.openWindow();
 
+        // Demo1: Single box
+        // const floor = new Body();
+        // floor.set(new Vec2(100, 20), Number.MAX_VALUE);
+        // floor.position.set(0, -0.8 * floor.width.y);
+        // this.world.add(floor);
+
+        // const box1 = new Body();
+        // box1.set(new Vec2(1, 1), 200);
+        // box1.position.set(0, 1);
+        // this.world.add(box1);
+
+        // Demo 2: A simple pendulum
         const floor = new Body();
         floor.set(new Vec2(100, 20), Number.MAX_VALUE);
+        floor.friction = 0.2;
         floor.position.set(0, -0.8 * floor.width.y);
+        floor.rotation = 0;
         this.world.add(floor);
 
-        const box1a = new Body();
-        box1a.set(new Vec2(1, 1), 200);
-        box1a.position.set(0, 1);
-        this.world.add(box1a);
+        const box = new Body();
+        box.set(new Vec2(1, 1), 100);
+        box.friction = 0.2;
+        box.position.set(9, 5);
+        box.rotation = 0;
+        this.world.add(box);
+
+        const j = new Joint();
+        j.set(floor, box, new Vec2(0, 5));
+        this.world.add(j);
     };
 
     input = (): void => {
@@ -116,8 +137,10 @@ export default class Application {
 
         for (const body of this.world.bodies) {
             Graphics.drawBody(body);
+        }
 
-            // Graphics.drawRect(body.position.x, body.position.y, body.width.x, body.width.y, 'white');
+        for (const joint of this.world.joints) {
+            Graphics.drawJoint(joint);
         }
 
         for (const arbiter of this.world.arbiters.values()) {
