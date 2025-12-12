@@ -130,5 +130,11 @@ export default class Application {
 
             // Graphics.drawRect(body.position.x, body.position.y, body.width.x, body.width.y, 'white');
         }
+
+        for (const arbiter of this.world.arbiters.values()) {
+            for (const contact of arbiter.contacts) {
+                Graphics.drawFillCircle(contact.position.x, contact.position.y, 5, 'red');
+            }
+        }
     };
 }
