@@ -1,5 +1,6 @@
 import Mat22 from './math/Mat22';
 import Vec2 from './math/Vec2';
+import { Contact } from './physics/Arbiter';
 import Body from './physics/Body';
 
 export default class Graphics {
@@ -180,6 +181,16 @@ export default class Graphics {
         );
     }
 
+    // TODO: can we generalize drawing to world screen?
+    static drawContactPoint = (contact: Contact, color: string): void => {
+        const v = this.worldToScreen(contact.position);
+        this.ctx.beginPath();
+        this.ctx.arc(v.x, v.y, 5, 0, Math.PI * 2);
+        this.ctx.fillStyle = color;
+        this.ctx.fill();
+    };
+
+    // TODO: can we generalize drawing to world screen?
     static drawBody = (body: Body): void => {
         const R = new Mat22(body.rotation);
         const x = body.position;
