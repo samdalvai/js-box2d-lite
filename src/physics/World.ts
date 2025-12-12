@@ -8,8 +8,7 @@ export default class World {
     bodies: Body[] = [];
     joints: Joint[] = [];
 
-    // TODO: CRITICAL ISSUE: ArbiterKey cannot be a key in a JS Map
-    arbiters: Map<ArbiterKey, Arbiter> = new Map();
+    arbiters: Map<number, Arbiter> = new Map();
 
     gravity: Vec2;
     iterations: number;
@@ -55,7 +54,7 @@ export default class World {
                 }
 
                 const newArb = new Arbiter(bi, bj);
-                const key = new ArbiterKey(bi, bj);
+                const key = ArbiterKey.getKey(bi, bj);
 
                 if (newArb.numContacts > 0) {
                     if (!this.arbiters.has(key)) {
