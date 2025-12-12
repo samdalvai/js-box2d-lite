@@ -1,6 +1,7 @@
 import Utils from '../math/Utils';
 import Vec2 from '../math/Vec2';
 import Body from './Body';
+import { Collide } from './Collide';
 import World from './World';
 
 export class Edges {
@@ -132,9 +133,7 @@ export class Arbiter {
             this.body2 = b1;
         }
 
-        // TODO: to be implementd and substituted
-        this.numContacts = 0;
-        //this.numContacts = Collide(contacts, body1, body2);
+        this.numContacts = Collide.checkCollision(this.contacts, this.body1, this.body2);
 
         this.friction = Math.sqrt(this.body1.friction * this.body2.friction);
     }
