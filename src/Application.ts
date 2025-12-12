@@ -35,54 +35,16 @@ export default class Application {
 
         const floor = new Body();
         floor.set(new Vec2(100, 20), Number.MAX_VALUE);
-        floor.position.set(0, -0.5 * floor.width.y);
+        floor.position.set(0, -0.8 * floor.width.y);
         this.world.add(floor);
 
         const box1a = new Body();
         box1a.set(new Vec2(1, 1), 200);
-        box1a.position.set(0, 4);
+        box1a.position.set(0, 1);
         this.world.add(box1a);
-
-        // const floor = new Body();
-        // floor.set(new Vec2(Graphics.width() + 100, 200), Number.MAX_VALUE);
-        // floor.position.set(Graphics.width() / 2, Graphics.height() - 50);
-        // this.world.add(floor);
-        // console.log('Id of floor: ', floor.id);
-
-        // const box1a = new Body();
-        // box1a.set(new Vec2(60, 60), 200);
-        // box1a.position.set(Graphics.width() / 2 - 200, Graphics.height() - 400);
-        // this.world.add(box1a);
-        // console.log('Id of box 1a: ', box1a.id);
-
-        // const box1b = new Body();
-        // box1b.set(new Vec2(60, 60), 200);
-        // box1b.position.set(Graphics.width() / 2 + 50, Graphics.height() - 800);
-        // this.world.add(box1b);
-        // console.log('Id of box 1b: ', box1b.id);
-
-        // const box2 = new Body();
-        // box2.set(new Vec2(60, 60), Number.MAX_VALUE);
-        // box2.position.set(Graphics.width() / 2, Graphics.height() - 400);
-        // this.world.add(box2);
-        // console.log('Id of fixed box: ', box2.id);
-
-        // const box3 = new Body();
-        // box3.set(new Vec2(60, 60), 200);
-        // box3.position.set(Graphics.width() / 2 + 200, Graphics.height() - 400);
-        // this.world.add(box3);
-        // console.log('Id of movable box: ', box3.id);
     };
 
     input = (): void => {
-        // const controlledBox = this.world.bodies[4];
-        // controlledBox.position.x = InputManager.mousePosition.x;
-        // controlledBox.position.y = InputManager.mousePosition.y;
-        // controlledBox.velocity.x = 0;
-        // controlledBox.velocity.y = 0;
-        // controlledBox.rotation = 0;
-        // controlledBox.angularVelocity = 0;
-
         // Handle keyboard events
         while (InputManager.keyboardInputBuffer.length > 0) {
             const inputEvent = InputManager.keyboardInputBuffer.shift();
@@ -160,7 +122,7 @@ export default class Application {
 
         for (const arbiter of this.world.arbiters.values()) {
             for (const contact of arbiter.contacts) {
-                Graphics.drawFillCircle(contact.position.x, contact.position.y, 5, 'red');
+                Graphics.drawContactPoint(contact, 'red');
             }
         }
     };
