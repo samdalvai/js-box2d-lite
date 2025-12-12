@@ -34,21 +34,31 @@ export default class Application {
         floor.set(new Vec2(Graphics.width() + 100, 200), Number.MAX_VALUE);
         floor.position.set(Graphics.width() / 2, Graphics.height() - 50);
         this.world.add(floor);
+        console.log('Id of floor: ', floor.id);
 
         const box1a = new Body();
         box1a.set(new Vec2(60, 60), 200);
         box1a.position.set(Graphics.width() / 2 - 200, Graphics.height() - 400);
         this.world.add(box1a);
+        console.log('Id of box 1a: ', box1a.id);
+
+        const box1b = new Body();
+        box1b.set(new Vec2(60, 60), 200);
+        box1b.position.set(Graphics.width() / 2 + 50, Graphics.height() - 800);
+        this.world.add(box1b);
+        console.log('Id of box 1b: ', box1b.id);
 
         const box2 = new Body();
         box2.set(new Vec2(60, 60), Number.MAX_VALUE);
         box2.position.set(Graphics.width() / 2, Graphics.height() - 400);
         this.world.add(box2);
+        console.log('Id of fixed box: ', box2.id);
 
         const box3 = new Body();
         box3.set(new Vec2(60, 60), Number.MAX_VALUE);
         box3.position.set(Graphics.width() / 2 + 200, Graphics.height() - 400);
         this.world.add(box3);
+        console.log('Id of movable box: ', box3.id);
     };
 
     input = (): void => {
@@ -78,7 +88,7 @@ export default class Application {
                 return;
             }
 
-            const controlledBox = this.world.bodies[3];
+            const controlledBox = this.world.bodies[4];
             controlledBox.position.x = inputEvent.x;
             controlledBox.position.y = inputEvent.y;
         }
