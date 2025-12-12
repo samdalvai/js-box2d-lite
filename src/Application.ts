@@ -55,13 +55,21 @@ export default class Application {
         console.log('Id of fixed box: ', box2.id);
 
         const box3 = new Body();
-        box3.set(new Vec2(60, 60), Number.MAX_VALUE);
+        box3.set(new Vec2(60, 60), 200);
         box3.position.set(Graphics.width() / 2 + 200, Graphics.height() - 400);
         this.world.add(box3);
         console.log('Id of movable box: ', box3.id);
     };
 
     input = (): void => {
+        const controlledBox = this.world.bodies[4];
+        controlledBox.position.x = InputManager.mousePosition.x;
+        controlledBox.position.y = InputManager.mousePosition.y;
+        controlledBox.velocity.x = 0;
+        controlledBox.velocity.y = 0;
+        controlledBox.rotation = 0;
+        controlledBox.angularVelocity = 0;
+
         // Handle keyboard events
         while (InputManager.keyboardInputBuffer.length > 0) {
             const inputEvent = InputManager.keyboardInputBuffer.shift();
@@ -87,10 +95,6 @@ export default class Application {
             if (!inputEvent) {
                 return;
             }
-
-            const controlledBox = this.world.bodies[4];
-            controlledBox.position.x = inputEvent.x;
-            controlledBox.position.y = inputEvent.y;
         }
 
         // Handle mouse click events
