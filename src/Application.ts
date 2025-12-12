@@ -3,54 +3,8 @@ import InputManager, { MouseButton } from './InputManager';
 import Utils from './math/Utils';
 import Vec2 from './math/Vec2';
 import Body from './physics/Body';
-import Joint from './physics/Joint';
 import World from './physics/World';
-
-const demoStrings = [
-    'Demo 1: A Single Box',
-    'Demo 2: Simple Pendulum',
-    'Demo 3: Varying Friction Coefficients',
-    'Demo 4: Randomized Stacking',
-    'Demo 5: Pyramid Stacking',
-    'Demo 6: A Teeter',
-    'Demo 7: A Suspension Bridge',
-    'Demo 8: Dominos',
-    'Demo 9: Multi-pendulum',
-];
-
-const demo1 = (world: World) => {
-    // Demo1: Single box
-    const floor = new Body();
-    floor.set(new Vec2(100, 20), Number.MAX_VALUE);
-    floor.position.set(0, -0.8 * floor.width.y);
-    world.add(floor);
-
-    const box1 = new Body();
-    box1.set(new Vec2(1, 1), 200);
-    box1.position.set(0, 1);
-    world.add(box1);
-};
-
-const demo2 = (world: World) => {
-    // Demo 2: A simple pendulum
-    const floor = new Body();
-    floor.set(new Vec2(100, 20), Number.MAX_VALUE);
-    floor.friction = 0.2;
-    floor.position.set(0, -0.8 * floor.width.y);
-    floor.rotation = 0;
-    world.add(floor);
-
-    const box = new Body();
-    box.set(new Vec2(1, 1), 100);
-    box.friction = 0.2;
-    box.position.set(9, 5);
-    box.rotation = 0;
-    world.add(box);
-
-    const j = new Joint();
-    j.set(floor, box, new Vec2(0, 5));
-    world.add(j);
-};
+import Demo from './samples/Demo';
 
 export default class Application {
     private running = false;
@@ -85,7 +39,7 @@ export default class Application {
         InputManager.initialize();
         this.running = Graphics.openWindow();
 
-        demo1(this.world);
+        Demo.demo1(this.world);
     };
 
     input = (): void => {
@@ -103,14 +57,14 @@ export default class Application {
                         this.demoIndex = 0;
                         this.world.clear();
                         this.bomb = null;
-                        demo1(this.world);
+                        Demo.demo1(this.world);
                     }
 
                     if (inputEvent.code === 'Digit2') {
                         this.demoIndex = 1;
                         this.world.clear();
                         this.bomb = null;
-                        demo2(this.world);
+                        Demo.demo2(this.world);
                     }
 
                     // ....
@@ -187,7 +141,7 @@ export default class Application {
 
         if (this.debug) {
             Graphics.drawText(
-                `${demoStrings[this.demoIndex]} (FPS: ${this.FPS.toFixed(2)})`,
+                `${Demo.demoStrings[this.demoIndex]} (FPS: ${this.FPS.toFixed(2)})`,
                 Graphics.width() / 2,
                 50,
                 25,
