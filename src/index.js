@@ -1,55 +1,6 @@
+import Canvas from './new/Canvas';
+import Pointer from './new/Pointer';
 import World from './new/World';
-
-class Canvas {
-    constructor(resx, resy) {
-        this.elem = document.createElement('canvas');
-        this.resx = resx;
-        this.resy = resy;
-        this.left = 0;
-        this.top = 0;
-
-        this.ctx = this.elem.getContext('2d');
-        document.body.appendChild(this.elem);
-        this.resize();
-        window.addEventListener('resize', () => this.resize(), false);
-
-        if (!this.ctx.setLineDash) {
-            this.ctx.setLineDash = function () {};
-        }
-    }
-
-    resize() {
-        let o = this.elem;
-        this.width = this.elem.width = this.resx;
-        this.height = this.elem.height = this.resy;
-        for (this.left = 0, this.top = 0; o != null; o = o.offsetParent) {
-            this.left += o.offsetLeft;
-            this.top += o.offsetTop;
-        }
-    }
-}
-
-class Pointer {
-    constructor(canvas) {
-        this.x = 0;
-        this.y = 0;
-        this.canvas = canvas;
-
-        window.addEventListener('mousemove', e => this.move(e), false);
-        canvas.elem.addEventListener('touchmove', e => this.move(e), false);
-    }
-
-    move(e) {
-        let touchMode = e.targetTouches,
-            pointer;
-        if (touchMode) {
-            e.preventDefault();
-            pointer = touchMode[0];
-        } else pointer = e;
-        this.x = ((-this.canvas.left + pointer.clientX) * this.canvas.resx) / this.canvas.elem.offsetWidth;
-        this.y = ((-this.canvas.top + pointer.clientY) * this.canvas.resy) / this.canvas.elem.offsetHeight;
-    }
-}
 
 let canvas = new Canvas(1200, 600);
 let ctx = canvas.ctx;
@@ -198,7 +149,7 @@ window.addEventListener('touchstart', e => down(e), false);
 function down(e) {
     pointer.move(e);
     e.preventDefault();
-    let bc = world.addBody({
+    world.addBody({
         x: pointer.x,
         y: pointer.y,
         w: boxSize,
@@ -213,7 +164,7 @@ function down(e) {
 let boxSize, color, grav, mass;
 radio(document.getElementById('large'));
 
-export function radio(b) {
+function radio(b) {
     switch (b.value) {
         case 'large':
             boxSize = 50;
