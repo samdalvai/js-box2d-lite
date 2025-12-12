@@ -80,33 +80,13 @@ export class Contact {
     }
 }
 
-// TODO: this arbiter key is inefficient, can we just use the two bodies ids
-// Using a bitmask might be useful
 export class ArbiterKey {
-    body1: Body;
-    body2: Body;
-
-    constructor(b1: Body, b2: Body) {
+    static getKey = (b1: Body, b2: Body): number => {
         if (b1.id < b2.id) {
-            this.body1 = b1;
-            this.body2 = b2;
+            return (b1.id << 16) | (b2.id & 0xffff);
         } else {
-            this.body1 = b2;
-            this.body2 = b1;
+            return (b2.id << 16) | (b1.id & 0xffff);
         }
-    }
-
-    /** Operator < */
-    static lessThen = (a1: ArbiterKey, a2: ArbiterKey): boolean => {
-        if (a1.body1.id < a2.body1.id) {
-            return true;
-        }
-
-        if (a1.body1.id === a2.body1.id && a1.body2.id < a2.body2.id) {
-            return true;
-        }
-
-        return false;
     };
 }
 
