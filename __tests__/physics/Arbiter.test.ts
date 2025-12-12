@@ -34,8 +34,8 @@ describe('Arbiter', () => {
     let arbiter: Arbiter;
 
     beforeEach(() => {
-        bodyA = { id: 1, friction: 1 } as Body;
-        bodyB = { id: 2, friction: 1 } as Body;
+        bodyA = new Body();
+        bodyB = new Body();
         arbiter = new Arbiter(bodyA, bodyB);
     });
 
