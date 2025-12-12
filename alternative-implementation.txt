@@ -871,7 +871,7 @@ function down(e) {
 let boxSize, color, grav, mass;
 radio(document.getElementById('large'));
 
-export function radio(b) {
+function radio(b) {
     switch (b.value) {
         case 'large':
             boxSize = 50;
@@ -895,5 +895,3 @@ export function radio(b) {
 
     return false;
 }
-
-window.radio = radio;
