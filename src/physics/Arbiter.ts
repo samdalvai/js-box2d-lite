@@ -3,17 +3,37 @@ import Vec2 from '../math/Vec2';
 import Body from './Body';
 import World from './World';
 
-export type Edges = {
+export class Edges {
     inEdge1: number;
     outEdge1: number;
     inEdge2: number;
     outEdge2: number;
-};
 
-export type FeaturePair = {
+    constructor() {
+        this.inEdge1 = 0;
+        this.outEdge1 = 0;
+        this.inEdge2 = 0;
+        this.outEdge2 = 0;
+    }
+}
+
+export class FeaturePair {
     e: Edges;
     value: number;
-};
+
+    constructor(value = 0) {
+        this.e = new Edges();
+        this.value = value;
+    }
+
+    flip = (): void => {
+        // Swap inEdge1 <-> inEdge2
+        [this.e.inEdge1, this.e.inEdge2] = [this.e.inEdge2, this.e.inEdge1];
+
+        // Swap outEdge1 <-> outEdge2
+        [this.e.outEdge1, this.e.outEdge2] = [this.e.outEdge2, this.e.outEdge1];
+    };
+}
 
 export class Contact {
     position: Vec2;
@@ -43,15 +63,7 @@ export class Contact {
         this.massNormal = 0;
         this.massTangent = 0;
         this.bias = 0;
-        this.feature = {
-            e: {
-                inEdge1: 0,
-                outEdge1: 0,
-                inEdge2: 0,
-                outEdge2: 0,
-            },
-            value: 0,
-        };
+        this.feature = new FeaturePair();
     }
 }
 
