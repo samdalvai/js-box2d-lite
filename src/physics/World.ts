@@ -1,7 +1,6 @@
 import Vec2 from '../math/Vec2';
 import { Arbiter, ArbiterKey } from './Arbiter';
 import Body from './Body';
-import { PIXELS_PER_METER } from './Constants';
 import Joint from './Joint';
 
 export default class World {
@@ -83,9 +82,7 @@ export default class World {
                 continue;
             }
 
-            b.velocity.add(
-                Vec2.scale(dt, Vec2.add(Vec2.scale(PIXELS_PER_METER, this.gravity), Vec2.scale(b.invMass, b.force))),
-            );
+            b.velocity.add(Vec2.scale(dt, Vec2.add(this.gravity, Vec2.scale(b.invMass, b.force))));
             b.angularVelocity += dt * b.invI * b.torque;
         }
 
