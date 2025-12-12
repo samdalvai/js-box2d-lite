@@ -26,6 +26,18 @@ export class FeaturePair {
         this.value = value;
     }
 
+    clone = (): FeaturePair => {
+        const copy = new FeaturePair();
+
+        copy.e.inEdge1 = this.e.inEdge1;
+        copy.e.outEdge1 = this.e.outEdge1;
+        copy.e.inEdge2 = this.e.inEdge2;
+        copy.e.outEdge2 = this.e.outEdge2;
+        copy.value = this.value;
+
+        return copy;
+    };
+
     flip = (): void => {
         // Swap inEdge1 <-> inEdge2
         [this.e.inEdge1, this.e.inEdge2] = [this.e.inEdge2, this.e.inEdge1];
