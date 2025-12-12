@@ -110,7 +110,7 @@ export default class Contact {
 
     draw() {
         this.ctx.beginPath();
-        this.ctx.arc(this.px, this.py, 1.5, 0, 2 * Math.PI);
+        this.ctx.arc(this.px, this.py, 3, 0, 2 * Math.PI);
         this.ctx.fillStyle = '#F00';
         this.ctx.fill();
     }

@@ -14,8 +14,7 @@
  * of this software for any purpose.
  * It is provided "as is" without express or implied warranty.
  */
-
-import Contact from "./new/Contact";
+import Contact from './new/Contact';
 
 class Body {
     constructor(world, setup) {
@@ -283,6 +282,11 @@ class World {
         // draw bodies
         for (i = 0; i < this.bodyCount; ++i) {
             this.bodies[i].draw();
+        }
+
+        // draw contacts
+        for (i = 0; i < this.numContacts; i++) {
+            this.contacts[i].draw();
         }
     }
 
