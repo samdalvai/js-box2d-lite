@@ -53,6 +53,18 @@ export default class Application {
 
             switch (inputEvent.type) {
                 case 'keydown':
+                    if (inputEvent.code === 'KeyA') {
+                        World.accumulateImpulses = !World.accumulateImpulses;
+                    }
+
+                    if (inputEvent.code === 'KeyP') {
+                        World.positionCorrection = !World.positionCorrection;
+                    }
+
+                    if (inputEvent.code === 'KeyW') {
+                        World.warmStarting = !World.warmStarting;
+                    }
+
                     if (inputEvent.code === 'Digit1') {
                         this.demoIndex = 0;
                         this.world.clear();
@@ -142,12 +154,31 @@ export default class Application {
         if (this.debug) {
             Graphics.drawText(
                 `${Demo.demoStrings[this.demoIndex]} (FPS: ${this.FPS.toFixed(2)})`,
-                Graphics.width() / 2,
                 50,
-                25,
+                50,
+                18,
                 'arial',
                 'orange',
             );
+            Graphics.drawText(
+                `(A)ccumulation ${World.accumulateImpulses ? 'ON' : 'OFF'}`,
+                50,
+                75,
+                18,
+                'arial',
+                'orange',
+            );
+
+            Graphics.drawText(
+                `(P)osition Correction ${World.positionCorrection ? 'ON' : 'OFF'}`,
+                50,
+                100,
+                18,
+                'arial',
+                'orange',
+            );
+
+            Graphics.drawText(`(W)arm Starting ${World.warmStarting ? 'ON' : 'OFF'}`, 50, 125, 18, 'arial', 'orange');
         }
 
         for (const body of this.world.bodies) {
