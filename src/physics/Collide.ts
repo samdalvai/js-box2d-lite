@@ -72,14 +72,14 @@ export class ClipVertex {
         if (distance0 * distance1 < 0.0) {
             // Find intersection point of edge and plane
             const interp = distance0 / (distance0 - distance1);
-            vOut[numOut].v = Vec2.add(vIn[0].v, Vec2.scale(interp, Vec2.add(vIn[1].v, vIn[0].v)));
+            vOut[numOut].v = Vec2.add(vIn[0].v, Vec2.scale(interp, Vec2.sub(vIn[1].v, vIn[0].v)));
 
             if (distance0 > 0.0) {
-                vOut[numOut].fp = vIn[0].fp;
+                vOut[numOut].fp = vIn[0].fp.clone();
                 vOut[numOut].fp.e.inEdge1 = clipEdge;
                 vOut[numOut].fp.e.inEdge2 = EdgeNumbers.NO_EDGE;
             } else {
-                vOut[numOut].fp = vIn[1].fp;
+                vOut[numOut].fp = vIn[1].fp.clone();
                 vOut[numOut].fp.e.outEdge1 = clipEdge;
                 vOut[numOut].fp.e.outEdge2 = EdgeNumbers.NO_EDGE;
             }
