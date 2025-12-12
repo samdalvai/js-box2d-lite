@@ -51,8 +51,8 @@ export class ClipVertex {
     };
 
     static clipSegmentToLine = (
-        vOut: ClipVertex[],
-        vIn: ClipVertex[],
+        vOut: [ClipVertex, ClipVertex],
+        vIn: [ClipVertex, ClipVertex],
         normal: Vec2,
         offset: number,
         clipEdge: EdgeNumbers,
