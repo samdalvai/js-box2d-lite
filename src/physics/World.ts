@@ -90,7 +90,7 @@ export default class World {
         }
 
         // Perform pre-steps.
-        for (const [_, arbiter] of this.arbiters) {
+        for (const arbiter of this.arbiters.values()) {
             arbiter.preStep(invDt);
         }
 
@@ -100,7 +100,7 @@ export default class World {
 
         // Perform iterations
         for (let i = 0; i < this.iterations; i++) {
-            for (const [_, arbiter] of this.arbiters) {
+            for (const arbiter of this.arbiters.values()) {
                 arbiter.applyImpulse();
             }
 

@@ -35,10 +35,10 @@ export default class Application {
         floor.position.set(Graphics.width() / 2, Graphics.height() - 50);
         this.world.add(floor);
 
-        const box1 = new Body();
-        box1.set(new Vec2(60, 60), 200);
-        box1.position.set(Graphics.width() / 2 - 200, Graphics.height() - 400);
-        this.world.add(box1);
+        const box1a = new Body();
+        box1a.set(new Vec2(60, 60), 200);
+        box1a.position.set(Graphics.width() / 2 - 200, Graphics.height() - 400);
+        this.world.add(box1a);
 
         const box2 = new Body();
         box2.set(new Vec2(60, 60), Number.MAX_VALUE);
