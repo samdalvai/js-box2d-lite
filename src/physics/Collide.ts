@@ -9,6 +9,7 @@
 //    |        |
 //   v3 ------ v4
 //        e3
+import Mat22 from '../math/Mat22';
 import Vec2 from '../math/Vec2';
 import { FeaturePair } from './Arbiter';
 
@@ -56,98 +57,95 @@ export class ClipVertex {
         offset: number,
         clipEdge: EdgeNumbers,
     ): number => {
+        // Start with no output points
         let numOut = 0;
 
+        // Calculate the distance of end points to the line
         const distance0 = Vec2.dot(normal, vIn[0].v) - offset;
         const distance1 = Vec2.dot(normal, vIn[1].v) - offset;
 
+        // If the points are behind the plane
         if (distance0 <= 0.0) vOut[numOut++] = vIn[0].clone();
         if (distance1 <= 0.0) vOut[numOut++] = vIn[1].clone();
 
+        // If the points are on different sides of the plane
         if (distance0 * distance1 < 0.0) {
+            // Find intersection point of edge and plane
             const interp = distance0 / (distance0 - distance1);
-
-            const cv = new ClipVertex();
-            cv.v = Vec2.add(vIn[0].v, Vec2.scale(interp, Vec2.sub(vIn[1].v, vIn[0].v)));
+            vOut[numOut].v = Vec2.add(vIn[0].v, Vec2.scale(interp, Vec2.add(vIn[1].v, vIn[0].v)));
 
             if (distance0 > 0.0) {
-                cv.fp = vIn[0].fp;
-                cv.fp.e.inEdge1 = clipEdge;
-                cv.fp.e.inEdge2 = EdgeNumbers.NO_EDGE;
+                vOut[numOut].fp = vIn[0].fp;
+                vOut[numOut].fp.e.inEdge1 = clipEdge;
+                vOut[numOut].fp.e.inEdge2 = EdgeNumbers.NO_EDGE;
             } else {
-                cv.fp = vIn[1].fp;
-                cv.fp.e.outEdge1 = clipEdge;
-                cv.fp.e.outEdge2 = EdgeNumbers.NO_EDGE;
+                vOut[numOut].fp = vIn[1].fp;
+                vOut[numOut].fp.e.outEdge1 = clipEdge;
+                vOut[numOut].fp.e.outEdge2 = EdgeNumbers.NO_EDGE;
             }
-
-            vOut[numOut++] = cv;
+            ++numOut;
         }
 
         return numOut;
     };
+
+    static computeIncidentEdge = (c: [ClipVertex, ClipVertex], h: Vec2, pos: Vec2, Rot: Mat22, normal: Vec2): void => {
+        // The normal is from the reference box. Convert it
+        // to the incident boxe's frame and flip sign.
+        const rotT = Rot.transpose();
+        const n = Vec2.scale(-1, Mat22.multiply(rotT, normal));
+        const nAbs = Vec2.abs(n);
+
+        // Choose edge based on largest normal component
+        if (nAbs.x > nAbs.y) {
+            if (Math.sign(n.x) > 0) {
+                // +X edge
+                c[0].v.set(h.x, -h.y);
+                c[0].fp.e.inEdge2 = EdgeNumbers.EDGE3;
+                c[0].fp.e.outEdge2 = EdgeNumbers.EDGE4;
+
+                c[1].v.set(h.x, h.y);
+                c[1].fp.e.inEdge2 = EdgeNumbers.EDGE4;
+                c[1].fp.e.outEdge2 = EdgeNumbers.EDGE1;
+            } else {
+                // -X edge
+                c[0].v.set(-h.x, h.y);
+                c[0].fp.e.inEdge2 = EdgeNumbers.EDGE1;
+                c[0].fp.e.outEdge2 = EdgeNumbers.EDGE2;
+
+                c[1].v.set(-h.x, -h.y);
+                c[1].fp.e.inEdge2 = EdgeNumbers.EDGE2;
+                c[1].fp.e.outEdge2 = EdgeNumbers.EDGE3;
+            }
+        } else {
+            if (Math.sign(n.y) > 0) {
+                // +Y edge
+                c[0].v.set(h.x, h.y);
+                c[0].fp.e.inEdge2 = EdgeNumbers.EDGE4;
+                c[0].fp.e.outEdge2 = EdgeNumbers.EDGE1;
+
+                c[1].v.set(-h.x, h.y);
+                c[1].fp.e.inEdge2 = EdgeNumbers.EDGE1;
+                c[1].fp.e.outEdge2 = EdgeNumbers.EDGE2;
+            } else {
+                // -Y edge
+                c[0].v.set(-h.x, -h.y);
+                c[0].fp.e.inEdge2 = EdgeNumbers.EDGE2;
+                c[0].fp.e.outEdge2 = EdgeNumbers.EDGE3;
+
+                c[1].v.set(h.x, -h.y);
+                c[1].fp.e.inEdge2 = EdgeNumbers.EDGE3;
+                c[1].fp.e.outEdge2 = EdgeNumbers.EDGE4;
+            }
+        }
+
+        // Transform to world space: v = pos + Rot * v
+        c[0].v = Vec2.add(pos, Mat22.multiply(Rot, c[0].v));
+        c[1].v = Vec2.add(pos, Mat22.multiply(Rot, c[1].v));
+    };
 }
 
 /*
-
-static void ComputeIncidentEdge(ClipVertex c[2], const Vec2& h, const Vec2& pos,
-								const Mat22& Rot, const Vec2& normal)
-{
-	// The normal is from the reference box. Convert it
-	// to the incident boxe's frame and flip sign.
-	Mat22 RotT = Rot.Transpose();
-	Vec2 n = -(RotT * normal);
-	Vec2 nAbs = Abs(n);
-
-	if (nAbs.x > nAbs.y)
-	{
-		if (Sign(n.x) > 0.0f)
-		{
-			c[0].v.Set(h.x, -h.y);
-			c[0].fp.e.inEdge2 = EDGE3;
-			c[0].fp.e.outEdge2 = EDGE4;
-
-			c[1].v.Set(h.x, h.y);
-			c[1].fp.e.inEdge2 = EDGE4;
-			c[1].fp.e.outEdge2 = EDGE1;
-		}
-		else
-		{
-			c[0].v.Set(-h.x, h.y);
-			c[0].fp.e.inEdge2 = EDGE1;
-			c[0].fp.e.outEdge2 = EDGE2;
-
-			c[1].v.Set(-h.x, -h.y);
-			c[1].fp.e.inEdge2 = EDGE2;
-			c[1].fp.e.outEdge2 = EDGE3;
-		}
-	}
-	else
-	{
-		if (Sign(n.y) > 0.0f)
-		{
-			c[0].v.Set(h.x, h.y);
-			c[0].fp.e.inEdge2 = EDGE4;
-			c[0].fp.e.outEdge2 = EDGE1;
-
-			c[1].v.Set(-h.x, h.y);
-			c[1].fp.e.inEdge2 = EDGE1;
-			c[1].fp.e.outEdge2 = EDGE2;
-		}
-		else
-		{
-			c[0].v.Set(-h.x, -h.y);
-			c[0].fp.e.inEdge2 = EDGE2;
-			c[0].fp.e.outEdge2 = EDGE3;
-
-			c[1].v.Set(h.x, -h.y);
-			c[1].fp.e.inEdge2 = EDGE3;
-			c[1].fp.e.outEdge2 = EDGE4;
-		}
-	}
-
-	c[0].v = pos + Rot * c[0].v;
-	c[1].v = pos + Rot * c[1].v;
-}
 
 // The normal points from A to B
 int Collide(Contact* contacts, Body* bodyA, Body* bodyB)
