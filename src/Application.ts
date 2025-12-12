@@ -79,6 +79,15 @@ export default class Application {
                         Demo.demo2(this.world);
                     }
 
+                    // ...
+
+                    if (inputEvent.code === 'Digit4') {
+                        this.demoIndex = 1;
+                        this.world.clear();
+                        this.bomb = null;
+                        Demo.demo4(this.world);
+                    }
+
                     // ....
 
                     if (inputEvent.code === 'Space') {

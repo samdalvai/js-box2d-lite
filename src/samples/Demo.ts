@@ -1,3 +1,4 @@
+import Utils from '../math/Utils';
 import Vec2 from '../math/Vec2';
 import Body from '../physics/Body';
 import Joint from '../physics/Joint';
@@ -48,5 +49,24 @@ export default class Demo {
         const j = new Joint();
         j.set(floor, box, new Vec2(0, 5));
         world.add(j);
+    };
+
+    static demo4 = (world: World) => {
+        // Demo 4: A vertical stack
+        const floor = new Body();
+        floor.set(new Vec2(100, 20), Number.MAX_VALUE);
+        floor.friction = 0.2;
+        floor.position.set(0, -0.8 * floor.width.y);
+        floor.rotation = 0;
+        world.add(floor);
+
+        for (let i = 0; i < 10; i++) {
+            const box = new Body();
+            box.set(new Vec2(1, 1), 1);
+            box.friction = 0.2;
+            const x = Utils.random(-0.1, 0.1);
+            box.position.set(x, -4 + 1.05 * i);
+            world.add(box);
+        }
     };
 }
