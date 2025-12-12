@@ -202,7 +202,7 @@ export default class Graphics {
         const v3 = this.worldToScreen(Vec2.add(x, Mat22.multiply(R, new Vec2(h.x, h.y))));
         const v4 = this.worldToScreen(Vec2.add(x, Mat22.multiply(R, new Vec2(-h.x, h.y))));
 
-        this.ctx.strokeStyle = 'white'; // Make it changeable?
+        this.ctx.strokeStyle = body.color;
         this.ctx.beginPath();
         this.ctx.moveTo(v1.x, v1.y);
         this.ctx.lineTo(v2.x, v2.y);
@@ -214,7 +214,7 @@ export default class Graphics {
     };
 
     // TODO: can we generalize drawing to world screen?
-    static drawJoint = (joint: Joint): void => {
+    static drawJoint = (joint: Joint, color = 'rgba(128, 128, 204, 1)'): void => {
         if (!joint.body1 || !joint.body2) {
             throw new Error('One or more bodies not initialized in Joint');
         }
@@ -236,7 +236,7 @@ export default class Graphics {
         const sx2 = Graphics.worldToScreen(x2);
         const sp2 = Graphics.worldToScreen(p2);
 
-        this.ctx.strokeStyle = 'rgba(128, 128, 204, 1)'; // Make it changeable?
+        this.ctx.strokeStyle = color;
 
         this.ctx.beginPath();
 
@@ -251,32 +251,3 @@ export default class Graphics {
         this.ctx.stroke();
     };
 }
-
-/*
-Body and Joint rendering
-
-TOOD: implement joint rendering
-static void DrawJoint(Joint* joint)
-{
-	Body* b1 = joint->body1;
-	Body* b2 = joint->body2;
-
-	Mat22 R1(b1->rotation);
-	Mat22 R2(b2->rotation);
-
-	Vec2 x1 = b1->position;
-	Vec2 p1 = x1 + R1 * joint->localAnchor1;
-
-	Vec2 x2 = b2->position;
-	Vec2 p2 = x2 + R2 * joint->localAnchor2;
-
-	glColor3f(0.5f, 0.5f, 0.8f);
-	glBegin(GL_LINES);
-	glVertex2f(x1.x, x1.y);
-	glVertex2f(p1.x, p1.y);
-	glVertex2f(x2.x, x2.y);
-	glVertex2f(p2.x, p2.y);
-	glEnd();
-}
-
-*/

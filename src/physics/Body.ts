@@ -21,6 +21,8 @@ export default class Body {
     I: number;
     invI: number;
 
+    color: string;
+
     constructor() {
         this.id = Body._nextId++;
 
@@ -37,6 +39,8 @@ export default class Body {
         this.invMass = 0.0;
         this.I = Number.MAX_VALUE;
         this.invI = 0.0;
+
+        this.color = 'white';
     }
 
     set = (w: Vec2, m: number): void => {

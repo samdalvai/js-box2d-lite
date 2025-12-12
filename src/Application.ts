@@ -1,5 +1,6 @@
 import Graphics from './Graphics';
 import InputManager, { MouseButton } from './InputManager';
+import Utils from './math/Utils';
 import Vec2 from './math/Vec2';
 import Body from './physics/Body';
 import Joint from './physics/Joint';
@@ -14,12 +15,14 @@ export default class Application {
     private lastFPSUpdate = 0;
 
     private world: World;
+    private bomb: Body | null;
 
     constructor() {
         const gravity = new Vec2(0, -10);
         const iterations = 10;
 
         this.world = new World(gravity, iterations);
+        this.bomb = null;
     }
 
     isRunning = (): boolean => {
@@ -76,7 +79,22 @@ export default class Application {
 
             switch (inputEvent.type) {
                 case 'keydown':
-                    // TODO: do something
+                    if (inputEvent.code === 'Space') {
+                        // Emit bomb
+                        if (!this.bomb) {
+                            const bomb = new Body();
+                            bomb.set(new Vec2(1, 1), 50);
+                            bomb.friction = 0.2;
+                            this.bomb = bomb;
+                            this.bomb.color = 'rgba(102, 230, 102, 1)';
+                            this.world.add(bomb);
+                        }
+
+                        this.bomb.position.set(Utils.random(-15, 10), 15);
+                        this.bomb.rotation = Utils.random(-1.5, 1.5);
+                        this.bomb.velocity = Vec2.scale(-1.5, this.bomb.position);
+                        this.bomb.angularVelocity = Utils.random(-20, 20);
+                    }
                     break;
                 case 'keyup':
                     // TODO: do something
