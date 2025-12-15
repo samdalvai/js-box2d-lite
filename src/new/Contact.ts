@@ -21,8 +21,8 @@ export default class Contact {
     rvy: number;
 
     friction: number;
-    allowedPenetration;
-    biasFactor;
+    allowedPenetration: number;
+    biasFactor: number;
     ctx: CanvasRenderingContext2D;
 
     constructor(world: World, ctx: CanvasRenderingContext2D) {
@@ -70,22 +70,22 @@ export default class Contact {
         // Normal mass computation
         const rn1 = Vec2.dot(this.r1, this.normal);
         const rn2 = Vec2.dot(this.r2, this.normal);
-        this.massNormal =
-            1.0 /
-            (this.body1.invMass +
-                this.body2.invMass +
-                this.body1.invI * (this.r1.x * this.r1.x + this.r1.y * this.r1.y - rn1 * rn1) +
-                this.body2.invI * (this.r2.x * this.r2.x + this.r2.y * this.r2.y - rn2 * rn2));
-        const rt1 = this.r1.x * this.normal.y - this.r1.y * this.normal.x;
-        const rt2 = this.r2.x * this.normal.y - this.r2.y * this.normal.x;
+        let kNormal = this.body1.invMass + this.body2.invMass;
+        kNormal +=
+            this.body1.invI * (Vec2.dot(this.r1, this.r1) - rn1 * rn1) +
+            this.body2.invI * (Vec2.dot(this.r2, this.r2) - rn2 * rn2);
+        this.massNormal = 1.0 / kNormal;
 
         // Tangent mass computation
-        this.massTangent =
-            1.0 /
-            (this.body1.invMass +
-                this.body2.invMass +
-                this.body1.invI * (this.r1.x * this.r1.x + this.r1.y * this.r1.y - rt1 * rt1) +
-                this.body2.invI * (this.r2.x * this.r2.x + this.r2.y * this.r2.y - rt2 * rt2));
+        const tangent = Vec2.cross(this.normal, 1);
+        const rt1 = Vec2.dot(this.r1, tangent);
+        const rt2 = Vec2.dot(this.r2, tangent);
+        let kTangent = this.body1.invMass + this.body2.invMass;
+        kTangent +=
+            this.body1.invI * (Vec2.dot(this.r1, this.r1) - rt1 * rt1) +
+            this.body2.invI * (Vec2.dot(this.r2, this.r2) - rt2 * rt2);
+        this.massTangent = 1 / kTangent;
+
         this.bias = this.biasFactor * Math.min(0.0, this.separation + this.allowedPenetration);
     }
 
