@@ -1,3 +1,4 @@
+import Utils from '../math/Utils';
 import Vec2 from '../math/Vec2';
 import { Body } from './Body';
 import World from './World';
@@ -144,7 +145,7 @@ export default class Contact {
 
         // Clamp friction
         Pn0 = this.Pt;
-        this.Pt = Math.max(-maxPt, Math.min(Pn0 + dPn, maxPt));
+        this.Pt = Utils.clamp(Pn0 + dPn, -maxPt, maxPt);
         dPn = this.Pt - Pn0;
 
         // Apply contact impulse
