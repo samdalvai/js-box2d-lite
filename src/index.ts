@@ -140,7 +140,7 @@ function init() {
         const bc = world.addBody({ x: i, y: 400, w: 50, h: 50, mass: 40 });
         world.addJoint({ b1: bb, b2: ground, ax: i, ay: 200 });
         world.addJoint({ b1: bc, b2: bb, ax: i, ay: 300 });
-        bc.vx = 100 * Math.random() - 50;
+        bc.velocity.x = 100 * Math.random() - 50;
     }
 
     world.addBody({ x: 400, y: 0, w: 50, h: 50, mass: 100 });
