@@ -3,7 +3,29 @@ import Contact from './Contact';
 import Joint from './Joint';
 
 export default class World {
-    constructor(setup) {
+    gravity: number;
+    iterations: number;
+    timeStep: number;
+    invDT: number;
+    friction: number;
+    allowedPenetration: number;
+    biasFactor: number;
+    relativeTol: number;
+    absoluteTol: number;
+    bodies: Body[];
+    joints: Joint[];
+    contacts: Contact[];
+    numContacts: number;
+    maxContacts: number;
+    ie: number[];
+    c1: number[];
+    c2: number[];
+    bodyCount: number;
+    jointsCount: number;
+    abs;
+    ctx: CanvasRenderingContext2D;
+
+    constructor(setup: any) {
         this.gravity = setup.gravity || 50;
         this.iterations = setup.iterations || 10;
         this.timeStep = setup.timeStep || 1 / 30;
@@ -27,22 +49,22 @@ export default class World {
         this.ctx = setup.ctx;
     }
 
-    addBody(setup) {
-        let body = new Body(this, setup, this.ctx);
+    addBody(setup: any) {
+        const body = new Body(this, setup, this.ctx);
         this.bodies.push(body);
         this.bodyCount = this.bodies.length;
         return body;
     }
 
-    addJoint(setup) {
-        let joint = new Joint(this, setup, this.ctx);
+    addJoint(setup: any) {
+        const joint = new Joint(this, setup, this.ctx);
         this.joints.push(joint);
         this.jointsCount = this.joints.length;
         return joint;
     }
 
     step() {
-        let i, j, bi, bj, dx, dy, d, ct;
+        let i, j, bi, bj, dx, dy, d;
 
         // O(n^2) broad-phase
         this.numContacts = 0;
@@ -116,27 +138,27 @@ export default class World {
     //        e3
 
     // The normal points from A to B
-    collide(bA, bB, dpx, dpy) {
+    collide(bA: Body, bB: Body, dpx: number, dpy: number) {
         // Setup
 
-        let dax = bA.cos * dpx + bA.sin * dpy;
-        let day = -bA.sin * dpx + bA.cos * dpy;
-        let dbx = bB.cos * dpx + bB.sin * dpy;
-        let dby = -bB.sin * dpx + bB.cos * dpy;
+        const dax = bA.cos * dpx + bA.sin * dpy;
+        const day = -bA.sin * dpx + bA.cos * dpy;
+        const dbx = bB.cos * dpx + bB.sin * dpy;
+        const dby = -bB.sin * dpx + bB.cos * dpy;
 
-        let m00 = this.abs(bA.cos * bB.cos + bA.sin * bB.sin);
-        let m01 = this.abs(-bA.sin * bB.cos + bA.cos * bB.sin);
-        let m10 = this.abs(-bA.cos * bB.sin + bA.sin * bB.cos);
-        let m11 = this.abs(bA.sin * bB.sin + bA.cos * bB.cos);
+        const m00 = this.abs(bA.cos * bB.cos + bA.sin * bB.sin);
+        const m01 = this.abs(-bA.sin * bB.cos + bA.cos * bB.sin);
+        const m10 = this.abs(-bA.cos * bB.sin + bA.sin * bB.cos);
+        const m11 = this.abs(bA.sin * bB.sin + bA.cos * bB.cos);
 
         // Box A faces
-        let fAx = this.abs(dax) - bA.hw - (m00 * bB.hw + m10 * bB.hh);
-        let fAy = this.abs(day) - bA.hh - (m01 * bB.hw + m11 * bB.hh);
+        const fAx = this.abs(dax) - bA.hw - (m00 * bB.hw + m10 * bB.hh);
+        const fAy = this.abs(day) - bA.hh - (m01 * bB.hw + m11 * bB.hh);
         if (fAx > 0.0 || fAy > 0.0) return;
 
         // Box B faces
-        let fBx = this.abs(dbx) - bB.hw - (m00 * bA.hw + m01 * bA.hh);
-        let fBy = this.abs(dby) - bB.hh - (m10 * bA.hw + m11 * bA.hh);
+        const fBx = this.abs(dbx) - bB.hw - (m00 * bA.hw + m01 * bA.hh);
+        const fBy = this.abs(dby) - bB.hh - (m10 * bA.hw + m11 * bA.hh);
         if (fBx > 0.0 || fBy > 0.0) return;
 
         // Find best axis
@@ -242,6 +264,9 @@ export default class World {
         }
 
         // clip other face with 5 box planes (1 face plane, 4 edge planes)
+        if (snx === undefined || sny === undefined || negSide === undefined || posSide === undefined) {
+            throw new Error('Some values are undefined in collide method');
+        }
 
         // Clip to box side 1
         if (this.clipSegmentToLine(this.c1, this.ie, -snx, -sny, negSide) < 2) return;
@@ -253,7 +278,11 @@ export default class World {
         // Due to roundoff, it is possible that clipping removes all points.
 
         let i, cpx, cpy, ct;
-        let friction = Math.sqrt(bA.friction * bB.friction);
+        const friction = Math.sqrt(bA.friction * bB.friction);
+
+        if (fnx === undefined || fny === undefined || front === undefined) {
+            throw new Error('Some values are undefined in collide method');
+        }
 
         for (i = 0; i < 2; ++i) {
             cpx = this.c2[i * 2];
@@ -279,13 +308,13 @@ export default class World {
         }
     }
 
-    clipSegmentToLine(vO, vI, nx, ny, offset) {
+    clipSegmentToLine(vO: number[], vI: number[], nx: number, ny: number, offset: number) {
         // Start with no output points
         let numOut = 0;
 
         // Calculate the distance of end points to the line
-        let distance0 = nx * vI[0] + ny * vI[1] - offset;
-        let distance1 = nx * vI[2] + ny * vI[3] - offset;
+        const distance0 = nx * vI[0] + ny * vI[1] - offset;
+        const distance1 = nx * vI[2] + ny * vI[3] - offset;
 
         // If the points are behind the plane
         if (distance0 <= 0.0) {
@@ -302,7 +331,7 @@ export default class World {
         // If the points are on different sides of the plane
         if (distance0 * distance1 < 0.0) {
             // Find intersection point of edge and plane
-            let interp = distance0 / (distance0 - distance1);
+            const interp = distance0 / (distance0 - distance1);
             vO[numOut * 2] = vI[0] + interp * (vI[2] - vI[0]);
             vO[numOut * 2 + 1] = vI[1] + interp * (vI[3] - vI[1]);
             ++numOut;
@@ -311,12 +340,12 @@ export default class World {
         return numOut;
     }
 
-    computeIncidentEdge(ie, b, nx, ny) {
+    computeIncidentEdge(ie: number[], b: Body, nx: number, ny: number) {
         // The normal is from the reference box. Convert it
         // to the incident boxe's frame and flip sign.
 
-        let nrx = -(b.cos * nx + b.sin * ny);
-        let nry = -(-b.sin * nx + b.cos * ny);
+        const nrx = -(b.cos * nx + b.sin * ny);
+        const nry = -(-b.sin * nx + b.cos * ny);
 
         if (this.abs(nrx) > this.abs(nry)) {
             if (nrx > 0.0) {
