@@ -1,5 +1,34 @@
+import { Body } from './Body';
+import World from './World';
+
 export default class Joint {
-    constructor(world, setup, ctx) {
+    bA: Body;
+    bB: Body;
+
+    a1x: number;
+    a1y: number;
+
+    a2x: number;
+    a2y: number;
+
+    m00: number;
+    m01: number;
+    m11: number;
+    r1x: number;
+    r1y: number;
+    r2x: number;
+    r2y: number;
+    bsx: number;
+    bsy: number;
+    aix: number;
+    aiy: number;
+    biasFactor: number;
+    softness: number;
+    iM: number;
+    color: string;
+    ctx: CanvasRenderingContext2D;
+
+    constructor(world: World, setup: any, ctx: CanvasRenderingContext2D) {
         this.bA = setup.b1;
         this.bB = setup.b2;
 
@@ -30,7 +59,7 @@ export default class Joint {
         this.bsy = 0.0;
         this.aix = 0.0; // accumulated impulse
         this.aiy = 0.0;
-        let bias = setup.biasFactor ? setup.biasFactor : world.biasFactor;
+        const bias = setup.biasFactor ? setup.biasFactor : world.biasFactor;
         this.biasFactor = -bias * world.invDT;
         this.softness = setup.softness || 0.0;
         this.iM = this.bA.iM + this.bB.iM + this.softness;
@@ -45,11 +74,11 @@ export default class Joint {
         this.r2x = this.bB.cos * this.a2x - this.bB.sin * this.a2y;
         this.r2y = this.bB.sin * this.a2x + this.bB.cos * this.a2y;
 
-        let Km00 = this.iM + this.bA.iI * this.r1y * this.r1y + this.bB.iI * this.r2y * this.r2y;
-        let Km01 = -this.bA.iI * this.r1x * this.r1y + -this.bB.iI * this.r2x * this.r2y;
-        let Km11 = this.iM + this.bA.iI * this.r1x * this.r1x + this.bB.iI * this.r2x * this.r2x;
+        const Km00 = this.iM + this.bA.iI * this.r1y * this.r1y + this.bB.iI * this.r2y * this.r2y;
+        const Km01 = -this.bA.iI * this.r1x * this.r1y + -this.bB.iI * this.r2x * this.r2y;
+        const Km11 = this.iM + this.bA.iI * this.r1x * this.r1x + this.bB.iI * this.r2x * this.r2x;
 
-        let det = 1.0 / (Km00 * Km11 - Km01 * Km01);
+        const det = 1.0 / (Km00 * Km11 - Km01 * Km01);
 
         this.m00 = det * Km11;
         this.m01 = -det * Km01;
@@ -69,17 +98,17 @@ export default class Joint {
     }
 
     applyImpulse() {
-        let bx =
+        const bx =
             this.bsx -
             (this.bB.vx + -this.bB.va * this.r2y - this.bA.vx - -this.bA.va * this.r1y) -
             this.aix * this.softness;
-        let by =
+        const by =
             this.bsy -
             (this.bB.vy + this.bB.va * this.r2x - this.bA.vy - this.bA.va * this.r1x) -
             this.aiy * this.softness;
 
-        let ix = this.m00 * bx + this.m01 * by;
-        let iy = this.m01 * bx + this.m11 * by;
+        const ix = this.m00 * bx + this.m01 * by;
+        const iy = this.m01 * bx + this.m11 * by;
 
         this.bA.vx -= ix * this.bA.iM;
         this.bA.vy -= iy * this.bA.iM;
