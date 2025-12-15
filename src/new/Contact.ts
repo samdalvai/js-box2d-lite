@@ -100,8 +100,8 @@ export default class Contact {
             throw new Error('Body(ies) not define in Contact element');
         }
 
-        this.rvx = this.bB.velocity.x + -this.bB.va * this.r2y - this.bA.velocity.x - -this.bA.va * this.r1y;
-        this.rvy = this.bB.velocity.y + this.bB.va * this.r2x - this.bA.velocity.y - this.bA.va * this.r1x;
+        this.rvx = this.bB.velocity.x + -this.bB.angularVelocity * this.r2y - this.bA.velocity.x - -this.bA.angularVelocity * this.r1y;
+        this.rvy = this.bB.velocity.y + this.bB.angularVelocity * this.r2x - this.bA.velocity.y - this.bA.angularVelocity * this.r1x;
     }
 
     impulse(px: number, py: number) {
@@ -111,10 +111,10 @@ export default class Contact {
 
         this.bA.velocity.x -= this.bA.iM * px;
         this.bA.velocity.y -= this.bA.iM * py;
-        this.bA.va -= this.bA.iI * (this.r1x * py - this.r1y * px);
+        this.bA.angularVelocity -= this.bA.iI * (this.r1x * py - this.r1y * px);
         this.bB.velocity.x += this.bB.iM * px;
         this.bB.velocity.y += this.bB.iM * py;
-        this.bB.va += this.bB.iI * (this.r2x * py - this.r2y * px);
+        this.bB.angularVelocity += this.bB.iI * (this.r2x * py - this.r2y * px);
     }
 
     applyImpulse() {

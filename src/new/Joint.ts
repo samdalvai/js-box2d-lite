@@ -90,21 +90,21 @@ export default class Joint {
         // Apply accumulated impulse.
         this.bA.velocity.x -= this.aix * this.bA.iM;
         this.bA.velocity.y -= this.aiy * this.bA.iM;
-        this.bA.va -= this.bA.iI * (this.r1x * this.aiy - this.r1y * this.aix);
+        this.bA.angularVelocity -= this.bA.iI * (this.r1x * this.aiy - this.r1y * this.aix);
 
         this.bB.velocity.x += this.aix * this.bB.iM;
         this.bB.velocity.y += this.aiy * this.bB.iM;
-        this.bB.va += this.bB.iI * (this.r2x * this.aiy - this.r2y * this.aix);
+        this.bB.angularVelocity += this.bB.iI * (this.r2x * this.aiy - this.r2y * this.aix);
     }
 
     applyImpulse() {
         const bx =
             this.bsx -
-            (this.bB.velocity.x + -this.bB.va * this.r2y - this.bA.velocity.x - -this.bA.va * this.r1y) -
+            (this.bB.velocity.x + -this.bB.angularVelocity * this.r2y - this.bA.velocity.x - -this.bA.angularVelocity * this.r1y) -
             this.aix * this.softness;
         const by =
             this.bsy -
-            (this.bB.velocity.y + this.bB.va * this.r2x - this.bA.velocity.y - this.bA.va * this.r1x) -
+            (this.bB.velocity.y + this.bB.angularVelocity * this.r2x - this.bA.velocity.y - this.bA.angularVelocity * this.r1x) -
             this.aiy * this.softness;
 
         const ix = this.m00 * bx + this.m01 * by;
@@ -112,11 +112,11 @@ export default class Joint {
 
         this.bA.velocity.x -= ix * this.bA.iM;
         this.bA.velocity.y -= iy * this.bA.iM;
-        this.bA.va -= this.bA.iI * (this.r1x * iy - this.r1y * ix);
+        this.bA.angularVelocity -= this.bA.iI * (this.r1x * iy - this.r1y * ix);
 
         this.bB.velocity.x += ix * this.bB.iM;
         this.bB.velocity.y += iy * this.bB.iM;
-        this.bB.va += this.bB.iI * (this.r2x * iy - this.r2y * ix);
+        this.bB.angularVelocity += this.bB.iI * (this.r2x * iy - this.r2y * ix);
 
         this.aix += ix;
         this.aiy += iy;
