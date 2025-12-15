@@ -16,6 +16,7 @@ function run() {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.lineWidth = 1.5;
+        // TODO: use detlatime for stepping function and eveerywhere it's used?
         world.step();
 
         requestAnimationFrame(loop);
