@@ -18,8 +18,9 @@ export default class Contact {
     body1: Body | null;
     body2: Body | null;
 
-    rvx: number;
-    rvy: number;
+    // rvx: number;
+    // rvy: number;
+    rv: Vec2;
 
     friction: number;
     allowedPenetration: number;
@@ -37,8 +38,9 @@ export default class Contact {
 
         this.r1 = new Vec2();
         this.r2 = new Vec2();
-        this.rvx = 0.0;
-        this.rvy = 0.0;
+        // this.rvx = 0.0;
+        // this.rvy = 0.0;
+        this.rv = new Vec2();
 
         this.separation = 0.0;
         this.massNormal = 0.0;
@@ -95,16 +97,24 @@ export default class Contact {
             throw new Error('Body(ies) not define in Contact element');
         }
 
-        this.rvx =
+        this.rv.x =
             this.body2.velocity.x +
             -this.body2.angularVelocity * this.r2.y -
             this.body1.velocity.x -
             -this.body1.angularVelocity * this.r1.y;
-        this.rvy =
+        this.rv.y =
             this.body2.velocity.y +
             this.body2.angularVelocity * this.r2.x -
             this.body1.velocity.y -
             this.body1.angularVelocity * this.r1.x;
+        // let lv1 = Vec2.sub(this.body1.velocity, Vec2.cross(this.body1.angularVelocity, this.r1));
+        // let lv2 = Vec2.add(this.body2.velocity, Vec2.cross(this.body2.angularVelocity, this.r2));
+        // let dv = Vec2.sub(lv2, lv1);
+
+        // console.log('rv.y: ', this.rv.y);
+        // console.log('rv.x: ', this.rv.x);
+        // console.log('dv.x: ', dv.x);
+        // console.log('dv.y: ', dv.y);
     }
 
     impulse(px: number, py: number) {
@@ -126,7 +136,7 @@ export default class Contact {
         this.relativeVelocity();
 
         // Compute normal impulse
-        dPn = this.massNormal * (-(this.rvx * this.normal.x + this.rvy * this.normal.y) + this.bias);
+        dPn = this.massNormal * (-(this.rv.x * this.normal.x + this.rv.y * this.normal.y) + this.bias);
 
         // Clamp the accumulated impulse
         Pn0 = this.Pn;
@@ -138,7 +148,7 @@ export default class Contact {
 
         // Relative velocity at contact
         this.relativeVelocity();
-        dPn = -this.massTangent * (this.rvx * this.normal.y - this.rvy * this.normal.x);
+        dPn = -this.massTangent * (this.rv.x * this.normal.y - this.rv.y * this.normal.x);
 
         // Compute friction impulse
         const maxPt = this.friction * this.Pn;
