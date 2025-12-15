@@ -305,6 +305,11 @@ export class Collide {
             const separation = Vec2.dot(frontNormal, clipPoints2[i].v) - front;
 
             if (separation <= 0) {
+                if (numContacts + 1 > contacts.length) {
+                    const ct = new Contact();
+                    contacts.push(ct);
+                }
+
                 contacts[numContacts].separation = separation;
                 contacts[numContacts].normal = normal;
 
