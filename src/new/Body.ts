@@ -15,13 +15,13 @@ export class Body {
     sin: number;
 
     friction: number;
+    invMass: number;
+    invI: number;
+    
     color: string;
     visible: boolean;
 
-    iM: number;
-    iI: number;
-
-    dt: number;
+    deltaTime: number;
     gravity: number;
     ctx: CanvasRenderingContext2D;
 
@@ -46,23 +46,23 @@ export class Body {
         this.visible = setup.visible === undefined ? true : setup.visible;
 
         if (mass < Infinity) {
-            this.iM = 1.0 / mass;
-            this.iI = 1.0 / ((mass * (w * w + h * h)) / 12);
+            this.invMass = 1.0 / mass;
+            this.invI = 1.0 / ((mass * (w * w + h * h)) / 12);
         } else {
-            this.iM = 0.0;
-            this.iI = 0.0;
+            this.invMass = 0.0;
+            this.invI = 0.0;
         }
 
-        this.dt = world.timeStep;
+        this.deltaTime = world.timeStep;
         this.gravity = setup.gravity || world.gravity;
         this.ctx = ctx;
     }
 
     integrate() {
-        if (this.iM) {
-            this.position.add(Vec2.scale(this.velocity, this.dt));
-            this.rotation += this.angularVelocity * this.dt;
-            this.velocity.y += this.gravity * this.dt;
+        if (this.invMass) {
+            this.position.add(Vec2.scale(this.velocity, this.deltaTime));
+            this.rotation += this.angularVelocity * this.deltaTime;
+            this.velocity.y += this.gravity * this.deltaTime;
 
             this.cos = Math.cos(this.rotation);
             this.sin = Math.sin(this.rotation);

@@ -80,18 +80,18 @@ export default class Contact {
         const rn2 = this.r2x * this.nx + this.r2y * this.ny;
         this.massNormal =
             1.0 /
-            (this.bA.iM +
-                this.bB.iM +
-                this.bA.iI * (this.r1x * this.r1x + this.r1y * this.r1y - rn1 * rn1) +
-                this.bB.iI * (this.r2x * this.r2x + this.r2y * this.r2y - rn2 * rn2));
+            (this.bA.invMass +
+                this.bB.invMass +
+                this.bA.invI * (this.r1x * this.r1x + this.r1y * this.r1y - rn1 * rn1) +
+                this.bB.invI * (this.r2x * this.r2x + this.r2y * this.r2y - rn2 * rn2));
         const rt1 = this.r1x * this.ny - this.r1y * this.nx;
         const rt2 = this.r2x * this.ny - this.r2y * this.nx;
         this.massTangent =
             1.0 /
-            (this.bA.iM +
-                this.bB.iM +
-                this.bA.iI * (this.r1x * this.r1x + this.r1y * this.r1y - rt1 * rt1) +
-                this.bB.iI * (this.r2x * this.r2x + this.r2y * this.r2y - rt2 * rt2));
+            (this.bA.invMass +
+                this.bB.invMass +
+                this.bA.invI * (this.r1x * this.r1x + this.r1y * this.r1y - rt1 * rt1) +
+                this.bB.invI * (this.r2x * this.r2x + this.r2y * this.r2y - rt2 * rt2));
         this.bias = this.biasFactor * Math.min(0.0, this.separation + this.allowedPenetration);
     }
 
@@ -109,12 +109,12 @@ export default class Contact {
             throw new Error('Body(ies) not define in Contact element');
         }
 
-        this.bA.velocity.x -= this.bA.iM * px;
-        this.bA.velocity.y -= this.bA.iM * py;
-        this.bA.angularVelocity -= this.bA.iI * (this.r1x * py - this.r1y * px);
-        this.bB.velocity.x += this.bB.iM * px;
-        this.bB.velocity.y += this.bB.iM * py;
-        this.bB.angularVelocity += this.bB.iI * (this.r2x * py - this.r2y * px);
+        this.bA.velocity.x -= this.bA.invMass * px;
+        this.bA.velocity.y -= this.bA.invMass * py;
+        this.bA.angularVelocity -= this.bA.invI * (this.r1x * py - this.r1y * px);
+        this.bB.velocity.x += this.bB.invMass * px;
+        this.bB.velocity.y += this.bB.invMass * py;
+        this.bB.angularVelocity += this.bB.invI * (this.r2x * py - this.r2y * px);
     }
 
     applyImpulse() {

@@ -73,7 +73,7 @@ export default class World {
             for (j = i + 1; j < this.bodyCount; ++j) {
                 bj = this.bodies[j];
 
-                if (bi.iM || bj.iM) {
+                if (bi.invMass || bj.invMass) {
                     // circle vs circle collision
                     dx = bj.position.x - bi.position.x;
                     dy = bj.position.y - bi.position.y;
