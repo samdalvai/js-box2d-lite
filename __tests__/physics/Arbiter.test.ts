@@ -48,9 +48,9 @@ describe('Arbiter', () => {
 
         expect(arbiter.numContacts).toBe(1);
         expect(arbiter.contacts[0].feature.value).toBe(20);
-        expect(arbiter.contacts[0].Pn).toBe(0);
-        expect(arbiter.contacts[0].Pt).toBe(0);
-        expect(arbiter.contacts[0].Pnb).toBe(0);
+        expect(arbiter.contacts[0].Pn).toBe(5);
+        expect(arbiter.contacts[0].Pt).toBe(6);
+        expect(arbiter.contacts[0].Pnb).toBe(7);
     });
 
     test('update() matching contacts copy old impulses when warm starting is enabled', () => {

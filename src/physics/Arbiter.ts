@@ -27,6 +27,11 @@ export class FeaturePair {
         this.value = value;
     }
 
+    // bit-shifts the edge numbers to create a unique ID for this specific contact geometry
+    get key(): number {
+        return this.e.inEdge1 | (this.e.outEdge1 << 8) | (this.e.inEdge2 << 16) | (this.e.outEdge2 << 24);
+    }
+
     clone = (): FeaturePair => {
         const copy = new FeaturePair();
 
@@ -103,7 +108,7 @@ export class Arbiter {
     friction: number;
 
     constructor(b1: Body, b2: Body) {
-        this.contacts = [new Contact(), new Contact()];
+        this.contacts = [];
 
         if (b1.id < b2.id) {
             this.body1 = b1;
@@ -126,7 +131,7 @@ export class Arbiter {
             let k = -1;
             for (let j = 0; j < this.numContacts; ++j) {
                 const cOld = this.contacts[j];
-                if (cNew.feature.value === cOld.feature.value) {
+                if (cNew.feature.key === cOld.feature.key) {
                     k = j;
                     break;
                 }
