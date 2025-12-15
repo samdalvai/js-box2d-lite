@@ -3,8 +3,7 @@ import Vec2 from '../math/Vec2';
 export class Body {
     position: Vec2;
     velocity: Vec2;
-    // vx: number;
-    // vy: number;
+    
     hw: number;
     hh: number;
     rd: number;
