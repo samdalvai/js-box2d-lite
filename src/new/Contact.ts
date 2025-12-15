@@ -18,8 +18,6 @@ export default class Contact {
     body1: Body | null;
     body2: Body | null;
 
-    // rvx: number;
-    // rvy: number;
     rv: Vec2;
 
     friction: number;
@@ -38,8 +36,6 @@ export default class Contact {
 
         this.r1 = new Vec2();
         this.r2 = new Vec2();
-        // this.rvx = 0.0;
-        // this.rvy = 0.0;
         this.rv = new Vec2();
 
         this.separation = 0.0;
@@ -97,24 +93,10 @@ export default class Contact {
             throw new Error('Body(ies) not define in Contact element');
         }
 
-        this.rv.x =
-            this.body2.velocity.x +
-            -this.body2.angularVelocity * this.r2.y -
-            this.body1.velocity.x -
-            -this.body1.angularVelocity * this.r1.y;
-        this.rv.y =
-            this.body2.velocity.y +
-            this.body2.angularVelocity * this.r2.x -
-            this.body1.velocity.y -
-            this.body1.angularVelocity * this.r1.x;
-        // let lv1 = Vec2.sub(this.body1.velocity, Vec2.cross(this.body1.angularVelocity, this.r1));
-        // let lv2 = Vec2.add(this.body2.velocity, Vec2.cross(this.body2.angularVelocity, this.r2));
-        // let dv = Vec2.sub(lv2, lv1);
 
-        // console.log('rv.y: ', this.rv.y);
-        // console.log('rv.x: ', this.rv.x);
-        // console.log('dv.x: ', dv.x);
-        // console.log('dv.y: ', dv.y);
+        const vel1 = Vec2.add(this.body1.velocity, Vec2.cross(this.body1.angularVelocity, this.r1));
+        const vel2 = Vec2.add(this.body2.velocity, Vec2.cross(this.body2.angularVelocity, this.r2));
+        this.rv = Vec2.sub(vel2, vel1);
     }
 
     impulse(px: number, py: number) {
