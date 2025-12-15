@@ -16,8 +16,9 @@ export default class Joint {
     m01: number;
     m11: number;
 
-    bsx: number;
-    bsy: number;
+    // bsx: number;
+    // bsy: number;
+    bias: Vec2;
     P: Vec2; // accumulated impulse
 
     biasFactor: number;
@@ -51,10 +52,7 @@ export default class Joint {
 
         this.r1 = new Vec2();
         this.r2 = new Vec2();
-        this.bsx = 0.0;
-        this.bsy = 0.0;
-        // this.aix = 0.0; // accumulated impulse
-        // this.aiy = 0.0;
+        this.bias = new Vec2();
         this.P = new Vec2();
         const bias = setup.biasFactor ? setup.biasFactor : world.biasFactor;
         this.biasFactor = -bias * world.invDT;
@@ -82,8 +80,8 @@ export default class Joint {
         this.m01 = -det * Km01;
         this.m11 = det * Km00;
 
-        this.bsx = (this.body2.position.x + this.r2.x - (this.body1.position.x + this.r1.x)) * this.biasFactor;
-        this.bsy = (this.body2.position.y + this.r2.y - (this.body1.position.y + this.r1.y)) * this.biasFactor;
+        this.bias.x = (this.body2.position.x + this.r2.x - (this.body1.position.x + this.r1.x)) * this.biasFactor;
+        this.bias.y = (this.body2.position.y + this.r2.y - (this.body1.position.y + this.r1.y)) * this.biasFactor;
 
         // Apply accumulated impulse.
         this.body1.velocity.sub(Vec2.scale(this.body1.invMass, this.P));
@@ -95,14 +93,14 @@ export default class Joint {
 
     applyImpulse() {
         const bx =
-            this.bsx -
+            this.bias.x -
             (this.body2.velocity.x +
                 -this.body2.angularVelocity * this.r2.y -
                 this.body1.velocity.x -
                 -this.body1.angularVelocity * this.r1.y) -
             this.P.x * this.softness;
         const by =
-            this.bsy -
+            this.bias.y -
             (this.body2.velocity.y +
                 this.body2.angularVelocity * this.r2.x -
                 this.body1.velocity.y -
