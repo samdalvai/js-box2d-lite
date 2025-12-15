@@ -1,9 +1,10 @@
+import Vec2 from '../math/Vec2';
 import { Body } from './Body';
 import Contact from './Contact';
 import Joint from './Joint';
 
 export default class World {
-    gravity: number;
+    gravity: Vec2;
     iterations: number;
     timeStep: number;
     invDT: number;
@@ -25,7 +26,7 @@ export default class World {
     ctx: CanvasRenderingContext2D;
 
     constructor(setup: any) {
-        this.gravity = setup.gravity || 50;
+        this.gravity = setup.gravity || new Vec2(0, 50);
         this.iterations = setup.iterations || 10;
         this.timeStep = setup.timeStep || 1 / 30;
         this.invDT = 1 / this.timeStep;

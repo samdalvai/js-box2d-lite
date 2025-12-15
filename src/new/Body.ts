@@ -17,12 +17,12 @@ export class Body {
     friction: number;
     invMass: number;
     invI: number;
-    
+
     color: string;
     visible: boolean;
 
     deltaTime: number;
-    gravity: number;
+    gravity: Vec2;
     ctx: CanvasRenderingContext2D;
 
     constructor(world: any, setup: any, ctx: CanvasRenderingContext2D) {
@@ -62,7 +62,7 @@ export class Body {
         if (this.invMass) {
             this.position.add(Vec2.scale(this.velocity, this.deltaTime));
             this.rotation += this.angularVelocity * this.deltaTime;
-            this.velocity.y += this.gravity * this.deltaTime;
+            this.velocity.add(Vec2.scale(this.gravity, this.deltaTime));
 
             this.cos = Math.cos(this.rotation);
             this.sin = Math.sin(this.rotation);

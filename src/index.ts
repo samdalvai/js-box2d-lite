@@ -1,3 +1,4 @@
+import Vec2 from './math/Vec2';
 import Canvas from './new/Canvas';
 import Pointer from './new/Pointer';
 import World from './new/World';
@@ -30,7 +31,7 @@ function init() {
     const timeStep = 1 / 30;
 
     world = new World({
-        gravity: 40,
+        gravity: new Vec2(0, 50),
         iterations: 20,
         timeStep: timeStep,
         friction: 0.3,
@@ -175,7 +176,7 @@ function down(e: MouseEvent | TouchEvent) {
 // some options
 let boxSize: number;
 let color: string;
-let grav: number;
+let grav: Vec2;
 let mass: number;
 
 radio(document.getElementById('large'));
@@ -185,19 +186,19 @@ function radio(b: any) {
         case 'large':
             boxSize = 50;
             color = '#FFF';
-            grav = 50;
+            grav = new Vec2(0, 50),
             mass = 100;
             break;
         case 'small':
             boxSize = 12;
             color = '#f80';
-            grav = 50;
+            grav = new Vec2(0, 50),
             mass = 40;
             break;
         case 'antigravity':
             boxSize = 12;
             color = '#08f';
-            grav = -50;
+            grav = new Vec2(0, -50),
             mass = 20;
             break;
     }
