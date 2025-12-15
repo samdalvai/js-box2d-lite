@@ -1,3 +1,4 @@
+import Vec2 from '../math/Vec2';
 import { Body } from './Body';
 import World from './World';
 
@@ -5,11 +6,13 @@ export default class Joint {
     bA: Body;
     bB: Body;
 
-    a1x: number;
-    a1y: number;
+    // a1x: number;
+    // a1y: number;
 
-    a2x: number;
-    a2y: number;
+    // a2x: number;
+    // a2y: number;
+    localAnchor1: Vec2;
+    localAnchor2: Vec2;
 
     m00: number;
     m01: number;
@@ -38,15 +41,13 @@ export default class Joint {
         s = this.bA.sin;
         x = setup.ax - this.bA.position.x;
         y = setup.ay - this.bA.position.y;
-        this.a1x = c * x + s * y;
-        this.a1y = -s * x + c * y;
+        this.localAnchor1 = new Vec2(c * x + s * y, -s * x + c * y);
 
         c = this.bB.cos;
         s = this.bB.sin;
         x = setup.ax - this.bB.position.x;
         y = setup.ay - this.bB.position.y;
-        this.a2x = c * x + s * y;
-        this.a2y = -s * x + c * y;
+        this.localAnchor2 = new Vec2(c * x + s * y, -s * x + c * y);
 
         this.m00 = 0.0;
         this.m01 = 0.0;
@@ -69,10 +70,10 @@ export default class Joint {
 
     preStep() {
         // Pre-compute anchors, mass matrix, and bias.
-        this.r1x = this.bA.cos * this.a1x - this.bA.sin * this.a1y;
-        this.r1y = this.bA.sin * this.a1x + this.bA.cos * this.a1y;
-        this.r2x = this.bB.cos * this.a2x - this.bB.sin * this.a2y;
-        this.r2y = this.bB.sin * this.a2x + this.bB.cos * this.a2y;
+        this.r1x = this.bA.cos * this.localAnchor1.x - this.bA.sin * this.localAnchor1.y;
+        this.r1y = this.bA.sin * this.localAnchor1.x + this.bA.cos * this.localAnchor1.y;
+        this.r2x = this.bB.cos * this.localAnchor2.x - this.bB.sin * this.localAnchor2.y;
+        this.r2y = this.bB.sin * this.localAnchor2.x + this.bB.cos * this.localAnchor2.y;
 
         const Km00 = this.iM + this.bA.invI * this.r1y * this.r1y + this.bB.invI * this.r2y * this.r2y;
         const Km01 = -this.bA.invI * this.r1x * this.r1y + -this.bB.invI * this.r2x * this.r2y;
@@ -100,11 +101,17 @@ export default class Joint {
     applyImpulse() {
         const bx =
             this.bsx -
-            (this.bB.velocity.x + -this.bB.angularVelocity * this.r2y - this.bA.velocity.x - -this.bA.angularVelocity * this.r1y) -
+            (this.bB.velocity.x +
+                -this.bB.angularVelocity * this.r2y -
+                this.bA.velocity.x -
+                -this.bA.angularVelocity * this.r1y) -
             this.aix * this.softness;
         const by =
             this.bsy -
-            (this.bB.velocity.y + this.bB.angularVelocity * this.r2x - this.bA.velocity.y - this.bA.angularVelocity * this.r1x) -
+            (this.bB.velocity.y +
+                this.bB.angularVelocity * this.r2x -
+                this.bA.velocity.y -
+                this.bA.angularVelocity * this.r1x) -
             this.aiy * this.softness;
 
         const ix = this.m00 * bx + this.m01 * by;
