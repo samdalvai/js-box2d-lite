@@ -1,26 +1,21 @@
+import Mat22 from '../math/Mat22';
 import Vec2 from '../math/Vec2';
 import { Body } from './Body';
 import World from './World';
 
 export default class Joint {
-    bA: Body;
-    bB: Body;
+    body1: Body;
+    body2: Body;
 
-    // a1x: number;
-    // a1y: number;
-
-    // a2x: number;
-    // a2y: number;
     localAnchor1: Vec2;
     localAnchor2: Vec2;
+    r1: Vec2;
+    r2: Vec2;
 
     m00: number;
     m01: number;
     m11: number;
-    r1x: number;
-    r1y: number;
-    r2x: number;
-    r2y: number;
+
     bsx: number;
     bsy: number;
     aix: number;
@@ -32,30 +27,29 @@ export default class Joint {
     ctx: CanvasRenderingContext2D;
 
     constructor(world: World, setup: any, ctx: CanvasRenderingContext2D) {
-        this.bA = setup.b1;
-        this.bB = setup.b2;
+        this.body1 = setup.b1;
+        this.body2 = setup.b2;
 
         let c, s, x, y;
 
-        c = this.bA.cos;
-        s = this.bA.sin;
-        x = setup.ax - this.bA.position.x;
-        y = setup.ay - this.bA.position.y;
+        c = this.body1.cos;
+        s = this.body1.sin;
+        x = setup.ax - this.body1.position.x;
+        y = setup.ay - this.body1.position.y;
         this.localAnchor1 = new Vec2(c * x + s * y, -s * x + c * y);
 
-        c = this.bB.cos;
-        s = this.bB.sin;
-        x = setup.ax - this.bB.position.x;
-        y = setup.ay - this.bB.position.y;
+        c = this.body2.cos;
+        s = this.body2.sin;
+        x = setup.ax - this.body2.position.x;
+        y = setup.ay - this.body2.position.y;
         this.localAnchor2 = new Vec2(c * x + s * y, -s * x + c * y);
 
         this.m00 = 0.0;
         this.m01 = 0.0;
         this.m11 = 0.0;
-        this.r1x = 0.0;
-        this.r1y = 0.0;
-        this.r2x = 0.0;
-        this.r2y = 0.0;
+
+        this.r1 = new Vec2();
+        this.r2 = new Vec2();
         this.bsx = 0.0;
         this.bsy = 0.0;
         this.aix = 0.0; // accumulated impulse
@@ -63,21 +57,22 @@ export default class Joint {
         const bias = setup.biasFactor ? setup.biasFactor : world.biasFactor;
         this.biasFactor = -bias * world.invDT;
         this.softness = setup.softness || 0.0;
-        this.iM = this.bA.invMass + this.bB.invMass + this.softness;
+        this.iM = this.body1.invMass + this.body2.invMass + this.softness;
         this.color = setup.color || '#888';
         this.ctx = ctx;
     }
 
     preStep() {
         // Pre-compute anchors, mass matrix, and bias.
-        this.r1x = this.bA.cos * this.localAnchor1.x - this.bA.sin * this.localAnchor1.y;
-        this.r1y = this.bA.sin * this.localAnchor1.x + this.bA.cos * this.localAnchor1.y;
-        this.r2x = this.bB.cos * this.localAnchor2.x - this.bB.sin * this.localAnchor2.y;
-        this.r2y = this.bB.sin * this.localAnchor2.x + this.bB.cos * this.localAnchor2.y;
+        const Rot1 = new Mat22(this.body1.rotation);
+        const Rot2 = new Mat22(this.body2.rotation);
 
-        const Km00 = this.iM + this.bA.invI * this.r1y * this.r1y + this.bB.invI * this.r2y * this.r2y;
-        const Km01 = -this.bA.invI * this.r1x * this.r1y + -this.bB.invI * this.r2x * this.r2y;
-        const Km11 = this.iM + this.bA.invI * this.r1x * this.r1x + this.bB.invI * this.r2x * this.r2x;
+        this.r1 = Mat22.multiply(Rot1, this.localAnchor1);
+        this.r2 = Mat22.multiply(Rot2, this.localAnchor2);
+
+        const Km00 = this.iM + this.body1.invI * this.r1.y * this.r1.y + this.body2.invI * this.r2.y * this.r2.y;
+        const Km01 = -this.body1.invI * this.r1.x * this.r1.y + -this.body2.invI * this.r2.x * this.r2.y;
+        const Km11 = this.iM + this.body1.invI * this.r1.x * this.r1.x + this.body2.invI * this.r2.x * this.r2.x;
 
         const det = 1.0 / (Km00 * Km11 - Km01 * Km01);
 
@@ -85,45 +80,45 @@ export default class Joint {
         this.m01 = -det * Km01;
         this.m11 = det * Km00;
 
-        this.bsx = (this.bB.position.x + this.r2x - (this.bA.position.x + this.r1x)) * this.biasFactor;
-        this.bsy = (this.bB.position.y + this.r2y - (this.bA.position.y + this.r1y)) * this.biasFactor;
+        this.bsx = (this.body2.position.x + this.r2.x - (this.body1.position.x + this.r1.x)) * this.biasFactor;
+        this.bsy = (this.body2.position.y + this.r2.y - (this.body1.position.y + this.r1.y)) * this.biasFactor;
 
         // Apply accumulated impulse.
-        this.bA.velocity.x -= this.aix * this.bA.invMass;
-        this.bA.velocity.y -= this.aiy * this.bA.invMass;
-        this.bA.angularVelocity -= this.bA.invI * (this.r1x * this.aiy - this.r1y * this.aix);
+        this.body1.velocity.x -= this.aix * this.body1.invMass;
+        this.body1.velocity.y -= this.aiy * this.body1.invMass;
+        this.body1.angularVelocity -= this.body1.invI * (this.r1.x * this.aiy - this.r1.y * this.aix);
 
-        this.bB.velocity.x += this.aix * this.bB.invMass;
-        this.bB.velocity.y += this.aiy * this.bB.invMass;
-        this.bB.angularVelocity += this.bB.invI * (this.r2x * this.aiy - this.r2y * this.aix);
+        this.body2.velocity.x += this.aix * this.body2.invMass;
+        this.body2.velocity.y += this.aiy * this.body2.invMass;
+        this.body2.angularVelocity += this.body2.invI * (this.r2.x * this.aiy - this.r2.y * this.aix);
     }
 
     applyImpulse() {
         const bx =
             this.bsx -
-            (this.bB.velocity.x +
-                -this.bB.angularVelocity * this.r2y -
-                this.bA.velocity.x -
-                -this.bA.angularVelocity * this.r1y) -
+            (this.body2.velocity.x +
+                -this.body2.angularVelocity * this.r2.y -
+                this.body1.velocity.x -
+                -this.body1.angularVelocity * this.r1.y) -
             this.aix * this.softness;
         const by =
             this.bsy -
-            (this.bB.velocity.y +
-                this.bB.angularVelocity * this.r2x -
-                this.bA.velocity.y -
-                this.bA.angularVelocity * this.r1x) -
+            (this.body2.velocity.y +
+                this.body2.angularVelocity * this.r2.x -
+                this.body1.velocity.y -
+                this.body1.angularVelocity * this.r1.x) -
             this.aiy * this.softness;
 
         const ix = this.m00 * bx + this.m01 * by;
         const iy = this.m01 * bx + this.m11 * by;
 
-        this.bA.velocity.x -= ix * this.bA.invMass;
-        this.bA.velocity.y -= iy * this.bA.invMass;
-        this.bA.angularVelocity -= this.bA.invI * (this.r1x * iy - this.r1y * ix);
+        this.body1.velocity.x -= ix * this.body1.invMass;
+        this.body1.velocity.y -= iy * this.body1.invMass;
+        this.body1.angularVelocity -= this.body1.invI * (this.r1.x * iy - this.r1.y * ix);
 
-        this.bB.velocity.x += ix * this.bB.invMass;
-        this.bB.velocity.y += iy * this.bB.invMass;
-        this.bB.angularVelocity += this.bB.invI * (this.r2x * iy - this.r2y * ix);
+        this.body2.velocity.x += ix * this.body2.invMass;
+        this.body2.velocity.y += iy * this.body2.invMass;
+        this.body2.angularVelocity += this.body2.invI * (this.r2.x * iy - this.r2.y * ix);
 
         this.aix += ix;
         this.aiy += iy;
@@ -133,8 +128,8 @@ export default class Joint {
         this.ctx.beginPath();
         this.ctx.strokeStyle = this.color;
         this.ctx.setLineDash([2, 2]);
-        this.ctx.moveTo(this.bA.position.x, this.bA.position.y);
-        this.ctx.lineTo(this.bA.position.x + this.r1x, this.bA.position.y + this.r1y);
+        this.ctx.moveTo(this.body1.position.x, this.body1.position.y);
+        this.ctx.lineTo(this.body1.position.x + this.r1.x, this.body1.position.y + this.r1.y);
         this.ctx.stroke();
         this.ctx.setLineDash([]);
     }
