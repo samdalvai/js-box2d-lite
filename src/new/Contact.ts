@@ -123,23 +123,30 @@ export default class Contact {
         let dPn, Pn0;
         // Relative velocity at contact
         this.relativeVelocity();
+
         // Compute normal impulse
         dPn = this.massNormal * (-(this.rvx * this.normal.x + this.rvy * this.normal.y) + this.bias);
+
         // Clamp the accumulated impulse
         Pn0 = this.Pn;
         this.Pn = Math.max(Pn0 + dPn, 0.0);
         dPn = this.Pn - Pn0;
+
         // Apply contact impulse
         this.impulse(this.normal.x * dPn, this.normal.y * dPn);
+
         // Relative velocity at contact
         this.relativeVelocity();
         dPn = -this.massTangent * (this.rvx * this.normal.y - this.rvy * this.normal.x);
+
         // Compute friction impulse
         const maxPt = this.friction * this.Pn;
+
         // Clamp friction
         Pn0 = this.Pt;
         this.Pt = Math.max(-maxPt, Math.min(Pn0 + dPn, maxPt));
         dPn = this.Pt - Pn0;
+
         // Apply contact impulse
         this.impulse(this.normal.y * dPn, -this.normal.x * dPn);
     }
