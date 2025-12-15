@@ -93,23 +93,23 @@ export default class Contact {
             throw new Error('Body(ies) not define in Contact element');
         }
 
-
         const vel1 = Vec2.add(this.body1.velocity, Vec2.cross(this.body1.angularVelocity, this.r1));
         const vel2 = Vec2.add(this.body2.velocity, Vec2.cross(this.body2.angularVelocity, this.r2));
         this.rv = Vec2.sub(vel2, vel1);
     }
 
-    impulse(px: number, py: number) {
+    impulse(J: Vec2) {
         if (!this.body1 || !this.body2) {
             throw new Error('Body(ies) not define in Contact element');
         }
 
-        this.body1.velocity.x -= this.body1.invMass * px;
-        this.body1.velocity.y -= this.body1.invMass * py;
-        this.body1.angularVelocity -= this.body1.invI * (this.r1.x * py - this.r1.y * px);
-        this.body2.velocity.x += this.body2.invMass * px;
-        this.body2.velocity.y += this.body2.invMass * py;
-        this.body2.angularVelocity += this.body2.invI * (this.r2.x * py - this.r2.y * px);
+        // Body 1
+        this.body1.velocity.sub(Vec2.scale(J, this.body1.invMass));
+        this.body1.angularVelocity -= this.body1.invI * Vec2.cross(this.r1, J);
+
+        // Body 2
+        this.body2.velocity.add(Vec2.scale(J, this.body2.invMass));
+        this.body2.angularVelocity += this.body2.invI * Vec2.cross(this.r2, J);
     }
 
     applyImpulse() {
@@ -125,8 +125,9 @@ export default class Contact {
         this.Pn = Math.max(Pn0 + dPn, 0.0);
         dPn = this.Pn - Pn0;
 
-        // Apply contact impulse
-        this.impulse(this.normal.x * dPn, this.normal.y * dPn);
+        // Normal impulse:  J = n * dPn
+        const Jn = Vec2.scale(this.normal, dPn);
+        this.impulse(Jn);
 
         // Relative velocity at contact
         this.relativeVelocity();
@@ -140,8 +141,9 @@ export default class Contact {
         this.Pt = Utils.clamp(Pn0 + dPn, -maxPt, maxPt);
         dPn = this.Pt - Pn0;
 
-        // Apply contact impulse
-        this.impulse(this.normal.y * dPn, -this.normal.x * dPn);
+        // Tangent impulse (perpendicular to normal)
+        const Jt = Vec2.cross(this.normal, dPn);
+        this.impulse(Jt);
     }
 
     draw() {
