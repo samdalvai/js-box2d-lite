@@ -1,4 +1,4 @@
-import World from '../physics/World';
+import World from './World';
 import { Body } from './Body';
 
 export default class Contact {
