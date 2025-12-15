@@ -12,7 +12,6 @@ function run() {
     const loop = now => {
         const deltaTime = (now - timePreviousFrame) / 1000;
         timePreviousFrame = now;
-        console.log(deltaTime);
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.lineWidth = 1.5;

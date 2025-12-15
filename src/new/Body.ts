@@ -1,8 +1,32 @@
 
 export class Body {
-    constructor(world, setup, ctx) {
-        let w = setup.w || 1.0;
-        let h = setup.h || 1.0;
+    px: number;
+    py: number;
+    vx: number;
+    vy: number;
+    hw: number;
+    hh: number;
+    rd: number;
+    va: number;
+    ra: number;
+
+    cos: number;
+    sin: number;
+
+    friction: number;
+    color: string;
+    visible: boolean;
+
+    iM: number;
+    iI: number;
+
+    dt: number;
+    gravity: number;
+    ctx: CanvasRenderingContext2D;
+
+    constructor(world: any, setup: any, ctx: CanvasRenderingContext2D) {
+        const w = setup.w || 1.0;
+        const h = setup.h || 1.0;
 
         // Position
         this.px = setup.x || 0.0;   
@@ -20,7 +44,7 @@ export class Body {
         this.sin = Math.sin(this.ra);
 
         this.friction = setup.friction === undefined ? world.friction : setup.friction;
-        let mass = setup.mass || Infinity;
+        const mass = setup.mass || Infinity;
         this.color = setup.color || '#FFF';
         this.visible = setup.visible === undefined ? true : setup.visible;
 
@@ -51,10 +75,10 @@ export class Body {
 
     draw() {
         if (this.visible) {
-            let chw = this.cos * this.hw;
-            let shw = this.sin * this.hw;
-            let chh = this.cos * this.hh;
-            let shh = this.sin * this.hh;
+            const chw = this.cos * this.hw;
+            const shw = this.sin * this.hw;
+            const chh = this.cos * this.hh;
+            const shh = this.sin * this.hh;
 
             this.ctx.beginPath();
             this.ctx.moveTo(this.px - chw + shh, this.py - shw - chh);
