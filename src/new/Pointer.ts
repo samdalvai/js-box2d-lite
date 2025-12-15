@@ -12,7 +12,7 @@ export default class Pointer {
         this.canvas.elem.addEventListener('touchmove', this.move, false);
     }
 
-    private move = (e: MouseEvent | TouchEvent): void => {
+    move = (e: MouseEvent | TouchEvent): void => {
         let clientX: number;
         let clientY: number;
 

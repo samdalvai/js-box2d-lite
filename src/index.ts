@@ -2,14 +2,15 @@ import Canvas from './new/Canvas';
 import Pointer from './new/Pointer';
 import World from './new/World';
 
-let canvas = new Canvas(1200, 600);
-let ctx = canvas.ctx;
-let pointer = new Pointer(canvas);
+const canvas = new Canvas(1200, 600);
+const ctx = canvas.ctx;
+const pointer = new Pointer(canvas);
 
 function run() {
     let timePreviousFrame = performance.now();
 
-    const loop = now => {
+    const loop = (now: number) => {
+        // TODO: to be used somehow?
         const deltaTime = (now - timePreviousFrame) / 1000;
         timePreviousFrame = now;
 
@@ -25,7 +26,7 @@ function run() {
 
 // init the world
 function init() {
-    let timeStep = 1 / 30;
+    const timeStep = 1 / 30;
 
     world = new World({
         gravity: 40,
@@ -40,7 +41,7 @@ function init() {
     });
 
     // ground
-    let ground = world.addBody({
+    const ground = world.addBody({
         x: 600,
         y: 649,
         w: 1200,
@@ -86,19 +87,19 @@ function init() {
     }
 
     // A suspension bridge
-    let numPlanks = 15;
-    let mass = 50.0;
-    let frequencyHz = 0.8;
-    let dampingRatio = 0.7;
+    const numPlanks = 15;
+    const mass = 50.0;
+    const frequencyHz = 0.8;
+    const dampingRatio = 0.7;
     // frequency in radians
-    let omega = 2.0 * Math.PI * frequencyHz;
+    const omega = 2.0 * Math.PI * frequencyHz;
     // damping coefficient
-    let d = 2.0 * mass * dampingRatio * omega;
+    const d = 2.0 * mass * dampingRatio * omega;
     // spring stifness
-    let k = mass * omega * omega;
+    const k = mass * omega * omega;
     // magic formulas
-    let softness = 1.0 / (d + timeStep * k);
-    let biasFactor = (timeStep * k) / (d + timeStep * k);
+    const softness = 1.0 / (d + timeStep * k);
+    const biasFactor = (timeStep * k) / (d + timeStep * k);
 
     let p = ground,
         b;
@@ -135,8 +136,8 @@ function init() {
 
     // 2 Pendulum
     for (let i = 200; i <= 1000; i += 800) {
-        let bb = world.addBody({ x: i, y: 300, w: 50, h: 50, mass: 40 });
-        let bc = world.addBody({ x: i, y: 400, w: 50, h: 50, mass: 40 });
+        const bb = world.addBody({ x: i, y: 300, w: 50, h: 50, mass: 40 });
+        const bc = world.addBody({ x: i, y: 400, w: 50, h: 50, mass: 40 });
         world.addJoint({ b1: bb, b2: ground, ax: i, ay: 200 });
         world.addJoint({ b1: bc, b2: bb, ax: i, ay: 300 });
         bc.vx = 100 * Math.random() - 50;
@@ -148,7 +149,7 @@ function init() {
 }
 
 // let's start
-let world;
+let world: World;
 init();
 run();
 
@@ -156,7 +157,7 @@ run();
 window.addEventListener('mousedown', e => down(e), false);
 window.addEventListener('touchstart', e => down(e), false);
 
-function down(e) {
+function down(e: MouseEvent | TouchEvent) {
     pointer.move(e);
     e.preventDefault();
     world.addBody({
@@ -171,10 +172,14 @@ function down(e) {
 }
 
 // some options
-let boxSize, color, grav, mass;
+let boxSize: number;
+let color: string;
+let grav: number;
+let mass: number;
+
 radio(document.getElementById('large'));
 
-function radio(b) {
+function radio(b: any) {
     switch (b.value) {
         case 'large':
             boxSize = 50;
@@ -197,6 +202,12 @@ function radio(b) {
     }
 
     return false;
+}
+
+declare global {
+    interface Window {
+        radio: (b: HTMLInputElement) => boolean;
+    }
 }
 
 window.radio = radio;
