@@ -99,7 +99,7 @@ export default class World {
 
         // draw contacts
         for (i = 0; i < this.numContacts; i++) {
-            this.contacts[i].draw();
+            //this.contacts[i].draw();
         }
     }
 
