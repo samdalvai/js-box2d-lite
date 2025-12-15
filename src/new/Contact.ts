@@ -1,12 +1,12 @@
-import World from './World';
+import Vec2 from '../math/Vec2';
 import { Body } from './Body';
+import World from './World';
 
 export default class Contact {
-    bA: Body | null;
-    bB: Body | null;
-    
-    px: number;
-    py: number;
+    body1: Body | null;
+    body2: Body | null;
+
+    position: Vec2;
     nx: number;
     ny: number;
     Pn: number; // accumulated normal impulse
@@ -29,11 +29,12 @@ export default class Contact {
     ctx: CanvasRenderingContext2D;
 
     constructor(world: World, ctx: CanvasRenderingContext2D) {
-        this.bA = null;
-        this.bB = null;
+        this.body1 = null;
+        this.body2 = null;
 
-        this.px = 0.0;
-        this.py = 0.0;
+        // this.px = 0.0;
+        // this.py = 0.0;
+        this.position = new Vec2();
         this.nx = 0.0;
         this.ny = 0.0;
         this.Pn = 0.0; // accumulated normal impulse
@@ -57,8 +58,8 @@ export default class Contact {
     }
 
     update(bA: Body, bB: Body, separation: number, nx: number, ny: number, friction: number, px: number, py: number) {
-        this.bA = bA;
-        this.bB = bB;
+        this.body1 = bA;
+        this.body2 = bB;
         this.separation = separation;
         this.nx = nx;
         this.ny = ny;
@@ -67,54 +68,62 @@ export default class Contact {
         this.friction = friction;
 
         // slide contact point onto reference face (easy to cull)
-        this.px = px;
-        this.py = py;
+        this.position.x = px;
+        this.position.y = py;
 
-        this.r1x = this.px - this.bA.position.x;
-        this.r1y = this.py - this.bA.position.y;
-        this.r2x = this.px - this.bB.position.x;
-        this.r2y = this.py - this.bB.position.y;
+        this.r1x = this.position.x - this.body1.position.x;
+        this.r1y = this.position.y - this.body1.position.y;
+        this.r2x = this.position.x - this.body2.position.x;
+        this.r2y = this.position.y - this.body2.position.y;
 
         // Precompute normal mass, tangent mass, and bias.
         const rn1 = this.r1x * this.nx + this.r1y * this.ny;
         const rn2 = this.r2x * this.nx + this.r2y * this.ny;
         this.massNormal =
             1.0 /
-            (this.bA.invMass +
-                this.bB.invMass +
-                this.bA.invI * (this.r1x * this.r1x + this.r1y * this.r1y - rn1 * rn1) +
-                this.bB.invI * (this.r2x * this.r2x + this.r2y * this.r2y - rn2 * rn2));
+            (this.body1.invMass +
+                this.body2.invMass +
+                this.body1.invI * (this.r1x * this.r1x + this.r1y * this.r1y - rn1 * rn1) +
+                this.body2.invI * (this.r2x * this.r2x + this.r2y * this.r2y - rn2 * rn2));
         const rt1 = this.r1x * this.ny - this.r1y * this.nx;
         const rt2 = this.r2x * this.ny - this.r2y * this.nx;
         this.massTangent =
             1.0 /
-            (this.bA.invMass +
-                this.bB.invMass +
-                this.bA.invI * (this.r1x * this.r1x + this.r1y * this.r1y - rt1 * rt1) +
-                this.bB.invI * (this.r2x * this.r2x + this.r2y * this.r2y - rt2 * rt2));
+            (this.body1.invMass +
+                this.body2.invMass +
+                this.body1.invI * (this.r1x * this.r1x + this.r1y * this.r1y - rt1 * rt1) +
+                this.body2.invI * (this.r2x * this.r2x + this.r2y * this.r2y - rt2 * rt2));
         this.bias = this.biasFactor * Math.min(0.0, this.separation + this.allowedPenetration);
     }
 
     relativeVelocity() {
-        if (!this.bA || !this.bB) {
+        if (!this.body1 || !this.body2) {
             throw new Error('Body(ies) not define in Contact element');
         }
 
-        this.rvx = this.bB.velocity.x + -this.bB.angularVelocity * this.r2y - this.bA.velocity.x - -this.bA.angularVelocity * this.r1y;
-        this.rvy = this.bB.velocity.y + this.bB.angularVelocity * this.r2x - this.bA.velocity.y - this.bA.angularVelocity * this.r1x;
+        this.rvx =
+            this.body2.velocity.x +
+            -this.body2.angularVelocity * this.r2y -
+            this.body1.velocity.x -
+            -this.body1.angularVelocity * this.r1y;
+        this.rvy =
+            this.body2.velocity.y +
+            this.body2.angularVelocity * this.r2x -
+            this.body1.velocity.y -
+            this.body1.angularVelocity * this.r1x;
     }
 
     impulse(px: number, py: number) {
-        if (!this.bA || !this.bB) {
+        if (!this.body1 || !this.body2) {
             throw new Error('Body(ies) not define in Contact element');
         }
 
-        this.bA.velocity.x -= this.bA.invMass * px;
-        this.bA.velocity.y -= this.bA.invMass * py;
-        this.bA.angularVelocity -= this.bA.invI * (this.r1x * py - this.r1y * px);
-        this.bB.velocity.x += this.bB.invMass * px;
-        this.bB.velocity.y += this.bB.invMass * py;
-        this.bB.angularVelocity += this.bB.invI * (this.r2x * py - this.r2y * px);
+        this.body1.velocity.x -= this.body1.invMass * px;
+        this.body1.velocity.y -= this.body1.invMass * py;
+        this.body1.angularVelocity -= this.body1.invI * (this.r1x * py - this.r1y * px);
+        this.body2.velocity.x += this.body2.invMass * px;
+        this.body2.velocity.y += this.body2.invMass * py;
+        this.body2.angularVelocity += this.body2.invI * (this.r2x * py - this.r2y * px);
     }
 
     applyImpulse() {
@@ -144,7 +153,7 @@ export default class Contact {
 
     draw() {
         this.ctx.beginPath();
-        this.ctx.arc(this.px, this.py, 3, 0, 2 * Math.PI);
+        this.ctx.arc(this.position.x, this.position.y, 3, 0, 2 * Math.PI);
         this.ctx.fillStyle = '#F00';
         this.ctx.fill();
     }
