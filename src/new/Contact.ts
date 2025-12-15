@@ -26,9 +26,6 @@ export default class Contact {
     friction: number;
     allowedPenetration;
     biasFactor;
-    min;
-    max;
-    abs;
     ctx: CanvasRenderingContext2D;
 
     constructor(world: World, ctx: CanvasRenderingContext2D) {
@@ -56,9 +53,6 @@ export default class Contact {
         this.friction = 0.0;
         this.allowedPenetration = world.allowedPenetration;
         this.biasFactor = -world.biasFactor * world.invDT;
-        this.min = Math.min;
-        this.max = Math.max;
-        this.abs = Math.abs;
         this.ctx = ctx;
     }
 
@@ -98,7 +92,7 @@ export default class Contact {
                 this.bB.iM +
                 this.bA.iI * (this.r1x * this.r1x + this.r1y * this.r1y - rt1 * rt1) +
                 this.bB.iI * (this.r2x * this.r2x + this.r2y * this.r2y - rt2 * rt2));
-        this.bias = this.biasFactor * this.min(0.0, this.separation + this.allowedPenetration);
+        this.bias = this.biasFactor * Math.min(0.0, this.separation + this.allowedPenetration);
     }
 
     relativeVelocity() {
@@ -131,7 +125,7 @@ export default class Contact {
         dPn = this.massNormal * (-(this.rvx * this.nx + this.rvy * this.ny) + this.bias);
         // Clamp the accumulated impulse
         Pn0 = this.Pn;
-        this.Pn = this.max(Pn0 + dPn, 0.0);
+        this.Pn = Math.max(Pn0 + dPn, 0.0);
         dPn = this.Pn - Pn0;
         // Apply contact impulse
         this.impulse(this.nx * dPn, this.ny * dPn);
@@ -142,7 +136,7 @@ export default class Contact {
         const maxPt = this.friction * this.Pn;
         // Clamp friction
         Pn0 = this.Pt;
-        this.Pt = this.max(-maxPt, this.min(Pn0 + dPn, maxPt));
+        this.Pt = Math.max(-maxPt, Math.min(Pn0 + dPn, maxPt));
         dPn = this.Pt - Pn0;
         // Apply contact impulse
         this.impulse(this.ny * dPn, -this.nx * dPn);
