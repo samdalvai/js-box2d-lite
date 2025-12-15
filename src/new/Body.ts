@@ -1,7 +1,7 @@
+import Vec2 from '../math/Vec2';
 
 export class Body {
-    px: number;
-    py: number;
+    position: Vec2;
     vx: number;
     vy: number;
     hw: number;
@@ -29,9 +29,10 @@ export class Body {
         const h = setup.h || 1.0;
 
         // Position
-        this.px = setup.x || 0.0;   
-        this.py = setup.y || 0.0;
-        
+        this.position = new Vec2(setup.x || 0.0, setup.y || 0.0);
+        // this.px = setup.x || 0.0;
+        // this.py = setup.y || 0.0;
+
         this.vx = setup.vx || 0.0;
         this.vy = setup.vy || 0.0;
         this.hw = w * 0.5;
@@ -63,8 +64,10 @@ export class Body {
 
     integrate() {
         if (this.iM) {
-            this.px += this.vx * this.dt;
-            this.py += this.vy * this.dt;
+            // this.px += this.vx * this.dt;
+            this.position.x += this.vx * this.dt;
+            // this.py += this.vy * this.dt;
+            this.position.y += this.vy * this.dt;
             this.ra += this.va * this.dt;
             this.vy += this.gravity * this.dt;
 
@@ -81,10 +84,10 @@ export class Body {
             const shh = this.sin * this.hh;
 
             this.ctx.beginPath();
-            this.ctx.moveTo(this.px - chw + shh, this.py - shw - chh);
-            this.ctx.lineTo(this.px + chw + shh, this.py + shw - chh);
-            this.ctx.lineTo(this.px + chw - shh, this.py + shw + chh);
-            this.ctx.lineTo(this.px - chw - shh, this.py - shw + chh);
+            this.ctx.moveTo(this.position.x - chw + shh, this.position.y - shw - chh);
+            this.ctx.lineTo(this.position.x + chw + shh, this.position.y + shw - chh);
+            this.ctx.lineTo(this.position.x + chw - shh, this.position.y + shw + chh);
+            this.ctx.lineTo(this.position.x - chw - shh, this.position.y - shw + chh);
 
             this.ctx.closePath();
             this.ctx.strokeStyle = this.color;
