@@ -70,10 +70,10 @@ export default class Contact {
         this.px = px;
         this.py = py;
 
-        this.r1x = this.px - this.bA.px;
-        this.r1y = this.py - this.bA.py;
-        this.r2x = this.px - this.bB.px;
-        this.r2y = this.py - this.bB.py;
+        this.r1x = this.px - this.bA.position.x;
+        this.r1y = this.py - this.bA.position.y;
+        this.r2x = this.px - this.bB.position.x;
+        this.r2y = this.py - this.bB.position.y;
 
         // Precompute normal mass, tangent mass, and bias.
         const rn1 = this.r1x * this.nx + this.r1y * this.ny;

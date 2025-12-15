@@ -75,8 +75,8 @@ export default class World {
 
                 if (bi.iM || bj.iM) {
                     // circle vs circle collision
-                    dx = bj.px - bi.px;
-                    dy = bj.py - bi.py;
+                    dx = bj.position.x - bi.position.x;
+                    dy = bj.position.y - bi.position.y;
                     d = bi.rd + bj.rd;
 
                     if (dx * dx + dy * dy < d * d) {
@@ -218,10 +218,10 @@ export default class World {
             case 0:
                 fnx = nx;
                 fny = ny;
-                front = bA.px * fnx + bA.py * fny + bA.hw;
+                front = bA.position.x * fnx + bA.position.y * fny + bA.hw;
                 snx = -bA.sin;
                 sny = bA.cos;
-                side = bA.px * snx + bA.py * sny;
+                side = bA.position.x * snx + bA.position.y * sny;
                 negSide = -side + bA.hh;
                 posSide = side + bA.hh;
                 this.computeIncidentEdge(this.ie, bB, fnx, fny);
@@ -229,10 +229,10 @@ export default class World {
             case 1:
                 fnx = nx;
                 fny = ny;
-                front = bA.px * fnx + bA.py * fny + bA.hh;
+                front = bA.position.x * fnx + bA.position.y * fny + bA.hh;
                 snx = bA.cos;
                 sny = bA.sin;
-                side = bA.px * snx + bA.py * sny;
+                side = bA.position.x * snx + bA.position.y * sny;
                 negSide = -side + bA.hw;
                 posSide = side + bA.hw;
                 this.computeIncidentEdge(this.ie, bB, fnx, fny);
@@ -240,10 +240,10 @@ export default class World {
             case 2:
                 fnx = -nx;
                 fny = -ny;
-                front = bB.px * fnx + bB.py * fny + bB.hw;
+                front = bB.position.x * fnx + bB.position.y * fny + bB.hw;
                 snx = -bB.sin;
                 sny = bB.cos;
-                side = bB.px * snx + bB.py * sny;
+                side = bB.position.x * snx + bB.position.y * sny;
                 negSide = -side + bB.hh;
                 posSide = side + bB.hh;
                 this.computeIncidentEdge(this.ie, bA, fnx, fny);
@@ -251,10 +251,10 @@ export default class World {
             case 3:
                 fnx = -nx;
                 fny = -ny;
-                front = bB.px * fnx + bB.py * fny + bB.hh;
+                front = bB.position.x * fnx + bB.position.y * fny + bB.hh;
                 snx = bB.cos;
                 sny = bB.sin;
-                side = bB.px * snx + bB.py * sny;
+                side = bB.position.x * snx + bB.position.y * sny;
                 negSide = -side + bB.hw;
                 posSide = side + bB.hw;
                 this.computeIncidentEdge(this.ie, bA, fnx, fny);
@@ -376,13 +376,13 @@ export default class World {
         x = ie[0];
         y = ie[1];
 
-        ie[0] = b.px + b.cos * x - b.sin * y;
-        ie[1] = b.py + b.sin * x + b.cos * y;
+        ie[0] = b.position.x + b.cos * x - b.sin * y;
+        ie[1] = b.position.y + b.sin * x + b.cos * y;
 
         x = ie[2];
         y = ie[3];
 
-        ie[2] = b.px + b.cos * x - b.sin * y;
-        ie[3] = b.py + b.sin * x + b.cos * y;
+        ie[2] = b.position.x + b.cos * x - b.sin * y;
+        ie[3] = b.position.y + b.sin * x + b.cos * y;
     }
 }

@@ -36,15 +36,15 @@ export default class Joint {
 
         c = this.bA.cos;
         s = this.bA.sin;
-        x = setup.ax - this.bA.px;
-        y = setup.ay - this.bA.py;
+        x = setup.ax - this.bA.position.x;
+        y = setup.ay - this.bA.position.y;
         this.a1x = c * x + s * y;
         this.a1y = -s * x + c * y;
 
         c = this.bB.cos;
         s = this.bB.sin;
-        x = setup.ax - this.bB.px;
-        y = setup.ay - this.bB.py;
+        x = setup.ax - this.bB.position.x;
+        y = setup.ay - this.bB.position.y;
         this.a2x = c * x + s * y;
         this.a2y = -s * x + c * y;
 
@@ -84,8 +84,8 @@ export default class Joint {
         this.m01 = -det * Km01;
         this.m11 = det * Km00;
 
-        this.bsx = (this.bB.px + this.r2x - (this.bA.px + this.r1x)) * this.biasFactor;
-        this.bsy = (this.bB.py + this.r2y - (this.bA.py + this.r1y)) * this.biasFactor;
+        this.bsx = (this.bB.position.x + this.r2x - (this.bA.position.x + this.r1x)) * this.biasFactor;
+        this.bsy = (this.bB.position.y + this.r2y - (this.bA.position.y + this.r1y)) * this.biasFactor;
 
         // Apply accumulated impulse.
         this.bA.vx -= this.aix * this.bA.iM;
@@ -126,8 +126,8 @@ export default class Joint {
         this.ctx.beginPath();
         this.ctx.strokeStyle = this.color;
         this.ctx.setLineDash([2, 2]);
-        this.ctx.moveTo(this.bA.px, this.bA.py);
-        this.ctx.lineTo(this.bA.px + this.r1x, this.bA.py + this.r1y);
+        this.ctx.moveTo(this.bA.position.x, this.bA.position.y);
+        this.ctx.lineTo(this.bA.position.x + this.r1x, this.bA.position.y + this.r1y);
         this.ctx.stroke();
         this.ctx.setLineDash([]);
     }
