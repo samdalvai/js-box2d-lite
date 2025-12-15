@@ -67,7 +67,7 @@ export default class Contact {
         this.r1 = Vec2.sub(this.position, this.body1.position);
         this.r2 = Vec2.sub(this.position, this.body2.position);
 
-        // Precompute normal mass, tangent mass, and bias.
+        // Normal mass computation
         const rn1 = Vec2.dot(this.r1, this.normal);
         const rn2 = Vec2.dot(this.r2, this.normal);
         this.massNormal =
@@ -78,6 +78,8 @@ export default class Contact {
                 this.body2.invI * (this.r2.x * this.r2.x + this.r2.y * this.r2.y - rn2 * rn2));
         const rt1 = this.r1.x * this.normal.y - this.r1.y * this.normal.x;
         const rt2 = this.r2.x * this.normal.y - this.r2.y * this.normal.x;
+
+        // Tangent mass computation
         this.massTangent =
             1.0 /
             (this.body1.invMass +
