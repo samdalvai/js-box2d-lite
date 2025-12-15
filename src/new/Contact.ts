@@ -4,7 +4,7 @@ import { Body } from './Body';
 export default class Contact {
     bA: Body | null;
     bB: Body | null;
-
+    
     px: number;
     py: number;
     nx: number;

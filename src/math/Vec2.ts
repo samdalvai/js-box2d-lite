@@ -85,9 +85,20 @@ export default class Vec2 {
     };
 
     /** Operator * */
-    static scale = (s: number, v: Vec2): Vec2 => {
-        return new Vec2(s * v.x, s * v.y);
-    };
+    static scale(s: number, v: Vec2): Vec2;
+    static scale(v: Vec2, s: number): Vec2;
+
+    static scale(a: number | Vec2, b: Vec2 | number): Vec2 {
+        if (typeof a === 'number' && b instanceof Vec2) {
+            return new Vec2(a * b.x, a * b.y);
+        }
+
+        if (a instanceof Vec2 && typeof b === 'number') {
+            return new Vec2(b * a.x, b * a.y);
+        }
+
+        throw new Error('Invalid arguments');
+    }
 
     static abs = (a: Vec2): Vec2 => {
         return new Vec2(Math.abs(a.x), Math.abs(a.y));

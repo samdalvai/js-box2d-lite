@@ -3,7 +3,7 @@ import Vec2 from '../math/Vec2';
 export class Body {
     position: Vec2;
     velocity: Vec2;
-    
+
     hw: number;
     hh: number;
     rd: number;
@@ -59,8 +59,7 @@ export class Body {
 
     integrate() {
         if (this.iM) {
-            this.position.x += this.velocity.x * this.dt;
-            this.position.y += this.velocity.y * this.dt;
+            this.position.add(Vec2.scale(this.velocity, this.dt));
             this.ra += this.va * this.dt;
             this.velocity.y += this.gravity * this.dt;
 
