@@ -22,7 +22,6 @@ export default class World {
     c2: number[];
     bodyCount: number;
     jointsCount: number;
-    abs;
     ctx: CanvasRenderingContext2D;
 
     constructor(setup: any) {
@@ -45,7 +44,6 @@ export default class World {
         this.c2 = [0.0, 0.0, 0.0, 0.0];
         this.bodyCount = 0;
         this.jointsCount = 0;
-        this.abs = Math.abs;
         this.ctx = setup.ctx;
     }
 
@@ -146,19 +144,19 @@ export default class World {
         const dbx = bB.cos * dpx + bB.sin * dpy;
         const dby = -bB.sin * dpx + bB.cos * dpy;
 
-        const m00 = this.abs(bA.cos * bB.cos + bA.sin * bB.sin);
-        const m01 = this.abs(-bA.sin * bB.cos + bA.cos * bB.sin);
-        const m10 = this.abs(-bA.cos * bB.sin + bA.sin * bB.cos);
-        const m11 = this.abs(bA.sin * bB.sin + bA.cos * bB.cos);
+        const m00 = Math.abs(bA.cos * bB.cos + bA.sin * bB.sin);
+        const m01 = Math.abs(-bA.sin * bB.cos + bA.cos * bB.sin);
+        const m10 = Math.abs(-bA.cos * bB.sin + bA.sin * bB.cos);
+        const m11 = Math.abs(bA.sin * bB.sin + bA.cos * bB.cos);
 
         // Box A faces
-        const fAx = this.abs(dax) - bA.hw - (m00 * bB.hw + m10 * bB.hh);
-        const fAy = this.abs(day) - bA.hh - (m01 * bB.hw + m11 * bB.hh);
+        const fAx = Math.abs(dax) - bA.hw - (m00 * bB.hw + m10 * bB.hh);
+        const fAy = Math.abs(day) - bA.hh - (m01 * bB.hw + m11 * bB.hh);
         if (fAx > 0.0 || fAy > 0.0) return;
 
         // Box B faces
-        const fBx = this.abs(dbx) - bB.hw - (m00 * bA.hw + m01 * bA.hh);
-        const fBy = this.abs(dby) - bB.hh - (m10 * bA.hw + m11 * bA.hh);
+        const fBx = Math.abs(dbx) - bB.hw - (m00 * bA.hw + m01 * bA.hh);
+        const fBy = Math.abs(dby) - bB.hh - (m10 * bA.hw + m11 * bA.hh);
         if (fBx > 0.0 || fBy > 0.0) return;
 
         // Find best axis
@@ -347,7 +345,7 @@ export default class World {
         const nrx = -(b.cos * nx + b.sin * ny);
         const nry = -(-b.sin * nx + b.cos * ny);
 
-        if (this.abs(nrx) > this.abs(nry)) {
+        if (Math.abs(nrx) > Math.abs(nry)) {
             if (nrx > 0.0) {
                 ie[0] = b.hw;
                 ie[1] = -b.hh;
