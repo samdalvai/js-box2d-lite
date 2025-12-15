@@ -18,11 +18,12 @@ export default class Joint {
 
     bsx: number;
     bsy: number;
-    aix: number;
-    aiy: number;
+    P: Vec2; // accumulated impulse
+
     biasFactor: number;
     softness: number;
     iM: number;
+
     color: string;
     ctx: CanvasRenderingContext2D;
 
@@ -52,8 +53,9 @@ export default class Joint {
         this.r2 = new Vec2();
         this.bsx = 0.0;
         this.bsy = 0.0;
-        this.aix = 0.0; // accumulated impulse
-        this.aiy = 0.0;
+        // this.aix = 0.0; // accumulated impulse
+        // this.aiy = 0.0;
+        this.P = new Vec2();
         const bias = setup.biasFactor ? setup.biasFactor : world.biasFactor;
         this.biasFactor = -bias * world.invDT;
         this.softness = setup.softness || 0.0;
@@ -84,13 +86,11 @@ export default class Joint {
         this.bsy = (this.body2.position.y + this.r2.y - (this.body1.position.y + this.r1.y)) * this.biasFactor;
 
         // Apply accumulated impulse.
-        this.body1.velocity.x -= this.aix * this.body1.invMass;
-        this.body1.velocity.y -= this.aiy * this.body1.invMass;
-        this.body1.angularVelocity -= this.body1.invI * (this.r1.x * this.aiy - this.r1.y * this.aix);
+        this.body1.velocity.sub(Vec2.scale(this.body1.invMass, this.P));
+        this.body1.angularVelocity -= this.body1.invI * Vec2.cross(this.r1, this.P);
 
-        this.body2.velocity.x += this.aix * this.body2.invMass;
-        this.body2.velocity.y += this.aiy * this.body2.invMass;
-        this.body2.angularVelocity += this.body2.invI * (this.r2.x * this.aiy - this.r2.y * this.aix);
+        this.body2.velocity.add(Vec2.scale(this.body2.invMass, this.P));
+        this.body2.angularVelocity += this.body2.invI * Vec2.cross(this.r2, this.P);
     }
 
     applyImpulse() {
@@ -100,14 +100,14 @@ export default class Joint {
                 -this.body2.angularVelocity * this.r2.y -
                 this.body1.velocity.x -
                 -this.body1.angularVelocity * this.r1.y) -
-            this.aix * this.softness;
+            this.P.x * this.softness;
         const by =
             this.bsy -
             (this.body2.velocity.y +
                 this.body2.angularVelocity * this.r2.x -
                 this.body1.velocity.y -
                 this.body1.angularVelocity * this.r1.x) -
-            this.aiy * this.softness;
+            this.P.y * this.softness;
 
         const ix = this.m00 * bx + this.m01 * by;
         const iy = this.m01 * bx + this.m11 * by;
@@ -120,8 +120,8 @@ export default class Joint {
         this.body2.velocity.y += iy * this.body2.invMass;
         this.body2.angularVelocity += this.body2.invI * (this.r2.x * iy - this.r2.y * ix);
 
-        this.aix += ix;
-        this.aiy += iy;
+        this.P.x += ix;
+        this.P.y += iy;
     }
 
     draw() {
