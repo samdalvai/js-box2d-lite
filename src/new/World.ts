@@ -78,7 +78,7 @@ export default class World {
                     // circle vs circle collision
                     dx = bj.position.x - bi.position.x;
                     dy = bj.position.y - bi.position.y;
-                    d = bi.rd + bj.rd;
+                    d = bi.radius + bj.radius;
 
                     if (dx * dx + dy * dy < d * d) {
                         // OBB collision and update contact points

@@ -9,7 +9,7 @@ export class Body {
 
     hw: number;
     hh: number;
-    rd: number;
+    radius: number;
 
     cos: number;
     sin: number;
@@ -33,7 +33,7 @@ export class Body {
         this.velocity = new Vec2(setup.vx || 0.0, setup.vy || 0.0);
         this.hw = w * 0.5;
         this.hh = h * 0.5;
-        this.rd = Math.sqrt(this.hw * this.hw + this.hh * this.hh);
+        this.radius = Math.sqrt(this.hw * this.hw + this.hh * this.hh);
         this.angularVelocity = setup.angularVelocity || 0.0;
         this.rotation = setup.rotation || 0.0;
 
