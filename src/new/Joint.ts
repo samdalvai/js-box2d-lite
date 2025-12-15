@@ -62,7 +62,7 @@ export default class Joint {
         const bias = setup.biasFactor ? setup.biasFactor : world.biasFactor;
         this.biasFactor = -bias * world.invDT;
         this.softness = setup.softness || 0.0;
-        this.iM = this.bA.iM + this.bB.iM + this.softness;
+        this.iM = this.bA.invMass + this.bB.invMass + this.softness;
         this.color = setup.color || '#888';
         this.ctx = ctx;
     }
@@ -74,9 +74,9 @@ export default class Joint {
         this.r2x = this.bB.cos * this.a2x - this.bB.sin * this.a2y;
         this.r2y = this.bB.sin * this.a2x + this.bB.cos * this.a2y;
 
-        const Km00 = this.iM + this.bA.iI * this.r1y * this.r1y + this.bB.iI * this.r2y * this.r2y;
-        const Km01 = -this.bA.iI * this.r1x * this.r1y + -this.bB.iI * this.r2x * this.r2y;
-        const Km11 = this.iM + this.bA.iI * this.r1x * this.r1x + this.bB.iI * this.r2x * this.r2x;
+        const Km00 = this.iM + this.bA.invI * this.r1y * this.r1y + this.bB.invI * this.r2y * this.r2y;
+        const Km01 = -this.bA.invI * this.r1x * this.r1y + -this.bB.invI * this.r2x * this.r2y;
+        const Km11 = this.iM + this.bA.invI * this.r1x * this.r1x + this.bB.invI * this.r2x * this.r2x;
 
         const det = 1.0 / (Km00 * Km11 - Km01 * Km01);
 
@@ -88,13 +88,13 @@ export default class Joint {
         this.bsy = (this.bB.position.y + this.r2y - (this.bA.position.y + this.r1y)) * this.biasFactor;
 
         // Apply accumulated impulse.
-        this.bA.velocity.x -= this.aix * this.bA.iM;
-        this.bA.velocity.y -= this.aiy * this.bA.iM;
-        this.bA.angularVelocity -= this.bA.iI * (this.r1x * this.aiy - this.r1y * this.aix);
+        this.bA.velocity.x -= this.aix * this.bA.invMass;
+        this.bA.velocity.y -= this.aiy * this.bA.invMass;
+        this.bA.angularVelocity -= this.bA.invI * (this.r1x * this.aiy - this.r1y * this.aix);
 
-        this.bB.velocity.x += this.aix * this.bB.iM;
-        this.bB.velocity.y += this.aiy * this.bB.iM;
-        this.bB.angularVelocity += this.bB.iI * (this.r2x * this.aiy - this.r2y * this.aix);
+        this.bB.velocity.x += this.aix * this.bB.invMass;
+        this.bB.velocity.y += this.aiy * this.bB.invMass;
+        this.bB.angularVelocity += this.bB.invI * (this.r2x * this.aiy - this.r2y * this.aix);
     }
 
     applyImpulse() {
@@ -110,13 +110,13 @@ export default class Joint {
         const ix = this.m00 * bx + this.m01 * by;
         const iy = this.m01 * bx + this.m11 * by;
 
-        this.bA.velocity.x -= ix * this.bA.iM;
-        this.bA.velocity.y -= iy * this.bA.iM;
-        this.bA.angularVelocity -= this.bA.iI * (this.r1x * iy - this.r1y * ix);
+        this.bA.velocity.x -= ix * this.bA.invMass;
+        this.bA.velocity.y -= iy * this.bA.invMass;
+        this.bA.angularVelocity -= this.bA.invI * (this.r1x * iy - this.r1y * ix);
 
-        this.bB.velocity.x += ix * this.bB.iM;
-        this.bB.velocity.y += iy * this.bB.iM;
-        this.bB.angularVelocity += this.bB.iI * (this.r2x * iy - this.r2y * ix);
+        this.bB.velocity.x += ix * this.bB.invMass;
+        this.bB.velocity.y += iy * this.bB.invMass;
+        this.bB.angularVelocity += this.bB.invI * (this.r2x * iy - this.r2y * ix);
 
         this.aix += ix;
         this.aiy += iy;
