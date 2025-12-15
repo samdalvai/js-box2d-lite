@@ -2,8 +2,9 @@ import Vec2 from '../math/Vec2';
 
 export class Body {
     position: Vec2;
-    vx: number;
-    vy: number;
+    velocity: Vec2;
+    // vx: number;
+    // vy: number;
     hw: number;
     hh: number;
     rd: number;
@@ -28,13 +29,8 @@ export class Body {
         const w = setup.w || 1.0;
         const h = setup.h || 1.0;
 
-        // Position
         this.position = new Vec2(setup.x || 0.0, setup.y || 0.0);
-        // this.px = setup.x || 0.0;
-        // this.py = setup.y || 0.0;
-
-        this.vx = setup.vx || 0.0;
-        this.vy = setup.vy || 0.0;
+        this.velocity = new Vec2(setup.vx || 0.0, setup.vy || 0.0);
         this.hw = w * 0.5;
         this.hh = h * 0.5;
         this.rd = Math.sqrt(this.hw * this.hw + this.hh * this.hh);
@@ -64,12 +60,10 @@ export class Body {
 
     integrate() {
         if (this.iM) {
-            // this.px += this.vx * this.dt;
-            this.position.x += this.vx * this.dt;
-            // this.py += this.vy * this.dt;
-            this.position.y += this.vy * this.dt;
+            this.position.x += this.velocity.x * this.dt;
+            this.position.y += this.velocity.y * this.dt;
             this.ra += this.va * this.dt;
-            this.vy += this.gravity * this.dt;
+            this.velocity.y += this.gravity * this.dt;
 
             this.cos = Math.cos(this.ra);
             this.sin = Math.sin(this.ra);
