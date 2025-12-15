@@ -1,5 +1,37 @@
+import World from '../physics/World';
+import { Body } from './Body';
+
 export default class Contact {
-    constructor(world, ctx) {
+    bA: Body | null;
+    bB: Body | null;
+
+    px: number;
+    py: number;
+    nx: number;
+    ny: number;
+    Pn: number; // accumulated normal impulse
+    Pt: number; // accumulated tangent impulse
+
+    r1x: number;
+    r1y: number;
+    r2x: number;
+    r2y: number;
+    rvx: number;
+    rvy: number;
+
+    separation: number;
+    massNormal: number;
+    massTangent: number;
+    bias: number;
+    friction: number;
+    allowedPenetration;
+    biasFactor;
+    min;
+    max;
+    abs;
+    ctx: CanvasRenderingContext2D;
+
+    constructor(world: World, ctx: CanvasRenderingContext2D) {
         this.bA = null;
         this.bB = null;
 
@@ -30,7 +62,7 @@ export default class Contact {
         this.ctx = ctx;
     }
 
-    update(bA, bB, separation, nx, ny, friction, px, py) {
+    update(bA: Body, bB: Body, separation: number, nx: number, ny: number, friction: number, px: number, py: number) {
         this.bA = bA;
         this.bB = bB;
         this.separation = separation;
@@ -50,16 +82,16 @@ export default class Contact {
         this.r2y = this.py - this.bB.py;
 
         // Precompute normal mass, tangent mass, and bias.
-        let rn1 = this.r1x * this.nx + this.r1y * this.ny;
-        let rn2 = this.r2x * this.nx + this.r2y * this.ny;
+        const rn1 = this.r1x * this.nx + this.r1y * this.ny;
+        const rn2 = this.r2x * this.nx + this.r2y * this.ny;
         this.massNormal =
             1.0 /
             (this.bA.iM +
                 this.bB.iM +
                 this.bA.iI * (this.r1x * this.r1x + this.r1y * this.r1y - rn1 * rn1) +
                 this.bB.iI * (this.r2x * this.r2x + this.r2y * this.r2y - rn2 * rn2));
-        let rt1 = this.r1x * this.ny - this.r1y * this.nx;
-        let rt2 = this.r2x * this.ny - this.r2y * this.nx;
+        const rt1 = this.r1x * this.ny - this.r1y * this.nx;
+        const rt2 = this.r2x * this.ny - this.r2y * this.nx;
         this.massTangent =
             1.0 /
             (this.bA.iM +
@@ -70,11 +102,19 @@ export default class Contact {
     }
 
     relativeVelocity() {
+        if (!this.bA || !this.bB) {
+            throw new Error('Body(ies) not define in Contact element');
+        }
+
         this.rvx = this.bB.vx + -this.bB.va * this.r2y - this.bA.vx - -this.bA.va * this.r1y;
         this.rvy = this.bB.vy + this.bB.va * this.r2x - this.bA.vy - this.bA.va * this.r1x;
     }
 
-    impulse(px, py) {
+    impulse(px: number, py: number) {
+        if (!this.bA || !this.bB) {
+            throw new Error('Body(ies) not define in Contact element');
+        }
+
         this.bA.vx -= this.bA.iM * px;
         this.bA.vy -= this.bA.iM * py;
         this.bA.va -= this.bA.iI * (this.r1x * py - this.r1y * px);
@@ -84,7 +124,7 @@ export default class Contact {
     }
 
     applyImpulse() {
-        let dPn, Pn0, maxPt;
+        let dPn, Pn0;
         // Relative velocity at contact
         this.relativeVelocity();
         // Compute normal impulse
@@ -99,7 +139,7 @@ export default class Contact {
         this.relativeVelocity();
         dPn = -this.massTangent * (this.rvx * this.ny - this.rvy * this.nx);
         // Compute friction impulse
-        maxPt = this.friction * this.Pn;
+        const maxPt = this.friction * this.Pn;
         // Clamp friction
         Pn0 = this.Pt;
         this.Pt = this.max(-maxPt, this.min(Pn0 + dPn, maxPt));
