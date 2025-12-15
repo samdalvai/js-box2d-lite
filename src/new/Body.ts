@@ -1,4 +1,5 @@
 import Vec2 from '../math/Vec2';
+import World from './World';
 
 export class Body {
     position: Vec2;
@@ -25,7 +26,7 @@ export class Body {
     gravity: Vec2;
     ctx: CanvasRenderingContext2D;
 
-    constructor(world: any, setup: any, ctx: CanvasRenderingContext2D) {
+    constructor(world: World, setup: any, ctx: CanvasRenderingContext2D) {
         const w = setup.w || 1.0;
         const h = setup.h || 1.0;
 
