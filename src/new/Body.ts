@@ -2,13 +2,14 @@ import Vec2 from '../math/Vec2';
 
 export class Body {
     position: Vec2;
+    rotation: number;
+
     velocity: Vec2;
+    angularVelocity: number;
 
     hw: number;
     hh: number;
     rd: number;
-    va: number;
-    ra: number;
 
     cos: number;
     sin: number;
@@ -33,11 +34,11 @@ export class Body {
         this.hw = w * 0.5;
         this.hh = h * 0.5;
         this.rd = Math.sqrt(this.hw * this.hw + this.hh * this.hh);
-        this.va = setup.angularVelocity || 0.0;
-        this.ra = setup.rotation || 0.0;
+        this.angularVelocity = setup.angularVelocity || 0.0;
+        this.rotation = setup.rotation || 0.0;
 
-        this.cos = Math.cos(this.ra);
-        this.sin = Math.sin(this.ra);
+        this.cos = Math.cos(this.rotation);
+        this.sin = Math.sin(this.rotation);
 
         this.friction = setup.friction === undefined ? world.friction : setup.friction;
         const mass = setup.mass || Infinity;
@@ -60,11 +61,11 @@ export class Body {
     integrate() {
         if (this.iM) {
             this.position.add(Vec2.scale(this.velocity, this.dt));
-            this.ra += this.va * this.dt;
+            this.rotation += this.angularVelocity * this.dt;
             this.velocity.y += this.gravity * this.dt;
 
-            this.cos = Math.cos(this.ra);
-            this.sin = Math.sin(this.ra);
+            this.cos = Math.cos(this.rotation);
+            this.sin = Math.sin(this.rotation);
         }
     }
 
