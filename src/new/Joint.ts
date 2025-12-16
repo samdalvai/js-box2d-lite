@@ -97,19 +97,15 @@ export default class Joint {
         // b = bias - vRel - P * softness
         const b = Vec2.sub(Vec2.sub(this.bias, rv), Vec2.scale(this.P, this.softness));
 
-        const ix = this.M.col1.x * b.x + this.M.col2.x * b.y;
-        const iy = this.M.col1.y * b.x + this.M.col2.y * b.y;
+        const impulse = Mat22.multiply(this.M, b);
 
-        this.body1.velocity.x -= ix * this.body1.invMass;
-        this.body1.velocity.y -= iy * this.body1.invMass;
-        this.body1.angularVelocity -= this.body1.invI * (this.r1.x * iy - this.r1.y * ix);
+        this.body1.velocity.sub(Vec2.scale(this.body1.invMass, impulse));
+        this.body1.angularVelocity -= this.body1.invI * Vec2.cross(this.r1, impulse);
 
-        this.body2.velocity.x += ix * this.body2.invMass;
-        this.body2.velocity.y += iy * this.body2.invMass;
-        this.body2.angularVelocity += this.body2.invI * (this.r2.x * iy - this.r2.y * ix);
+        this.body2.velocity.add(Vec2.scale(this.body2.invMass, impulse));
+        this.body2.angularVelocity += this.body2.invI * Vec2.cross(this.r2, impulse);
 
-        this.P.x += ix;
-        this.P.y += iy;
+        this.P.add(impulse);
     }
 
     draw() {
