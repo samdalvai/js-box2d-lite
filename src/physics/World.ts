@@ -15,6 +15,7 @@ export default class World {
     static accumulateImpulses = true;
     static warmStarting = true;
     static positionCorrection = true;
+    static debugContacts = false;
 
     constructor(gravity: Vec2, iterations: number) {
         this.gravity = gravity;
