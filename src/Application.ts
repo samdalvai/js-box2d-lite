@@ -65,6 +65,10 @@ export default class Application {
                         World.warmStarting = !World.warmStarting;
                     }
 
+                    if (inputEvent.code === 'KeyD') {
+                        World.debugContacts = !World.debugContacts;
+                    }
+
                     if (inputEvent.code === 'Digit1') {
                         this.demoIndex = 0;
                         this.world.clear();
@@ -110,7 +114,7 @@ export default class Application {
 
                         this.bomb.position.set(Utils.random(-15, 10), 10);
                         this.bomb.rotation = Utils.random(-1.5, 1.5);
-                        this.bomb.velocity = Vec2.scale(-1.5, this.bomb.position);
+                        this.bomb.velocity = Vec2.scale(-1.75, this.bomb.position);
                         this.bomb.angularVelocity = Utils.random(-20, 20);
                     }
                     break;
@@ -195,6 +199,15 @@ export default class Application {
             );
 
             Graphics.drawText(`(W)arm Starting ${World.warmStarting ? 'ON' : 'OFF'}`, 50, 125, 18, 'arial', 'orange');
+
+            Graphics.drawText(
+                `(D)raw contact points ${World.debugContacts ? 'ON' : 'OFF'}`,
+                50,
+                150,
+                18,
+                'arial',
+                'orange',
+            );
         }
 
         for (const body of this.world.bodies) {
@@ -205,9 +218,11 @@ export default class Application {
             Graphics.drawJoint(joint);
         }
 
-        for (const arbiter of this.world.arbiters.values()) {
-            for (const contact of arbiter.contacts) {
-                Graphics.drawContactPoint(contact, 'red');
+        if (World.debugContacts) {
+            for (const arbiter of this.world.arbiters.values()) {
+                for (const contact of arbiter.contacts) {
+                    Graphics.drawContactPoint(contact, 'red');
+                }
             }
         }
     };

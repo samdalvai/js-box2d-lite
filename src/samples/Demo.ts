@@ -65,7 +65,7 @@ export default class Demo {
             box.set(new Vec2(1, 1), 1);
             box.friction = 0.2;
             const x = Utils.random(-0.1, 0.1);
-            box.position.set(x, -4 + 1.05 * i);
+            box.position.set(x, -5 + 1.05 * i);
             world.add(box);
         }
     };
