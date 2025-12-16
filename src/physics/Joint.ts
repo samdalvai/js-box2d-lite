@@ -119,7 +119,7 @@ export default class Joint {
         }
 
         // Linear velocity of the center of mass of body 1 and 2.
-        const lv1 = Vec2.sub(this.body1.velocity, Vec2.cross(this.body1.angularVelocity, this.r1));
+        const lv1 = Vec2.add(this.body1.velocity, Vec2.cross(this.body1.angularVelocity, this.r1));
         const lv2 = Vec2.add(this.body2.velocity, Vec2.cross(this.body2.angularVelocity, this.r2));
 
         // Relative velocity at contact
