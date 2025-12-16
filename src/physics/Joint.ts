@@ -119,48 +119,20 @@ export default class Joint {
         }
 
         // Linear velocity of the center of mass of body 1 and 2.
-        // const lv1 = Vec2.sub(this.body1.velocity, Vec2.cross(this.body1.angularVelocity, this.r1));
-        // const lv2 = Vec2.add(this.body2.velocity, Vec2.cross(this.body2.angularVelocity, this.r2));
+        const lv1 = Vec2.sub(this.body1.velocity, Vec2.cross(this.body1.angularVelocity, this.r1));
+        const lv2 = Vec2.add(this.body2.velocity, Vec2.cross(this.body2.angularVelocity, this.r2));
 
-        // // Relative velocity at contact
-        // const dv = Vec2.sub(lv2, lv1);
+        // Relative velocity at contact
+        const dv = Vec2.sub(lv2, lv1);
 
-        // const impulse = Mat22.multiply(this.M, Vec2.sub(Vec2.sub(this.bias, dv), Vec2.scale(this.softness, this.P)));
+        const impulse = Mat22.multiply(this.M, Vec2.sub(Vec2.sub(this.bias, dv), Vec2.scale(this.softness, this.P)));
 
-        // this.body1.velocity.sub(Vec2.scale(this.body1.invMass, impulse));
-        // this.body1.angularVelocity -= this.body1.invI * Vec2.cross(this.r1, impulse);
+        this.body1.velocity.sub(Vec2.scale(this.body1.invMass, impulse));
+        this.body1.angularVelocity -= this.body1.invI * Vec2.cross(this.r1, impulse);
 
-        // this.body2.velocity.add(Vec2.scale(this.body2.invMass, impulse));
-        // this.body2.angularVelocity += this.body2.invI * Vec2.cross(this.r2, impulse);
+        this.body2.velocity.add(Vec2.scale(this.body2.invMass, impulse));
+        this.body2.angularVelocity += this.body2.invI * Vec2.cross(this.r2, impulse);
 
-        // this.P.add(impulse);
-        const bx =
-            this.bsx -
-            (this.body2.velocity.x +
-                -this.body2.angularVelocity * this.r2.y -
-                this.body1.velocity.x -
-                -this.body1.angularVelocity * this.r1.y) -
-            this.P.x * this.softness;
-        const by =
-            this.bsy -
-            (this.body2.velocity.y +
-                this.body2.angularVelocity * this.r2.x -
-                this.body1.velocity.y -
-                this.body1.angularVelocity * this.r1.x) -
-            this.P.y * this.softness;
-
-        const ix = this.m00 * bx + this.m01 * by;
-        const iy = this.m01 * bx + this.m11 * by;
-
-        this.body1.velocity.x -= ix * this.body1.invMass;
-        this.body1.velocity.y -= iy * this.body1.invMass;
-        this.body1.angularVelocity -= this.body1.invI * (this.r1.x * iy - this.r1.y * ix);
-
-        this.body2.velocity.x += ix * this.body2.invMass;
-        this.body2.velocity.y += iy * this.body2.invMass;
-        this.body2.angularVelocity += this.body2.invI * (this.r2.x * iy - this.r2.y * ix);
-
-        this.P.x += ix;
-        this.P.y += iy;
+        this.P.add(impulse);
     };
 }
