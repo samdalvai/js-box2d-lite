@@ -15,8 +15,8 @@ export default class Contact {
     massTangent: number;
     bias: number;
 
-    body1: Body | null;
-    body2: Body | null;
+    body1!: Body;
+    body2!: Body;
 
     rv: Vec2;
 
@@ -26,9 +26,6 @@ export default class Contact {
     ctx: CanvasRenderingContext2D;
 
     constructor(world: World, ctx: CanvasRenderingContext2D) {
-        this.body1 = null;
-        this.body2 = null;
-
         this.position = new Vec2();
         this.normal = new Vec2();
         this.Pn = 0.0; // accumulated normal impulse
@@ -89,20 +86,12 @@ export default class Contact {
     }
 
     relativeVelocity() {
-        if (!this.body1 || !this.body2) {
-            throw new Error('Body(ies) not define in Contact element');
-        }
-
         const vel1 = Vec2.add(this.body1.velocity, Vec2.cross(this.body1.angularVelocity, this.r1));
         const vel2 = Vec2.add(this.body2.velocity, Vec2.cross(this.body2.angularVelocity, this.r2));
         this.rv = Vec2.sub(vel2, vel1);
     }
 
     impulse(J: Vec2) {
-        if (!this.body1 || !this.body2) {
-            throw new Error('Body(ies) not define in Contact element');
-        }
-
         // Body 1
         this.body1.velocity.sub(Vec2.scale(J, this.body1.invMass));
         this.body1.angularVelocity -= this.body1.invI * Vec2.cross(this.r1, J);
