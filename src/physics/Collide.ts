@@ -33,15 +33,14 @@ export class ClipVertex {
     v: Vec2;
     fp: FeaturePair;
 
-    constructor(value = 0) {
+    constructor() {
         this.v = new Vec2();
-        this.fp = new FeaturePair(value);
+        this.fp = new FeaturePair();
     }
 
     clone = (): ClipVertex => {
         const cv = new ClipVertex();
         cv.v = this.v.clone();
-        cv.fp.value = this.fp.value;
 
         cv.fp.e.inEdge1 = this.fp.e.inEdge1;
         cv.fp.e.outEdge1 = this.fp.e.outEdge1;
