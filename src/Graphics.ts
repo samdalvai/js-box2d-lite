@@ -4,6 +4,10 @@ import { Contact } from './physics/Arbiter';
 import Body from './physics/Body';
 import Joint from './physics/Joint';
 
+window.addEventListener('resize', () => {
+    Graphics.openWindow();
+});
+
 export default class Graphics {
     static windowWidth: number;
     static windowHeight: number;
@@ -30,8 +34,14 @@ export default class Graphics {
             return false;
         }
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+
+        canvas.width = width;
+        canvas.height = height;
 
         this.canvas = canvas;
         this.ctx = ctx;
