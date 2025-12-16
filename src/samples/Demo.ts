@@ -70,6 +70,34 @@ export default class Demo {
         }
     };
 
+    static demo5 = (world: World) => {
+        // Demo 5: A pyramid
+        const floor = new Body();
+        floor.set(new Vec2(100, 20), Number.MAX_VALUE);
+        floor.friction = 0.2;
+        floor.position.set(0, -0.8 * floor.width.y);
+        floor.rotation = 0;
+        world.add(floor);
+
+        const x = new Vec2(-6.0, -4);
+
+        for (let i = 0; i < 12; i++) {
+            const y = x.clone();
+
+            for (let j = i; j < 12; j++) {
+                const b = new Body();
+                b.set(new Vec2(1.0, 1.0), 10.0);
+                b.friction = 0.2;
+                b.position.set(y.x, y.y);
+                world.add(b);
+
+                y.add(new Vec2(1.125, 0.0));
+            }
+
+            x.add(new Vec2(0.5625, 2.0));
+        }
+    };
+
     static demo7 = (world: World) => {
         // Demo 7: A suspension bridge
         const floor = new Body();
