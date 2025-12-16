@@ -16,8 +16,6 @@ export default class Joint {
     m01: number;
     m11: number;
 
-    // bsx: number;
-    // bsy: number;
     bias: Vec2;
     P: Vec2; // accumulated impulse
 
@@ -92,23 +90,15 @@ export default class Joint {
     }
 
     applyImpulse() {
-        const bx =
-            this.bias.x -
-            (this.body2.velocity.x +
-                -this.body2.angularVelocity * this.r2.y -
-                this.body1.velocity.x -
-                -this.body1.angularVelocity * this.r1.y) -
-            this.P.x * this.softness;
-        const by =
-            this.bias.y -
-            (this.body2.velocity.y +
-                this.body2.angularVelocity * this.r2.x -
-                this.body1.velocity.y -
-                this.body1.angularVelocity * this.r1.x) -
-            this.P.y * this.softness;
+        const vel1 = Vec2.add(this.body1.velocity, Vec2.cross(this.body1.angularVelocity, this.r1));
+        const vel2 = Vec2.add(this.body2.velocity, Vec2.cross(this.body2.angularVelocity, this.r2));
+        const rv = Vec2.sub(vel2, vel1);
 
-        const ix = this.m00 * bx + this.m01 * by;
-        const iy = this.m01 * bx + this.m11 * by;
+        // b = bias - vRel - P * softness
+        const b = Vec2.sub(Vec2.sub(this.bias, rv), Vec2.scale(this.P, this.softness));
+
+        const ix = this.m00 * b.x + this.m01 * b.y;
+        const iy = this.m01 * b.x + this.m11 * b.y;
 
         this.body1.velocity.x -= ix * this.body1.invMass;
         this.body1.velocity.y -= iy * this.body1.invMass;
