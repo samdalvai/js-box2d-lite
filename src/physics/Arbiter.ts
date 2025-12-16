@@ -219,7 +219,7 @@ export class Arbiter {
             c.r2 = Vec2.sub(c.position, b2.position);
 
             // Linear velocity of the center of mass of body 1 and 2.
-            let lv1 = Vec2.sub(b1.velocity, Vec2.cross(b1.angularVelocity, c.r1));
+            let lv1 = Vec2.add(b1.velocity, Vec2.cross(b1.angularVelocity, c.r1));
             let lv2 = Vec2.add(b2.velocity, Vec2.cross(b2.angularVelocity, c.r2));
 
             // Relative velocity at contact
