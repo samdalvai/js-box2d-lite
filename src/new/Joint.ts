@@ -12,9 +12,6 @@ export default class Joint {
     r1: Vec2;
     r2: Vec2;
 
-    // m00: number;
-    // m01: number;
-    // m11: number;
     M: Mat22;
 
     bias: Vec2;
@@ -76,23 +73,10 @@ export default class Joint {
 
         const det = 1.0 / (Km00 * Km11 - Km01 * Km01);
 
-        /*
-            m.col1.x = m00
-            m.col1.y = m10
-            m.col2.x = m01
-            m.col2.y = m11
-        */
-
-        this.m00 = det * Km11;
-        this.m01 = -det * Km01;
-        this.m10 = -det * Km01; // explicit symmetry, m10 can be removed
-        this.m11 = det * Km00;
-
-        // this.M.col1.x = det * Km11;
-        // this.M.col1.y = -det * Km01;
-        // this.M.col2.y = det * Km00;
-        // console.log('det * Km00 = ', det * Km00);
-        // console.log(this.M);
+        this.M.col1.x = det * Km11; // m00
+        this.M.col1.y = -det * Km01; // m10, explicit symmetry with m01
+        this.M.col2.x = -det * Km01; // m01
+        this.M.col2.y = det * Km00; // m11
 
         this.bias.x = (this.body2.position.x + this.r2.x - (this.body1.position.x + this.r1.x)) * this.biasFactor;
         this.bias.y = (this.body2.position.y + this.r2.y - (this.body1.position.y + this.r1.y)) * this.biasFactor;
@@ -113,12 +97,8 @@ export default class Joint {
         // b = bias - vRel - P * softness
         const b = Vec2.sub(Vec2.sub(this.bias, rv), Vec2.scale(this.P, this.softness));
 
-        // const iy = this.M.col1.x * b.x + this.M.col2.y * b.y;
-        // const ix = this.M.col1.y * b.x + this.M.col1.y * b.y;
-
-        // Explicit symmetry, here m10 can be substituded by m01
-        const ix = this.m00 * b.x + this.m01 * b.y;
-        const iy = this.m10 * b.x + this.m11 * b.y;
+        const ix = this.M.col1.x * b.x + this.M.col2.x * b.y;
+        const iy = this.M.col1.y * b.x + this.M.col2.y * b.y;
 
         this.body1.velocity.x -= ix * this.body1.invMass;
         this.body1.velocity.y -= iy * this.body1.invMass;
