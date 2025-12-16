@@ -42,9 +42,6 @@ export default class Joint {
         y = setup.ay - this.body2.position.y;
         this.localAnchor2 = new Vec2(c * x + s * y, -s * x + c * y);
 
-        // this.m00 = 0.0;
-        // this.m01 = 0.0;
-        // this.m11 = 0.0;
         this.M = new Mat22();
 
         this.r1 = new Vec2();
