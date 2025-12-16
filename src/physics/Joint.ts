@@ -33,6 +33,7 @@ export default class Joint {
         this.P = new Vec2();
     }
 
+    // TODO: set methods are needed if we do objects pooling, if not we can initialize a Joint directly
     set = (b1: Body, b2: Body, anchor: Vec2): void => {
         this.body1 = b1;
         this.body2 = b2;
