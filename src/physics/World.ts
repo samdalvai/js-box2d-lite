@@ -93,8 +93,8 @@ export default class World {
         }
     };
 
-    step = (dt: number) => {
-        const invDt = dt > 0.0 ? 1.0 / dt : 0.0;
+    step = (deltaTime: number) => {
+        const invDt = deltaTime > 0.0 ? 1.0 / deltaTime : 0.0;
 
         // Determine overlapping bodies and update contact points.
         this.broadPhase();
@@ -107,8 +107,8 @@ export default class World {
                 continue;
             }
 
-            b.velocity.add(Vec2.scale(dt, Vec2.add(this.gravity, Vec2.scale(b.invMass, b.force))));
-            b.angularVelocity += dt * b.invI * b.torque;
+            b.velocity.add(Vec2.scale(deltaTime, Vec2.add(this.gravity, Vec2.scale(b.invMass, b.force))));
+            b.angularVelocity += deltaTime * b.invI * b.torque;
         }
 
         // Perform pre-steps.
@@ -133,13 +133,7 @@ export default class World {
 
         // Integrate Velocities
         for (let i = 0; i < this.bodies.length; i++) {
-            const b = this.bodies[i];
-
-            b.position.add(Vec2.scale(dt, b.velocity));
-            b.rotation += dt * b.angularVelocity;
-
-            b.force.set(0, 0);
-            b.torque = 0.0;
+            this.bodies[i].integrate(deltaTime);
         }
     };
 }
