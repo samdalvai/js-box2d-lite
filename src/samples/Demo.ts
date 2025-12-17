@@ -243,6 +243,72 @@ export default class Demo {
         world.add(floor);
 
         // TODO: to be completed
+        // b->Set(Vec2(12.0f, 0.5f), FLT_MAX);
+        // b->position.Set(-1.5f, 10.0f);
+        // world.Add(b);
+        // ++b; ++numBodies;
+
+        // for (int i = 0; i < 10; ++i)
+        // {
+        //     b->Set(Vec2(0.2f, 2.0f), 10.0f);
+        //     b->position.Set(-6.0f + 1.0f * i, 11.125f);
+        //     b->friction = 0.1f;
+        //     world.Add(b);
+        //     ++b; ++numBodies;
+        // }
+
+        // b->Set(Vec2(14.0f, 0.5f), FLT_MAX);
+        // b->position.Set(1.0f, 6.0f);
+        // b->rotation = 0.3f;
+        // world.Add(b);
+        // ++b; ++numBodies;
+
+        // Body* b2 = b;
+        // b->Set(Vec2(0.5f, 3.0f), FLT_MAX);
+        // b->position.Set(-7.0f, 4.0f);
+        // world.Add(b);
+        // ++b; ++numBodies;
+
+        // Body* b3 = b;
+        // b->Set(Vec2(12.0f, 0.25f), 20.0f);
+        // b->position.Set(-0.9f, 1.0f);
+        // world.Add(b);
+        // ++b; ++numBodies;
+
+        // j->Set(b1, b3, Vec2(-2.0f, 1.0f));
+        // world.Add(j);
+        // ++j; ++numJoints;
+
+        // Body* b4 = b;
+        // b->Set(Vec2(0.5f, 0.5f), 10.0f);
+        // b->position.Set(-10.0f, 15.0f);
+        // world.Add(b);
+        // ++b; ++numBodies;
+
+        // j->Set(b2, b4, Vec2(-7.0f, 15.0f));
+        // world.Add(j);
+        // ++j; ++numJoints;
+
+        // Body* b5 = b;
+        // b->Set(Vec2(2.0f, 2.0f), 20.0f);
+        // b->position.Set(6.0f, 2.5f);
+        // b->friction = 0.1f;
+        // world.Add(b);
+        // ++b; ++numBodies;
+
+        // j->Set(b1, b5, Vec2(6.0f, 2.6f));
+        // world.Add(j);
+        // ++j; ++numJoints;
+
+        // Body* b6 = b;
+        // b->Set(Vec2(2.0f, 0.2f), 10.0f);
+        // b->position.Set(6.0f, 3.6f);
+        // world.Add(b);
+        // ++b; ++numBodies;
+
+        // j->Set(b5, b6, Vec2(7.0f, 3.5f));
+        // world.Add(j);
+        // ++j; ++numJoints;
     };
 
     static demo9 = (world: World) => {
@@ -255,6 +321,51 @@ export default class Demo {
         world.add(floor);
 
         // TODO: to be completed
+        // Body * b1 = b;
+        // ++b;
+        // ++numBodies;
+
+        // float mass = 10.0f;
+
+        // // Tuning
+        // float frequencyHz = 4.0f;
+        // float dampingRatio = 0.7f;
+
+        // // frequency in radians
+        // float omega = 2.0f * k_pi * frequencyHz;
+
+        // // damping coefficient
+        // float d = 2.0f * mass * dampingRatio * omega;
+
+        // // spring stiffness
+        // float k = mass * omega * omega;
+
+        // // magic formulas
+        // float softness = 1.0f / (d + timeStep * k);
+        // float biasFactor = timeStep * k / (d + timeStep * k);
+
+        // const float y = 12.0f;
+
+        // for (int i = 0; i < 15; ++i)
+        // {
+        //     Vec2 x(0.5f + i, y);
+        //     b->Set(Vec2(0.75f, 0.25f), mass);
+        //     b->friction = 0.2f;
+        //     b->position = x;
+        //     b->rotation = 0.0f;
+        //     world.Add(b);
+
+        //     j->Set(b1, b, Vec2(float(i), y));
+        //     j->softness = softness;
+        //     j->biasFactor = biasFactor;
+        //     world.Add(j);
+
+        //     b1 = b;
+        //     ++b;
+        //     ++numBodies;
+        //     ++j;
+        //     ++numJoints;
+        // }
     };
 
     static demoFunctions = [
