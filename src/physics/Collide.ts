@@ -1,3 +1,15 @@
+/*
+ * Ported to JavaScript from Box2D Lite
+ * Original work Copyright (c) 2006-2007 Erin Catto
+ * http://www.gphysics.com
+ *
+ * See LICENSE file for full license text.
+ */
+import Mat22 from '../math/Mat22';
+import Vec2 from '../math/Vec2';
+import { Contact, FeaturePair } from './Arbiter';
+import Body from './Body';
+
 // Box vertex and edge numbering:
 //
 //        ^ y
@@ -9,10 +21,6 @@
 //    |        |
 //   v3 ------ v4
 //        e3
-import Mat22 from '../math/Mat22';
-import Vec2 from '../math/Vec2';
-import { Contact, FeaturePair } from './Arbiter';
-import Body from './Body';
 
 export enum Axis {
     FACE_A_X,
