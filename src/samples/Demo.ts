@@ -291,7 +291,7 @@ export default class Demo {
         world.add(box2);
 
         const joint3 = new Joint();
-        joint3.set(floor, box2, new Vec2(5.75, -1.9));
+        joint3.set(floor, box2, new Vec2(5.75, -2.65));
         world.add(joint3);
 
         const box3 = new Body();
