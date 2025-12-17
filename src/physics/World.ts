@@ -42,6 +42,8 @@ export default class World {
     };
 
     broadPhase = () => {
+        const activeKeys = new Set<number>();
+
         // O(n^2) broad-phase
         for (let i = 0; i < this.bodies.length; i++) {
             const bi = this.bodies[i];
@@ -61,6 +63,7 @@ export default class World {
 
                     const newArb = new Arbiter(bi, bj);
                     const key = ArbiterKey.getKey(bi, bj);
+                    activeKeys.add(key);
 
                     if (newArb.numContacts > 0) {
                         if (!this.arbiters.has(key)) {
@@ -72,6 +75,13 @@ export default class World {
                         this.arbiters.delete(key);
                     }
                 }
+            }
+        }
+
+        // Remove stale arbiters
+        for (const key of this.arbiters.keys()) {
+            if (!activeKeys.has(key)) {
+                this.arbiters.delete(key);
             }
         }
     };
