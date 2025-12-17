@@ -120,11 +120,12 @@ export class Arbiter {
     }
 
     update = (newContacts: Contact[], numNewContacts: number): void => {
-        const mergedContacts = [new Contact(), new Contact()];
+        const mergedContacts: Contact[] = [new Contact(), new Contact()];
 
         for (let i = 0; i < numNewContacts; i++) {
             const cNew = newContacts[i];
             let k = -1;
+
             for (let j = 0; j < this.numContacts; ++j) {
                 const cOld = this.contacts[j];
                 if (cNew.edges.key === cOld.edges.key) {
@@ -132,13 +133,15 @@ export class Arbiter {
                     break;
                 }
             }
+
             if (k > -1) {
                 const cOld = this.contacts[k];
-                // TODO: check if mergedContacts[i] = newContacts[i]; would be equivalent to next two lines
-                mergedContacts[i] = new Contact();
-                Object.assign(mergedContacts[i], newContacts[i]);
                 const c = mergedContacts[i];
 
+                // Copy all data from new contact
+                Object.assign(c, cNew);
+
+                // Preserve accumulated impulses for warm starting
                 if (World.warmStarting) {
                     c.Pn = cOld.Pn;
                     c.Pt = cOld.Pt;
@@ -149,11 +152,13 @@ export class Arbiter {
                     c.Pnb = 0.0;
                 }
             } else {
-                mergedContacts[i] = newContacts[i];
+                // Brand new contact - just copy it
+                mergedContacts[i] = cNew;
             }
         }
 
-        for (let i = 0; i < numNewContacts; i++) {
+        // Replace old contacts with merged ones
+        for (let i = 0; i < numNewContacts; ++i) {
             this.contacts[i] = mergedContacts[i];
         }
 
