@@ -126,6 +126,7 @@ export class Arbiter {
             const cNew = newContacts[i];
             let k = -1;
 
+            // Try to find a matching contact from previous frame using edge key
             for (let j = 0; j < this.numContacts; ++j) {
                 const cOld = this.contacts[j];
                 if (cNew.edges.key === cOld.edges.key) {
@@ -134,14 +135,15 @@ export class Arbiter {
                 }
             }
 
+            // Persistent contact found
             if (k > -1) {
                 const cOld = this.contacts[k];
                 const c = mergedContacts[i];
 
-                // Copy all data from new contact
+                // 1. Copy fresh geometry from current frame (position, normal, etc.)
                 Object.assign(c, cNew);
 
-                // Preserve accumulated impulses for warm starting
+                // 2. But keep the accumulated impulses from last frame (warm starting)
                 if (World.warmStarting) {
                     c.Pn = cOld.Pn;
                     c.Pt = cOld.Pt;
@@ -177,7 +179,7 @@ export class Arbiter {
             const r1 = Vec2.sub(c.position, this.body1.position);
             const r2 = Vec2.sub(c.position, this.body2.position);
 
-            // Normal mass computation
+            // Effective mass along normal (how easily the contact can be pushed apart)
             const rn1 = Vec2.dot(r1, c.normal);
             const rn2 = Vec2.dot(r2, c.normal);
             let kNormal = this.body1.invMass + this.body2.invMass;
@@ -185,7 +187,7 @@ export class Arbiter {
                 this.body1.invI * (Vec2.dot(r1, r1) - rn1 * rn1) + this.body2.invI * (Vec2.dot(r2, r2) - rn2 * rn2);
             c.massNormal = 1.0 / kNormal;
 
-            // Tangent mass computation
+            // Effective mass along tangent (for friction)
             const tangent = Vec2.cross(c.normal, 1);
             const rt1 = Vec2.dot(r1, tangent);
             const rt2 = Vec2.dot(r2, tangent);
@@ -194,7 +196,7 @@ export class Arbiter {
                 this.body1.invI * (Vec2.dot(r1, r1) - rt1 * rt1) + this.body2.invI * (Vec2.dot(r2, r2) - rt2 * rt2);
             c.massTangent = 1 / kTangent;
 
-            // Bias computation
+            // Baumgarte stabilization: small velocity bias to reduce penetration over time
             c.bias = -kBiasFactor * invDt * Math.min(0, c.separation + kAllowedPenetration);
 
             if (World.accumulateImpulses) {
@@ -223,10 +225,10 @@ export class Arbiter {
             let lv1 = Vec2.add(b1.velocity, Vec2.cross(b1.angularVelocity, c.r1));
             let lv2 = Vec2.add(b2.velocity, Vec2.cross(b2.angularVelocity, c.r2));
 
-            // Relative velocity at contact
+            // Relative velocity at contact (including rotation)
             let dv = Vec2.sub(lv2, lv1);
 
-            // Compute normal impulse
+            // Normal constraint: prevent penetration
             const vn = Vec2.dot(dv, c.normal);
             let dPn = c.massNormal * (-vn + c.bias);
 
@@ -255,6 +257,7 @@ export class Arbiter {
             // Relative velocity at contact
             dv = Vec2.sub(lv2, lv1);
 
+            // Friction (after normal — uses updated velocities)
             const tangent = Vec2.cross(c.normal, 1);
             const vt = Vec2.dot(dv, tangent);
             let dPt = c.massTangent * -vt;
