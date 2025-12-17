@@ -88,6 +88,10 @@ export default class Application {
                         const index = inputEvent.code.substring('Digit'.length);
                         this.demoIndex = Number.parseInt(index) - 1;
 
+                        if (this.demoIndex === -1) {
+                            this.demoIndex = 9;
+                        }
+
                         const demo = Demo.demoFunctions[this.demoIndex];
 
                         if (!demo) {
