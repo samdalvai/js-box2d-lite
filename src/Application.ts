@@ -142,7 +142,7 @@ export default class Application {
                                     new Vec2(InputManager.mousePosition.x, InputManager.mousePosition.y),
                                 );
                                 const box = new Body();
-                                box.set(new Vec2(1, 1), 50);
+                                box.set(new Vec2(1, 1), 500);
                                 box.position = worldPos;
                                 box.friction = 0.2;
                                 box.color = 'rgba(230, 213, 102, 1)';
