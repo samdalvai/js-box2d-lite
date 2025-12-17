@@ -106,7 +106,12 @@ export default class Application {
                         Demo.demo5(this.world);
                     }
 
-                    // ....
+                    if (inputEvent.code === 'Digit6') {
+                        this.demoIndex = 5;
+                        this.world.clear();
+                        this.bomb = null;
+                        Demo.demo6(this.world);
+                    }
 
                     if (inputEvent.code === 'Digit7') {
                         this.demoIndex = 6;
