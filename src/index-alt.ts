@@ -1,7 +1,7 @@
 import Vec2 from './math/Vec2';
-import Canvas from './new/Canvas';
-import Pointer from './new/Pointer';
-import World from './new/World';
+import Canvas from './alt/Canvas';
+import Pointer from './alt/Pointer';
+import World from './alt/World';
 
 const canvas = new Canvas(1200, 600);
 const ctx = canvas.ctx;
