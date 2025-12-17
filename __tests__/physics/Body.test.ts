@@ -19,9 +19,9 @@ describe('Body', () => {
         expect(body.width.x).toBe(0);
         expect(body.width.y).toBe(0);
 
-        expect(body.mass).toBe(Number.MAX_VALUE);
+        expect(body.mass).toBe(Infinity);
         expect(body.invMass).toBe(0);
-        expect(body.I).toBe(Number.MAX_VALUE);
+        expect(body.I).toBe(Infinity);
         expect(body.invI).toBe(0);
     });
 
@@ -68,13 +68,13 @@ describe('Body', () => {
     test('set() handles infinite mass correctly', () => {
         const body = new Body();
         const w = new Vec2(2, 3);
-        const m = Number.MAX_VALUE;
+        const m = Infinity;
 
         body.set(w, m);
 
         expect(body.mass).toBe(m);
         expect(body.invMass).toBe(0);
-        expect(body.I).toBe(Number.MAX_VALUE);
+        expect(body.I).toBe(Infinity);
         expect(body.invI).toBe(0);
     });
 
