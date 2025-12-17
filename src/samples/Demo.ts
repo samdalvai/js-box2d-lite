@@ -250,7 +250,7 @@ export default class Demo {
         for (let i = 0; i < 10; i++) {
             const b = new Body();
             b.set(new Vec2(0.2, 2.0), 10.0);
-            b.position.set(-6.0 + 1.0 * i, 5.125);
+            b.position.set(-6.0 + 1.0 * i, 5.25);
             b.friction = 0.1;
             world.add(b);
         }
