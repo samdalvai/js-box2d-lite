@@ -55,13 +55,6 @@ export default class Graphics {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     };
 
-    static drawFillCircle = (x: number, y: number, radius: number, color: string): void => {
-        this.ctx.beginPath();
-        this.ctx.arc(x, y, radius, 0, Math.PI * 2);
-        this.ctx.fillStyle = color;
-        this.ctx.fill();
-    };
-
     static drawText = (
         text: string,
         x: number,
@@ -81,11 +74,27 @@ export default class Graphics {
         this.ctx.restore();
     };
 
-    static worldToScreen(v: Vec2): Vec2 {
-        return new Vec2(
-            (v.x - this.pan.x) * this.zoom + this.windowWidth / 2,
-            this.windowHeight / 2 - (v.y - this.pan.y) * this.zoom,
-        );
+    /** Start world coordinates to screen conversion */
+    static beginWorld(): void {
+        const ctx = this.ctx;
+
+        ctx.save();
+
+        // Move origin to screen center
+        ctx.translate(this.windowWidth / 2, this.windowHeight / 2);
+
+        // Flip Y axis (world Y up, canvas Y down)
+        ctx.scale(this.zoom, -this.zoom);
+
+        // Apply camera pan
+        ctx.translate(-this.pan.x, -this.pan.y);
+
+        ctx.lineWidth = 1 / this.zoom;
+    }
+
+    /** End world coordinates to screen conversion */
+    static endWorld(): void {
+        this.ctx.restore();
     }
 
     static screenToWorld(v: Vec2): Vec2 {
@@ -95,25 +104,23 @@ export default class Graphics {
         );
     }
 
-    // TODO: can we generalize drawing to world screen?
-    static drawContactPoint = (contact: Contact, color: string): void => {
-        const v = this.worldToScreen(contact.position);
+    static drawContactPoint = (contact: Contact, color = 'red'): void => {
+        const v = contact.position;
         this.ctx.beginPath();
-        this.ctx.arc(v.x, v.y, 5, 0, Math.PI * 2);
+        this.ctx.arc(v.x, v.y, 5 / this.zoom, 0, Math.PI * 2);
         this.ctx.fillStyle = color;
         this.ctx.fill();
     };
 
-    // TODO: can we generalize drawing to world screen?
     static drawBody = (body: Body): void => {
         const R = new Mat22(body.rotation);
         const x = body.position;
         const h = Vec2.scale(0.5, body.width);
 
-        const v1 = this.worldToScreen(Vec2.add(x, Mat22.multiply(R, new Vec2(-h.x, -h.y))));
-        const v2 = this.worldToScreen(Vec2.add(x, Mat22.multiply(R, new Vec2(h.x, -h.y))));
-        const v3 = this.worldToScreen(Vec2.add(x, Mat22.multiply(R, new Vec2(h.x, h.y))));
-        const v4 = this.worldToScreen(Vec2.add(x, Mat22.multiply(R, new Vec2(-h.x, h.y))));
+        const v1 = Vec2.add(x, Mat22.multiply(R, new Vec2(-h.x, -h.y)));
+        const v2 = Vec2.add(x, Mat22.multiply(R, new Vec2(h.x, -h.y)));
+        const v3 = Vec2.add(x, Mat22.multiply(R, new Vec2(h.x, h.y)));
+        const v4 = Vec2.add(x, Mat22.multiply(R, new Vec2(-h.x, h.y)));
 
         this.ctx.strokeStyle = body.color;
         this.ctx.beginPath();
@@ -126,7 +133,6 @@ export default class Graphics {
         this.ctx.stroke();
     };
 
-    // TODO: can we generalize drawing to world screen?
     static drawJoint = (joint: Joint, color = 'rgba(128, 128, 204, 1)'): void => {
         if (!joint.body1 || !joint.body2) {
             throw new Error('One or more bodies not initialized in Joint');
@@ -143,23 +149,17 @@ export default class Graphics {
         const x2 = b2.position;
         const p2 = Vec2.add(x2, Mat22.multiply(R2, joint.localAnchor2));
 
-        // Convert physics/world coordinates to canvas coordinates
-        const sx1 = Graphics.worldToScreen(x1);
-        const sp1 = Graphics.worldToScreen(p1);
-        const sx2 = Graphics.worldToScreen(x2);
-        const sp2 = Graphics.worldToScreen(p2);
-
         this.ctx.strokeStyle = color;
 
         this.ctx.beginPath();
 
         // Line from body1 center to its anchor
-        this.ctx.moveTo(sx1.x, sx1.y);
-        this.ctx.lineTo(sp1.x, sp1.y);
+        this.ctx.moveTo(x1.x, x1.y);
+        this.ctx.lineTo(p1.x, p1.y);
 
         // Line from body2 center to its anchor
-        this.ctx.moveTo(sx2.x, sx2.y);
-        this.ctx.lineTo(sp2.x, sp2.y);
+        this.ctx.moveTo(x2.x, x2.y);
+        this.ctx.lineTo(p2.x, p2.y);
 
         this.ctx.stroke();
     };
