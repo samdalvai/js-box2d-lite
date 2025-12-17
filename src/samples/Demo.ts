@@ -145,6 +145,40 @@ export default class Demo {
         }
     };
 
+    static demo6 = (world: World) => {
+        // Demo 6: A teeter
+        const floor = new Body();
+        floor.set(new Vec2(100, 20), Infinity);
+        floor.friction = 0.2;
+        floor.position.set(0, -0.8 * floor.width.y);
+        floor.rotation = 0;
+        world.add(floor);
+
+        const teeter = new Body();
+        teeter.set(new Vec2(12.0, 0.25), 100.0);
+        teeter.position.set(0.0, -5);
+        world.add(teeter);
+
+        const small1 = new Body();
+        small1.set(new Vec2(0.5, 0.5), 25.0);
+        small1.position.set(-5.0, -4);
+        world.add(small1);
+
+        const small2 = new Body();
+        small2.set(new Vec2(0.5, 0.5), 25.0);
+        small2.position.set(-5.5, -4);
+        world.add(small2);
+
+        const bigBox = new Body();
+        bigBox.set(new Vec2(1.0, 1.0), 200.0);
+        bigBox.position.set(5.5, 5.0);
+        world.add(bigBox);
+
+        const j = new Joint();
+        j.set(floor, teeter, new Vec2(0.0, -5));
+        world.add(j);
+    };
+
     static demo7 = (world: World) => {
         // Demo 7: A suspension bridge
         const floor = new Body();
