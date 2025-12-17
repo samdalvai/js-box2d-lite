@@ -14,6 +14,7 @@ export default class Body {
     torque: number;
 
     width: Vec2;
+    radius: number;
 
     friction: number;
     mass: number;
@@ -35,6 +36,8 @@ export default class Body {
         this.friction = 0.2;
 
         this.width = new Vec2();
+        this.radius = 0;
+
         this.mass = Infinity;
         this.invMass = 0.0;
         this.I = Infinity;
@@ -53,6 +56,8 @@ export default class Body {
         this.friction = 0.2;
 
         this.width = w;
+        this.radius = Math.sqrt(this.width.x * this.width.x + this.width.y * this.width.y);
+
         this.mass = m;
 
         if (this.mass < Infinity) {

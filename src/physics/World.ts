@@ -52,6 +52,15 @@ export default class World {
                 const bj = this.bodies[j];
 
                 if (bi.invMass || bj.invMass) {
+                    const ab = Vec2.sub(bj.position, bi.position);
+                    const radiusSum = bi.radius + bj.radius;
+
+                    // Broad check radius of bodies, if radius don't collide
+                    // boxes cannot be colliding
+                    if (ab.lengthSquared() > radiusSum * radiusSum) {
+                        continue;
+                    }
+
                     this.numChecks++;
 
                     const newArb = new Arbiter(bi, bj);
