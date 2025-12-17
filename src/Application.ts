@@ -81,13 +81,15 @@ export default class Application {
                         const index = inputEvent.code.substring('Digit'.length);
                         this.demoIndex = Number.parseInt(index) - 1;
 
-                        if (this.demoIndex > Demo.demoFunctions.length - 1) {
-                            throw new Error('Invalid demo index');
+                        const demo = Demo.demoFunctions[this.demoIndex];
+
+                        if (!demo) {
+                            throw new Error(`Demo ${index} does not exist`);
                         }
 
                         this.world.clear();
                         this.bomb = null;
-                        Demo.demoFunctions[this.demoIndex](this.world);
+                        demo(this.world);
                     }
 
                     if (inputEvent.code === 'Space') {
