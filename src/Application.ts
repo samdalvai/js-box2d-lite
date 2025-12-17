@@ -77,53 +77,17 @@ export default class Application {
                         this.generateBoxes = !this.generateBoxes;
                     }
 
-                    if (inputEvent.code === 'Digit1') {
-                        this.demoIndex = 0;
-                        this.world.clear();
-                        this.bomb = null;
-                        Demo.demo1(this.world);
-                    }
+                    if (inputEvent.code.includes('Digit')) {
+                        const index = inputEvent.code.substring('Digit'.length);
+                        this.demoIndex = Number.parseInt(index) - 1;
 
-                    if (inputEvent.code === 'Digit2') {
-                        this.demoIndex = 1;
-                        this.world.clear();
-                        this.bomb = null;
-                        Demo.demo2(this.world);
-                    }
+                        if (this.demoIndex > Demo.demoFunctions.length - 1) {
+                            throw new Error('Invalid demo index');
+                        }
 
-                    if (inputEvent.code === 'Digit3') {
-                        this.demoIndex = 2;
                         this.world.clear();
                         this.bomb = null;
-                        Demo.demo3(this.world);
-                    }
-
-                    if (inputEvent.code === 'Digit4') {
-                        this.demoIndex = 3;
-                        this.world.clear();
-                        this.bomb = null;
-                        Demo.demo4(this.world);
-                    }
-
-                    if (inputEvent.code === 'Digit5') {
-                        this.demoIndex = 4;
-                        this.world.clear();
-                        this.bomb = null;
-                        Demo.demo5(this.world);
-                    }
-
-                    if (inputEvent.code === 'Digit6') {
-                        this.demoIndex = 5;
-                        this.world.clear();
-                        this.bomb = null;
-                        Demo.demo6(this.world);
-                    }
-
-                    if (inputEvent.code === 'Digit7') {
-                        this.demoIndex = 6;
-                        this.world.clear();
-                        this.bomb = null;
-                        Demo.demo7(this.world);
+                        Demo.demoFunctions[this.demoIndex](this.world);
                     }
 
                     if (inputEvent.code === 'Space') {
