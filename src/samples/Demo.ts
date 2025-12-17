@@ -286,21 +286,21 @@ export default class Demo {
 
         const box2 = new Body();
         box2.set(new Vec2(2.0, 2.0), 20.0);
-        box2.position.set(6.0, -3.5);
+        box2.position.set(5.75, -3);
         box2.friction = 0.1;
         world.add(box2);
 
         const joint3 = new Joint();
-        joint3.set(floor, box2, new Vec2(6.0, -2.4));
+        joint3.set(floor, box2, new Vec2(5.75, -1.9));
         world.add(joint3);
 
         const box3 = new Body();
         box3.set(new Vec2(2.0, 0.2), 10.0);
-        box3.position.set(6.0, -2.4);
+        box3.position.set(5.75, -1.9);
         world.add(box3);
 
         const joint4 = new Joint();
-        joint4.set(box2, box3, new Vec2(7.0, -2.5));
+        joint4.set(box2, box3, new Vec2(6.75, -1.9));
         world.add(joint4);
     };
 
