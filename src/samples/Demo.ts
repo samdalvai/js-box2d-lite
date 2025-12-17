@@ -22,6 +22,7 @@ export default class Demo {
         'Demo 7: A Suspension Bridge',
         'Demo 8: Dominos',
         'Demo 9: Multi-pendulum',
+        'Demo 0: Stress test',
     ];
 
     static demo1 = (world: World) => {
@@ -362,6 +363,85 @@ export default class Demo {
         }
     };
 
+    static demo0 = (world: World) => {
+        // Demo 0: Stress test scenario
+        const floor = new Body();
+        floor.set(new Vec2(100, 20), Infinity);
+        floor.friction = 0.2;
+        floor.position.set(0, -0.8 * floor.width.y);
+        floor.rotation = 0;
+        world.add(floor);
+
+        const boxSideSmall = 0.4;
+        for (let i = 0; i < 30; i++) {
+            for (let j = 0; j < 20; j++) {
+                const b = new Body();
+                b.set(new Vec2(boxSideSmall, boxSideSmall), 1);
+                b.friction = 0.2;
+                b.position.set(-6 + boxSideSmall * i, 10 + boxSideSmall * j);
+                b.color = 'orange';
+                world.add(b);
+            }
+        }
+
+        const boxSideBig = 0.8;
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 5; j++) {
+                const b = new Body();
+                b.set(new Vec2(boxSideBig, boxSideBig), 5);
+                b.friction = 0.2;
+                b.position.set(-4 + boxSideBig * i, 100 + boxSideBig * j);
+                b.color = 'white';
+                world.add(b);
+            }
+        }
+
+        const numPlanks = 15;
+        const mass = 50;
+
+        // Tuning
+        const frequencyHz = 2.0;
+        const dampingRatio = 0.7;
+
+        // frequency in radians
+        const omega = 2.0 * Math.PI * frequencyHz;
+
+        // damping coefficient
+        const d = 2.0 * mass * dampingRatio * omega;
+
+        // spring stifness
+        const k = mass * omega * omega;
+
+        // magic formulas
+        const timeStep = 1 / 50;
+        const softness = 1.0 / (d + timeStep * k);
+        const biasFactor = (timeStep * k) / (d + timeStep * k);
+
+        let last = floor;
+
+        for (let i = 0; i < numPlanks; i++) {
+            const b = new Body();
+            b.set(new Vec2(1.0, 0.25), mass);
+            b.friction = 0.2;
+            b.position.set(-8.5 + 1.25 * i, -1);
+            world.add(b);
+
+            const j = new Joint();
+            j.set(last, b, new Vec2(-9.125 + 1.25 * i, -1));
+            j.softness = softness;
+            j.biasFactor = biasFactor;
+            world.add(j);
+
+            last = b;
+        }
+
+        const j = new Joint();
+        j.set(world.bodies[world.bodies.length - 1], floor, new Vec2(-9.125 + 1.25 * numPlanks, -1));
+        j.softness = softness;
+        j.biasFactor = biasFactor;
+        world.add(j);
+    };
+
     static demoFunctions = [
         this.demo1,
         this.demo2,
@@ -372,5 +452,6 @@ export default class Demo {
         this.demo7,
         this.demo8,
         this.demo9,
+        this.demo0,
     ];
 }
