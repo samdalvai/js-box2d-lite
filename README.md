@@ -1,6 +1,8 @@
 # js-box2d-lite
 
-A Javascript port of box2d-lite
+A Javascript port of Erin Catto's box2d-lite.
+
+Link to the original version here: https://github.com/erincatto/box2d-lite
 
 # How to run
 
