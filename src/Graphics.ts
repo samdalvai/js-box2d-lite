@@ -74,7 +74,12 @@ export default class Graphics {
         this.ctx.restore();
     };
 
-    /** Start world coordinates to screen conversion */
+    /**
+     * Start world coordinates to screen conversion.
+     * 
+     * This is used because box 2d uses a standard coordinate system for objects 
+     * positions and dimensions
+     */
     static beginWorld(): void {
         const ctx = this.ctx;
 
@@ -92,7 +97,7 @@ export default class Graphics {
         ctx.lineWidth = 1 / this.zoom;
     }
 
-    /** End world coordinates to screen conversion */
+    /** Restore coordinates to screen conversion */
     static endWorld(): void {
         this.ctx.restore();
     }
