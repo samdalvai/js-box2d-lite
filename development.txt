@@ -24,6 +24,6 @@ A tiny HTML Canvas viewer to see how objects move.
 
 * Step 7 - Add integration tests
 
-* Step 8 - Optimize collision detection
+* Step 8 - Optimize collision detection In progress
 
-* Step 9 - Implement contact caching
+* Step 9 - Implement contact caching Already implemented
