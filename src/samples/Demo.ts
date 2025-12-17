@@ -313,45 +313,46 @@ export default class Demo {
         floor.rotation = 0;
         world.add(floor);
 
-        // TODO: to be completed
-        // const mass = 10.0f;
+        const mass = 10.0;
 
-        // // Tuning
-        // const frequencyHz = 4.0f;
-        // const dampingRatio = 0.7f;
+        // Tuning
+        const frequencyHz = 4.0;
+        const dampingRatio = 0.7;
 
-        // // frequency in radians
-        // const omega = 2.0* k_pi * frequencyHz;
+        // frequency in radians
+        const omega = 2.0 * Math.PI * frequencyHz;
 
-        // // damping coefficient
-        // const d = 2.0* mass * dampingRatio * omega;
+        // damping coefficient
+        const d = 2.0 * mass * dampingRatio * omega;
 
-        // // spring stiffness
-        // const k = mass * omega * omega;
+        // spring stiffness
+        const k = mass * omega * omega;
 
-        // // magic formulas
-        // const timeStep = 1 / 50;
-        // const softness = 1.0/ (d + timeStep * k);
-        // const biasFactor = timeStep * k / (d + timeStep * k);
+        // magic formulas
+        const timeStep = 1 / 50;
+        const softness = 1.0 / (d + timeStep * k);
+        const biasFactor = (timeStep * k) / (d + timeStep * k);
 
-        // const const y = 12.0f;
+        const y = 6.0;
+        let previous = floor;
 
-        // for (let i = 0; i < 15; i++)
-        // {
-        //     Vec2 x(0.5+ i, y);
-        //     b.set(new Vec2(0.75, 0.25), mass);
-        //     b.friction = 0.2f;
-        //     b.position = x;
-        //     b.rotation = 0.0f;
-        //     world.add(b);
+        for (let i = 0; i < 15; i++) {
+            const b = new Body();
+            const pos = new Vec2(0.5 + i, y);
+            b.set(new Vec2(0.75, 0.25), mass);
+            b.friction = 0.2;
+            b.position = pos;
+            b.rotation = 0.0;
+            world.add(b);
 
-        //     j.set(b1, b, Vec2(const(i), y));
-        //     j.softness = softness;
-        //     j.biasFactor = biasFactor;
-        //     world.add(j);
+            const joint = new Joint();
+            joint.set(previous, b, new Vec2(i, y));
+            joint.softness = softness;
+            joint.biasFactor = biasFactor;
+            world.add(joint);
 
-        //     b1 = b;
-        // }
+            previous = b;
+        }
     };
 
     static demoFunctions = [
