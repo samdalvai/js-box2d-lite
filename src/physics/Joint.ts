@@ -18,8 +18,8 @@ export default class Joint {
     r2: Vec2;
     bias: Vec2;
     P: Vec2; // accumulated impulse
-    body1: Body | null;
-    body2: Body | null;
+    body1!: Body;
+    body2!: Body;
     biasFactor: number;
     softness: number;
 
@@ -30,9 +30,6 @@ export default class Joint {
         this.r1 = new Vec2();
         this.r2 = new Vec2();
         this.bias = new Vec2();
-
-        this.body1 = null;
-        this.body2 = null;
 
         this.biasFactor = 0.2;
         this.softness = 0;
@@ -60,10 +57,6 @@ export default class Joint {
     };
 
     preStep = (invDt: number): void => {
-        if (!this.body1 || !this.body2) {
-            throw new Error('One or more bodies not initialized in Joint');
-        }
-
         // Pre-compute anchors, mass matrix, and bias.
         const Rot1 = new Mat22(this.body1.rotation);
         const Rot2 = new Mat22(this.body2.rotation);
@@ -122,10 +115,6 @@ export default class Joint {
     };
 
     applyImpulse = (): void => {
-        if (!this.body1 || !this.body2) {
-            throw new Error('One or more bodies not initialized in Joint');
-        }
-
         // Linear velocity of the center of mass of body 1 and 2.
         const lv1 = Vec2.add(this.body1.velocity, Vec2.cross(this.body1.angularVelocity, this.r1));
         const lv2 = Vec2.add(this.body2.velocity, Vec2.cross(this.body2.angularVelocity, this.r2));
