@@ -17,8 +17,6 @@ export default class World {
     static positionCorrection = true;
     static debugContacts = false;
 
-    numChecks = 0;
-
     constructor(gravity: Vec2, iterations: number) {
         this.gravity = gravity;
         this.iterations = iterations;
@@ -55,13 +53,11 @@ export default class World {
                     const ab = Vec2.sub(bj.position, bi.position);
                     const radiusSum = bi.radius + bj.radius;
 
-                    // Broad check radius of bodies, if radius don't collide
-                    // boxes cannot be colliding
+                    // Broad check radius of bodies, if boxes are farther apart than the sum of their
+                    // radius they cannot be colliding
                     if (ab.lengthSquared() > radiusSum * radiusSum) {
                         continue;
                     }
-
-                    this.numChecks++;
 
                     const newArb = new Arbiter(bi, bj);
                     const key = ArbiterKey.getKey(bi, bj);
@@ -85,8 +81,6 @@ export default class World {
 
         // Determine overlapping bodies and update contact points.
         this.broadPhase();
-        console.log('Num checks: ', this.numChecks);
-        this.numChecks = 0;
 
         // Integrate forces.
         for (let i = 0; i < this.bodies.length; i++) {
