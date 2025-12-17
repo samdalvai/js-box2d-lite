@@ -232,4 +232,6 @@ export default class Demo {
         j.biasFactor = biasFactor;
         world.add(j);
     };
+
+    static demoFunctions = [this.demo1, this.demo2, this.demo3, this.demo4, this.demo5, this.demo6, this.demo7];
 }
