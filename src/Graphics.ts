@@ -88,6 +88,13 @@ export default class Graphics {
         );
     }
 
+    static screenToWorld(v: Vec2): Vec2 {
+        return new Vec2(
+            (v.x - this.windowWidth / 2) / this.zoom + this.pan.x,
+            (this.windowHeight / 2 - v.y) / this.zoom + this.pan.y,
+        );
+    }
+
     // TODO: can we generalize drawing to world screen?
     static drawContactPoint = (contact: Contact, color: string): void => {
         const v = this.worldToScreen(contact.position);

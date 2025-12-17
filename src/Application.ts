@@ -152,7 +152,17 @@ export default class Application {
                 case 'mousedown':
                     switch (inputEvent.button) {
                         case MouseButton.LEFT:
-                            // TODO: do something
+                            {
+                                const worldPos = Graphics.screenToWorld(
+                                    new Vec2(InputManager.mousePosition.x, InputManager.mousePosition.y),
+                                );
+                                const box = new Body();
+                                box.set(new Vec2(1, 1), 50);
+                                box.position = worldPos;
+                                box.friction = 0.2;
+                                box.color = 'rgba(230, 213, 102, 1)';
+                                this.world.add(box);
+                            }
                             break;
                         case MouseButton.RIGHT:
                             // TODO: do something
@@ -211,6 +221,15 @@ export default class Application {
                 `(D)raw contact points ${World.debugContacts ? 'ON' : 'OFF'}`,
                 50,
                 150,
+                18,
+                'arial',
+                'orange',
+            );
+
+            Graphics.drawText(
+                `Num bodies: ${this.world.bodies.length}`,
+                50,
+                175,
                 18,
                 'arial',
                 'orange',
