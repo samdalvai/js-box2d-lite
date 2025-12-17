@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "A Javascript port of box2d-lite",
   "scripts": {
-    "start": "rm -rf .parcel-cache && parcel index2.html",
+    "start": "rm -rf .parcel-cache && parcel index.html",
+    "start-alt": "rm -rf .parcel-cache && parcel index-alt.html",
     "clean": "rm -rf .parcel-cache & find dist -maxdepth 1 -type f -exec rm {} +",
     "test": "jest",
     "lint": "eslint . --ext .js,.ts",
