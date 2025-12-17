@@ -81,4 +81,12 @@ export default class Body {
     addForce = (f: Vec2): void => {
         this.force.add(f);
     };
+
+    integrate = (deltaTime: number): void => {
+        this.position.add(Vec2.scale(deltaTime, this.velocity));
+        this.rotation += deltaTime * this.angularVelocity;
+
+        this.force.set(0, 0);
+        this.torque = 0.0;
+    };
 }
