@@ -17,6 +17,7 @@ export default class Application {
     private world: World;
     private bomb: Body | null;
     private demoIndex: number;
+    private mousePressed: boolean;
 
     constructor() {
         const gravity = new Vec2(0, -10);
@@ -25,6 +26,7 @@ export default class Application {
         this.world = new World(gravity, iterations);
         this.bomb = null;
         this.demoIndex = 0;
+        this.mousePressed = false;
     }
 
     isRunning = (): boolean => {
@@ -152,17 +154,7 @@ export default class Application {
                 case 'mousedown':
                     switch (inputEvent.button) {
                         case MouseButton.LEFT:
-                            {
-                                const worldPos = Graphics.screenToWorld(
-                                    new Vec2(InputManager.mousePosition.x, InputManager.mousePosition.y),
-                                );
-                                const box = new Body();
-                                box.set(new Vec2(1, 1), 50);
-                                box.position = worldPos;
-                                box.friction = 0.2;
-                                box.color = 'rgba(230, 213, 102, 1)';
-                                this.world.add(box);
-                            }
+                            this.mousePressed = true;
                             break;
                         case MouseButton.RIGHT:
                             // TODO: do something
@@ -170,9 +162,31 @@ export default class Application {
                     }
                     break;
                 case 'mouseup':
-                    // TODO: do something
+                    switch (inputEvent.button) {
+                        case MouseButton.LEFT:
+                            this.mousePressed = false;
+                            break;
+                        case MouseButton.RIGHT:
+                            // TODO: do something
+                            break;
+                    }
                     break;
             }
+        }
+
+        if (this.mousePressed) {
+            const worldPos = Graphics.screenToWorld(
+                new Vec2(
+                    InputManager.mousePosition.x + Utils.random(-50, 50),
+                    InputManager.mousePosition.y + Utils.random(-50, 50),
+                ),
+            );
+            const box = new Body();
+            box.set(new Vec2(0.5, 0.5), 50);
+            box.position = worldPos;
+            box.friction = 0.2;
+            box.color = 'rgba(230, 213, 102, 1)';
+            this.world.add(box);
         }
     };
 
@@ -189,51 +203,19 @@ export default class Application {
         Graphics.clearScreen();
 
         if (this.debug) {
-            Graphics.drawText(
+            const debugText = [
                 `${Demo.demoStrings[this.demoIndex]} (FPS: ${this.FPS.toFixed(2)})`,
-                50,
-                50,
-                18,
-                'arial',
-                'orange',
-            );
-            Graphics.drawText(
+                'Keys: 1-9 Demos, Space to Launch the Bomb, Left Mouse to generate boxes',
                 `(A)ccumulation ${World.accumulateImpulses ? 'ON' : 'OFF'}`,
-                50,
-                75,
-                18,
-                'arial',
-                'orange',
-            );
-
-            Graphics.drawText(
                 `(P)osition Correction ${World.positionCorrection ? 'ON' : 'OFF'}`,
-                50,
-                100,
-                18,
-                'arial',
-                'orange',
-            );
-
-            Graphics.drawText(`(W)arm Starting ${World.warmStarting ? 'ON' : 'OFF'}`, 50, 125, 18, 'arial', 'orange');
-
-            Graphics.drawText(
+                `(W)arm Starting ${World.warmStarting ? 'ON' : 'OFF'}`,
                 `(D)raw contact points ${World.debugContacts ? 'ON' : 'OFF'}`,
-                50,
-                150,
-                18,
-                'arial',
-                'orange',
-            );
-
-            Graphics.drawText(
                 `Num bodies: ${this.world.bodies.length}`,
-                50,
-                175,
-                18,
-                'arial',
-                'orange',
-            );
+            ];
+
+            for (let i = 0; i < debugText.length; i++) {
+                Graphics.drawText(debugText[i], 50, 50 + i * 25, 18, 'arial', 'orange');
+            }
         }
 
         for (const body of this.world.bodies) {
