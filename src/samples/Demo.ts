@@ -378,7 +378,7 @@ export default class Demo {
                 const b = new Body();
                 b.set(new Vec2(boxSideSmall, boxSideSmall), 1);
                 b.friction = 0.2;
-                b.position.set(-6 + boxSideSmall * i, 10 + boxSideSmall * j);
+                b.position.set(-5.6 + boxSideSmall * i, 10 + boxSideSmall * j);
                 b.color = 'orange';
                 world.add(b);
             }
@@ -390,7 +390,7 @@ export default class Demo {
                 const b = new Body();
                 b.set(new Vec2(boxSideBig, boxSideBig), 5);
                 b.friction = 0.2;
-                b.position.set(-4 + boxSideBig * i, 100 + boxSideBig * j);
+                b.position.set(-3.2 + boxSideBig * i, 100 + boxSideBig * j);
                 b.color = 'white';
                 world.add(b);
             }
