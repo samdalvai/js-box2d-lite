@@ -35,9 +35,9 @@ export default class Body {
         this.friction = 0.2;
 
         this.width = new Vec2();
-        this.mass = Number.MAX_VALUE;
+        this.mass = Infinity;
         this.invMass = 0.0;
-        this.I = Number.MAX_VALUE;
+        this.I = Infinity;
         this.invI = 0.0;
 
         this.color = 'white';
@@ -55,13 +55,13 @@ export default class Body {
         this.width = w;
         this.mass = m;
 
-        if (this.mass < Number.MAX_VALUE) {
+        if (this.mass < Infinity) {
             this.invMass = 1.0 / this.mass;
             this.I = (this.mass * (this.width.x * this.width.x + this.width.y * this.width.y)) / 12;
             this.invI = 1.0 / this.I;
         } else {
             this.invMass = 0.0;
-            this.I = Number.MAX_VALUE;
+            this.I = Infinity;
             this.invI = 0.0;
         }
     };

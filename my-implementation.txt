@@ -912,9 +912,9 @@ export default class Body {
         this.friction = 0.2;
 
         this.width = new Vec2();
-        this.mass = Number.MAX_VALUE;
+        this.mass = Infinity;
         this.invMass = 0.0;
-        this.I = Number.MAX_VALUE;
+        this.I = Infinity;
         this.invI = 0.0;
 
         this.color = 'white';
@@ -932,13 +932,13 @@ export default class Body {
         this.width = w;
         this.mass = m;
 
-        if (this.mass < Number.MAX_VALUE) {
+        if (this.mass < Infinity) {
             this.invMass = 1.0 / this.mass;
             this.I = (this.mass * (this.width.x * this.width.x + this.width.y * this.width.y)) / 12;
             this.invI = 1.0 / this.I;
         } else {
             this.invMass = 0.0;
-            this.I = Number.MAX_VALUE;
+            this.I = Infinity;
             this.invI = 0.0;
         }
     };
@@ -1556,7 +1556,7 @@ export default class Demo {
     static demo1 = (world: World) => {
         // Demo1: Single box
         const floor = new Body();
-        floor.set(new Vec2(100, 20), Number.MAX_VALUE);
+        floor.set(new Vec2(100, 20), Infinity);
         floor.position.set(0, -0.8 * floor.width.y);
         world.add(floor);
 
@@ -1569,7 +1569,7 @@ export default class Demo {
     static demo2 = (world: World) => {
         // Demo 2: A simple pendulum
         const floor = new Body();
-        floor.set(new Vec2(100, 20), Number.MAX_VALUE);
+        floor.set(new Vec2(100, 20), Infinity);
         floor.friction = 0.2;
         floor.position.set(0, -0.8 * floor.width.y);
         floor.rotation = 0;
@@ -1590,7 +1590,7 @@ export default class Demo {
     static demo4 = (world: World) => {
         // Demo 4: A vertical stack
         const floor = new Body();
-        floor.set(new Vec2(100, 20), Number.MAX_VALUE);
+        floor.set(new Vec2(100, 20), Infinity);
         floor.friction = 0.2;
         floor.position.set(0, -0.8 * floor.width.y);
         floor.rotation = 0;

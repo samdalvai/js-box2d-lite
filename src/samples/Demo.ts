@@ -20,7 +20,7 @@ export default class Demo {
     static demo1 = (world: World) => {
         // Demo1: Single box
         const floor = new Body();
-        floor.set(new Vec2(100, 20), Number.MAX_VALUE);
+        floor.set(new Vec2(100, 20), Infinity);
         floor.position.set(0, -0.8 * floor.width.y);
         world.add(floor);
 
@@ -33,7 +33,7 @@ export default class Demo {
     static demo2 = (world: World) => {
         // Demo 2: A simple pendulum
         const floor = new Body();
-        floor.set(new Vec2(100, 20), Number.MAX_VALUE);
+        floor.set(new Vec2(100, 20), Infinity);
         floor.friction = 0.2;
         floor.position.set(0, -0.8 * floor.width.y);
         floor.rotation = 0;
@@ -54,7 +54,7 @@ export default class Demo {
     static demo4 = (world: World) => {
         // Demo 4: A vertical stack
         const floor = new Body();
-        floor.set(new Vec2(100, 20), Number.MAX_VALUE);
+        floor.set(new Vec2(100, 20), Infinity);
         floor.friction = 0.2;
         floor.position.set(0, -0.8 * floor.width.y);
         floor.rotation = 0;
@@ -73,7 +73,7 @@ export default class Demo {
     static demo5 = (world: World) => {
         // Demo 5: A pyramid
         const floor = new Body();
-        floor.set(new Vec2(100, 20), Number.MAX_VALUE);
+        floor.set(new Vec2(100, 20), Infinity);
         floor.friction = 0.2;
         floor.position.set(0, -0.8 * floor.width.y);
         floor.rotation = 0;
@@ -101,7 +101,7 @@ export default class Demo {
     static demo7 = (world: World) => {
         // Demo 7: A suspension bridge
         const floor = new Body();
-        floor.set(new Vec2(100, 20), Number.MAX_VALUE);
+        floor.set(new Vec2(100, 20), Infinity);
         floor.friction = 0.2;
         floor.position.set(0, -0.8 * floor.width.y);
         floor.rotation = 0;

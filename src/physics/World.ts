@@ -17,6 +17,8 @@ export default class World {
     static positionCorrection = true;
     static debugContacts = false;
 
+    numChecks = 0;
+
     constructor(gravity: Vec2, iterations: number) {
         this.gravity = gravity;
         this.iterations = iterations;
@@ -49,21 +51,21 @@ export default class World {
             for (let j = i + 1; j < this.bodies.length; j++) {
                 const bj = this.bodies[j];
 
-                if (bi.invMass === 0 && bj.invMass === 0) {
-                    continue;
-                }
+                if (bi.invMass || bj.invMass) {
+                    this.numChecks++;
 
-                const newArb = new Arbiter(bi, bj);
-                const key = ArbiterKey.getKey(bi, bj);
+                    const newArb = new Arbiter(bi, bj);
+                    const key = ArbiterKey.getKey(bi, bj);
 
-                if (newArb.numContacts > 0) {
-                    if (!this.arbiters.has(key)) {
-                        this.arbiters.set(key, newArb);
+                    if (newArb.numContacts > 0) {
+                        if (!this.arbiters.has(key)) {
+                            this.arbiters.set(key, newArb);
+                        } else {
+                            this.arbiters.get(key)!.update(newArb.contacts, newArb.numContacts);
+                        }
                     } else {
-                        this.arbiters.get(key)!.update(newArb.contacts, newArb.numContacts);
+                        this.arbiters.delete(key);
                     }
-                } else {
-                    this.arbiters.delete(key);
                 }
             }
         }
@@ -74,6 +76,8 @@ export default class World {
 
         // Determine overlapping bodies and update contact points.
         this.broadPhase();
+        console.log('Num checks: ', this.numChecks);
+        this.numChecks = 0;
 
         // Integrate forces.
         for (let i = 0; i < this.bodies.length; i++) {
