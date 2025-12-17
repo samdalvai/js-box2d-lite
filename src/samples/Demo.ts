@@ -51,6 +51,53 @@ export default class Demo {
         world.add(j);
     };
 
+    static demo3 = (world: World) => {
+        // Demo 3: Varying friction coefficients
+        const floor = new Body();
+        floor.set(new Vec2(100, 20), Infinity);
+        floor.friction = 0.2;
+        floor.position.set(0, -0.8 * floor.width.y);
+        floor.rotation = 0;
+        world.add(floor);
+
+        const slide1 = new Body();
+        slide1.set(new Vec2(13.0, 0.25), Infinity);
+        slide1.position.set(-2.0, 5);
+        slide1.rotation = -0.25;
+        world.add(slide1);
+
+        const block1 = new Body();
+        block1.set(new Vec2(0.25, 1.0), Infinity);
+        block1.position.set(5.25, 3.5);
+        world.add(block1);
+
+        const slide2 = new Body();
+        slide2.set(new Vec2(13.0, 0.25), Infinity);
+        slide2.position.set(2.0, 1);
+        slide2.rotation = 0.25;
+        world.add(slide2);
+
+        const block2 = new Body();
+        block2.set(new Vec2(0.25, 1.0), Infinity);
+        block2.position.set(-5.25, -0.5);
+        world.add(block2);
+
+        const slide3 = new Body();
+        slide3.set(new Vec2(13.0, 0.25), Infinity);
+        slide3.position.set(-2.0, -3);
+        slide3.rotation = -0.25;
+        world.add(slide3);
+
+        const friction = [0.75, 0.5, 0.35, 0.1, 0.0];
+        for (let i = 0; i < friction.length; i++) {
+            const b = new Body();
+            b.set(new Vec2(0.5, 0.5), 25.0);
+            b.friction = friction[i];
+            b.position.set(-7.5 + 2.0 * i, 8.0);
+            world.add(b);
+        }
+    };
+
     static demo4 = (world: World) => {
         // Demo 4: A vertical stack
         const floor = new Body();
