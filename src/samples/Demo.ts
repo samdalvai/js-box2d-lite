@@ -233,5 +233,39 @@ export default class Demo {
         world.add(j);
     };
 
-    static demoFunctions = [this.demo1, this.demo2, this.demo3, this.demo4, this.demo5, this.demo6, this.demo7];
+    static demo8 = (world: World) => {
+        // Demo 8: Dominos
+        const floor = new Body();
+        floor.set(new Vec2(100, 20), Infinity);
+        floor.friction = 0.2;
+        floor.position.set(0, -0.8 * floor.width.y);
+        floor.rotation = 0;
+        world.add(floor);
+
+        // TODO: to be completed
+    };
+
+    static demo9 = (world: World) => {
+        // Demo 9: A multi-pendulum
+        const floor = new Body();
+        floor.set(new Vec2(100, 20), Infinity);
+        floor.friction = 0.2;
+        floor.position.set(0, -0.8 * floor.width.y);
+        floor.rotation = 0;
+        world.add(floor);
+
+        // TODO: to be completed
+    };
+
+    static demoFunctions = [
+        this.demo1,
+        this.demo2,
+        this.demo3,
+        this.demo4,
+        this.demo5,
+        this.demo6,
+        this.demo7,
+        this.demo8,
+        this.demo9,
+    ];
 }
