@@ -219,6 +219,8 @@ export default class Application {
             }
         }
 
+        Graphics.beginWorld();
+
         for (const body of this.world.bodies) {
             Graphics.drawBody(body);
         }
@@ -230,9 +232,11 @@ export default class Application {
         if (World.debugContacts) {
             for (const arbiter of this.world.arbiters.values()) {
                 for (const contact of arbiter.contacts) {
-                    Graphics.drawContactPoint(contact, 'red');
+                    Graphics.drawContactPoint(contact);
                 }
             }
         }
+
+        Graphics.endWorld();
     };
 }
