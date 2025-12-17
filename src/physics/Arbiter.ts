@@ -1,3 +1,10 @@
+/*
+ * Ported to JavaScript from Box2D Lite
+ * Original work Copyright (c) 2006-2007 Erin Catto
+ * http://www.gphysics.com
+ *
+ * See LICENSE file for full license text.
+ */
 import Utils from '../math/Utils';
 import Vec2 from '../math/Vec2';
 import Body from './Body';

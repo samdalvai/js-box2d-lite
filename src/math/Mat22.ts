@@ -1,3 +1,10 @@
+/*
+ * Ported to JavaScript from Box2D Lite
+ * Original work Copyright (c) 2006-2007 Erin Catto
+ * http://www.gphysics.com
+ *
+ * See LICENSE file for full license text.
+ */
 import Vec2 from './Vec2';
 
 export default class Mat22 {
