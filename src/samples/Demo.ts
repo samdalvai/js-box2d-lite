@@ -191,7 +191,7 @@ export default class Demo {
         const numPlanks = 15;
         const mass = 50;
 
-        for (let i = 0; i < numPlanks; ++i) {
+        for (let i = 0; i < numPlanks; i++) {
             const b = new Body();
             b.set(new Vec2(1.0, 0.25), mass);
             b.friction = 0.2;
@@ -217,7 +217,7 @@ export default class Demo {
         const softness = 1.0 / (d + timeStep * k);
         const biasFactor = (timeStep * k) / (d + timeStep * k);
 
-        for (let i = 0; i < numPlanks; ++i) {
+        for (let i = 0; i < numPlanks; i++) {
             const j = new Joint();
             j.set(world.bodies[i], world.bodies[i + 1], new Vec2(-9.125 + 1.25 * i, 1.0));
             j.softness = softness;
@@ -242,73 +242,66 @@ export default class Demo {
         floor.rotation = 0;
         world.add(floor);
 
-        // TODO: to be completed
-        // b->Set(Vec2(12.0f, 0.5f), FLT_MAX);
-        // b->position.Set(-1.5f, 10.0f);
-        // world.Add(b);
-        // ++b; ++numBodies;
+        const base1 = new Body();
+        base1.set(new Vec2(12.0, 0.5), Infinity);
+        base1.position.set(-1.5, 4.0);
+        world.add(base1);
 
-        // for (int i = 0; i < 10; ++i)
-        // {
-        //     b->Set(Vec2(0.2f, 2.0f), 10.0f);
-        //     b->position.Set(-6.0f + 1.0f * i, 11.125f);
-        //     b->friction = 0.1f;
-        //     world.Add(b);
-        //     ++b; ++numBodies;
-        // }
+        for (let i = 0; i < 10; i++) {
+            const b = new Body();
+            b.set(new Vec2(0.2, 2.0), 10.0);
+            b.position.set(-6.0 + 1.0 * i, 5.125);
+            b.friction = 0.1;
+            world.add(b);
+        }
 
-        // b->Set(Vec2(14.0f, 0.5f), FLT_MAX);
-        // b->position.Set(1.0f, 6.0f);
-        // b->rotation = 0.3f;
-        // world.Add(b);
-        // ++b; ++numBodies;
+        const base2 = new Body();
+        base2.set(new Vec2(14.0, 0.5), Infinity);
+        base2.position.set(1.0, 0.0);
+        base2.rotation = 0.3;
+        world.add(base2);
 
-        // Body* b2 = b;
-        // b->Set(Vec2(0.5f, 3.0f), FLT_MAX);
-        // b->position.Set(-7.0f, 4.0f);
-        // world.Add(b);
-        // ++b; ++numBodies;
+        const base3 = new Body(); // b2
+        base3.set(new Vec2(0.5, 3.0), Infinity);
+        base3.position.set(-7.0, -2.0);
+        world.add(base3);
 
-        // Body* b3 = b;
-        // b->Set(Vec2(12.0f, 0.25f), 20.0f);
-        // b->position.Set(-0.9f, 1.0f);
-        // world.Add(b);
-        // ++b; ++numBodies;
+        const domino1 = new Body(); // b3
+        domino1.set(new Vec2(12.0, 0.25), 20.0);
+        domino1.position.set(-0.9, -5.0);
+        world.add(domino1);
 
-        // j->Set(b1, b3, Vec2(-2.0f, 1.0f));
-        // world.Add(j);
-        // ++j; ++numJoints;
+        const joint1 = new Joint();
+        joint1.set(floor, domino1, new Vec2(-2.0, -5.0));
+        world.add(joint1);
 
-        // Body* b4 = b;
-        // b->Set(Vec2(0.5f, 0.5f), 10.0f);
-        // b->position.Set(-10.0f, 15.0f);
-        // world.Add(b);
-        // ++b; ++numBodies;
+        const box1 = new Body();
+        box1.set(new Vec2(0.5, 0.5), 10.0);
+        box1.position.set(-10.0, 9.0);
+        world.add(box1);
 
-        // j->Set(b2, b4, Vec2(-7.0f, 15.0f));
-        // world.Add(j);
-        // ++j; ++numJoints;
+        const joint2 = new Joint();
+        joint2.set(base3, box1, new Vec2(-7.0, 9.0));
+        world.add(joint2);
 
-        // Body* b5 = b;
-        // b->Set(Vec2(2.0f, 2.0f), 20.0f);
-        // b->position.Set(6.0f, 2.5f);
-        // b->friction = 0.1f;
-        // world.Add(b);
-        // ++b; ++numBodies;
+        const box2 = new Body();
+        box2.set(new Vec2(2.0, 2.0), 20.0);
+        box2.position.set(6.0, -3.5);
+        box2.friction = 0.1;
+        world.add(box2);
 
-        // j->Set(b1, b5, Vec2(6.0f, 2.6f));
-        // world.Add(j);
-        // ++j; ++numJoints;
+        const joint3 = new Joint();
+        joint3.set(floor, box2, new Vec2(6.0, -2.4));
+        world.add(joint3);
 
-        // Body* b6 = b;
-        // b->Set(Vec2(2.0f, 0.2f), 10.0f);
-        // b->position.Set(6.0f, 3.6f);
-        // world.Add(b);
-        // ++b; ++numBodies;
+        const box3 = new Body();
+        box3.set(new Vec2(2.0, 0.2), 10.0);
+        box3.position.set(6.0, -2.4);
+        world.add(box3);
 
-        // j->Set(b5, b6, Vec2(7.0f, 3.5f));
-        // world.Add(j);
-        // ++j; ++numJoints;
+        const joint4 = new Joint();
+        joint4.set(box2, box3, new Vec2(7.0, -2.5));
+        world.add(joint4);
     };
 
     static demo9 = (world: World) => {
@@ -321,50 +314,43 @@ export default class Demo {
         world.add(floor);
 
         // TODO: to be completed
-        // Body * b1 = b;
-        // ++b;
-        // ++numBodies;
-
-        // float mass = 10.0f;
+        // const mass = 10.0f;
 
         // // Tuning
-        // float frequencyHz = 4.0f;
-        // float dampingRatio = 0.7f;
+        // const frequencyHz = 4.0f;
+        // const dampingRatio = 0.7f;
 
         // // frequency in radians
-        // float omega = 2.0f * k_pi * frequencyHz;
+        // const omega = 2.0* k_pi * frequencyHz;
 
         // // damping coefficient
-        // float d = 2.0f * mass * dampingRatio * omega;
+        // const d = 2.0* mass * dampingRatio * omega;
 
         // // spring stiffness
-        // float k = mass * omega * omega;
+        // const k = mass * omega * omega;
 
         // // magic formulas
-        // float softness = 1.0f / (d + timeStep * k);
-        // float biasFactor = timeStep * k / (d + timeStep * k);
+        // const timeStep = 1 / 50;
+        // const softness = 1.0/ (d + timeStep * k);
+        // const biasFactor = timeStep * k / (d + timeStep * k);
 
-        // const float y = 12.0f;
+        // const const y = 12.0f;
 
-        // for (int i = 0; i < 15; ++i)
+        // for (let i = 0; i < 15; i++)
         // {
-        //     Vec2 x(0.5f + i, y);
-        //     b->Set(Vec2(0.75f, 0.25f), mass);
-        //     b->friction = 0.2f;
-        //     b->position = x;
-        //     b->rotation = 0.0f;
-        //     world.Add(b);
+        //     Vec2 x(0.5+ i, y);
+        //     b.set(new Vec2(0.75, 0.25), mass);
+        //     b.friction = 0.2f;
+        //     b.position = x;
+        //     b.rotation = 0.0f;
+        //     world.add(b);
 
-        //     j->Set(b1, b, Vec2(float(i), y));
-        //     j->softness = softness;
-        //     j->biasFactor = biasFactor;
-        //     world.Add(j);
+        //     j.set(b1, b, Vec2(const(i), y));
+        //     j.softness = softness;
+        //     j.biasFactor = biasFactor;
+        //     world.add(j);
 
         //     b1 = b;
-        //     ++b;
-        //     ++numBodies;
-        //     ++j;
-        //     ++numJoints;
         // }
     };
 
