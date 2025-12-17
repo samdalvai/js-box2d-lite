@@ -423,11 +423,11 @@ export default class Demo {
             const b = new Body();
             b.set(new Vec2(1.0, 0.25), mass);
             b.friction = 0.2;
-            b.position.set(-8.5 + 1.25 * i, -1);
+            b.position.set(-8.5 + 1.25 * i, 0);
             world.add(b);
 
             const j = new Joint();
-            j.set(last, b, new Vec2(-9.125 + 1.25 * i, -1));
+            j.set(last, b, new Vec2(-9.125 + 1.25 * i, 0));
             j.softness = softness;
             j.biasFactor = biasFactor;
             world.add(j);
@@ -436,7 +436,7 @@ export default class Demo {
         }
 
         const j = new Joint();
-        j.set(world.bodies[world.bodies.length - 1], floor, new Vec2(-9.125 + 1.25 * numPlanks, -1));
+        j.set(world.bodies[world.bodies.length - 1], floor, new Vec2(-9.125 + 1.25 * numPlanks, 0));
         j.softness = softness;
         j.biasFactor = biasFactor;
         world.add(j);
