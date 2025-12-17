@@ -44,6 +44,10 @@ export default class Vec2 {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     };
 
+    lengthSquared(): number {
+        return this.x * this.x + this.y * this.y;
+    }
+
     /** Dot product between two vectors */
     static dot = (a: Vec2, b: Vec2): number => {
         return a.x * b.x + a.y * b.y;
