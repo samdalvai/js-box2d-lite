@@ -17,7 +17,8 @@ export default class Application {
     private world: World;
     private bomb: Body | null;
     private demoIndex: number;
-    // private mousePressed: boolean;
+    private mousePressed: boolean;
+    private generateBoxes: boolean;
 
     constructor() {
         const gravity = new Vec2(0, -10);
@@ -26,7 +27,8 @@ export default class Application {
         this.world = new World(gravity, iterations);
         this.bomb = null;
         this.demoIndex = 0;
-        // this.mousePressed = false;
+        this.mousePressed = false;
+        this.generateBoxes = false;
     }
 
     isRunning = (): boolean => {
@@ -69,6 +71,10 @@ export default class Application {
 
                     if (inputEvent.code === 'KeyD') {
                         World.debugContacts = !World.debugContacts;
+                    }
+
+                    if (inputEvent.code === 'KeyG') {
+                        this.generateBoxes = !this.generateBoxes;
                     }
 
                     if (inputEvent.code === 'Digit1') {
@@ -164,8 +170,8 @@ export default class Application {
                 case 'mousedown':
                     switch (inputEvent.button) {
                         case MouseButton.LEFT:
-                            // this.mousePressed = true;
-                            {
+                            this.mousePressed = true;
+                            if (!this.generateBoxes) {
                                 const worldPos = Graphics.screenToWorld(
                                     new Vec2(InputManager.mousePosition.x, InputManager.mousePosition.y),
                                 );
@@ -185,7 +191,7 @@ export default class Application {
                 case 'mouseup':
                     switch (inputEvent.button) {
                         case MouseButton.LEFT:
-                            // this.mousePressed = false;
+                            this.mousePressed = false;
                             break;
                         case MouseButton.RIGHT:
                             // TODO: do something
@@ -195,20 +201,20 @@ export default class Application {
             }
         }
 
-        // if (this.mousePressed) {
-        //     const worldPos = Graphics.screenToWorld(
-        //         new Vec2(
-        //             InputManager.mousePosition.x + Utils.random(-50, 50),
-        //             InputManager.mousePosition.y + Utils.random(-50, 50),
-        //         ),
-        //     );
-        //     const box = new Body();
-        //     box.set(new Vec2(0.5, 0.5), 50);
-        //     box.position = worldPos;
-        //     box.friction = 0.2;
-        //     box.color = 'rgba(230, 213, 102, 1)';
-        //     this.world.add(box);
-        // }
+        if (this.mousePressed && this.generateBoxes) {
+            const worldPos = Graphics.screenToWorld(
+                new Vec2(
+                    InputManager.mousePosition.x + Utils.random(-50, 50),
+                    InputManager.mousePosition.y + Utils.random(-50, 50),
+                ),
+            );
+            const box = new Body();
+            box.set(new Vec2(0.5, 0.5), 50);
+            box.position = worldPos;
+            box.friction = 0.2;
+            box.color = 'rgba(230, 213, 102, 1)';
+            this.world.add(box);
+        }
     };
 
     update = (deltaTime: number): void => {
@@ -231,6 +237,7 @@ export default class Application {
                 `(P)osition Correction ${World.positionCorrection ? 'ON' : 'OFF'}`,
                 `(W)arm Starting ${World.warmStarting ? 'ON' : 'OFF'}`,
                 `(D)raw contact points ${World.debugContacts ? 'ON' : 'OFF'}`,
+                `(G)enerate boxes ${World.debugContacts ? 'ON' : 'OFF'}`,
                 `Num bodies: ${this.world.bodies.length}`,
             ];
 
