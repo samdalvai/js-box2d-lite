@@ -23,37 +23,29 @@ export class Edges {
         this.inEdge2 = 0;
         this.outEdge2 = 0;
     }
-}
-
-export class FeaturePair {
-    e: Edges;
-
-    constructor() {
-        this.e = new Edges();
-    }
 
     // bit-shifts the edge numbers to create a unique ID for this specific contact geometry
     get key(): number {
-        return this.e.inEdge1 | (this.e.outEdge1 << 8) | (this.e.inEdge2 << 16) | (this.e.outEdge2 << 24);
+        return this.inEdge1 | (this.outEdge1 << 8) | (this.inEdge2 << 16) | (this.outEdge2 << 24);
     }
 
-    clone = (): FeaturePair => {
-        const copy = new FeaturePair();
+    clone = (): Edges => {
+        const copy = new Edges();
 
-        copy.e.inEdge1 = this.e.inEdge1;
-        copy.e.outEdge1 = this.e.outEdge1;
-        copy.e.inEdge2 = this.e.inEdge2;
-        copy.e.outEdge2 = this.e.outEdge2;
+        copy.inEdge1 = this.inEdge1;
+        copy.outEdge1 = this.outEdge1;
+        copy.inEdge2 = this.inEdge2;
+        copy.outEdge2 = this.outEdge2;
 
         return copy;
     };
 
     flip = (): void => {
         // Swap inEdge1 <-> inEdge2
-        [this.e.inEdge1, this.e.inEdge2] = [this.e.inEdge2, this.e.inEdge1];
+        [this.inEdge1, this.inEdge2] = [this.inEdge2, this.inEdge1];
 
         // Swap outEdge1 <-> outEdge2
-        [this.e.outEdge1, this.e.outEdge2] = [this.e.outEdge2, this.e.outEdge1];
+        [this.outEdge1, this.outEdge2] = [this.outEdge2, this.outEdge1];
     };
 }
 
@@ -69,7 +61,7 @@ export class Contact {
     massNormal: number;
     massTangent: number;
     bias: number;
-    feature: FeaturePair;
+    edges: Edges;
 
     constructor() {
         this.position = new Vec2();
@@ -85,7 +77,7 @@ export class Contact {
         this.massNormal = 0;
         this.massTangent = 0;
         this.bias = 0;
-        this.feature = new FeaturePair();
+        this.edges = new Edges();
     }
 }
 
@@ -135,7 +127,7 @@ export class Arbiter {
             let k = -1;
             for (let j = 0; j < this.numContacts; ++j) {
                 const cOld = this.contacts[j];
-                if (cNew.feature.key === cOld.feature.key) {
+                if (cNew.edges.key === cOld.edges.key) {
                     k = j;
                     break;
                 }

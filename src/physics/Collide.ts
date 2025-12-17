@@ -7,7 +7,7 @@
  */
 import Mat22 from '../math/Mat22';
 import Vec2 from '../math/Vec2';
-import { Contact, FeaturePair } from './Arbiter';
+import { Contact, Edges } from './Arbiter';
 import Body from './Body';
 
 // Box vertex and edge numbering:
@@ -38,22 +38,22 @@ export enum EdgeNumbers {
 }
 
 export class ClipVertex {
-    v: Vec2;
-    fp: FeaturePair;
+    vertex: Vec2;
+    edges: Edges;
 
     constructor() {
-        this.v = new Vec2();
-        this.fp = new FeaturePair();
+        this.vertex = new Vec2();
+        this.edges = new Edges();
     }
 
     clone = (): ClipVertex => {
         const cv = new ClipVertex();
-        cv.v = this.v.clone();
+        cv.vertex = this.vertex.clone();
 
-        cv.fp.e.inEdge1 = this.fp.e.inEdge1;
-        cv.fp.e.outEdge1 = this.fp.e.outEdge1;
-        cv.fp.e.inEdge2 = this.fp.e.inEdge2;
-        cv.fp.e.outEdge2 = this.fp.e.outEdge2;
+        cv.edges.inEdge1 = this.edges.inEdge1;
+        cv.edges.outEdge1 = this.edges.outEdge1;
+        cv.edges.inEdge2 = this.edges.inEdge2;
+        cv.edges.outEdge2 = this.edges.outEdge2;
 
         return cv;
     };
@@ -69,8 +69,8 @@ export class ClipVertex {
         let numOut = 0;
 
         // Calculate the distance of end points to the line
-        const distance0 = Vec2.dot(normal, vIn[0].v) - offset;
-        const distance1 = Vec2.dot(normal, vIn[1].v) - offset;
+        const distance0 = Vec2.dot(normal, vIn[0].vertex) - offset;
+        const distance1 = Vec2.dot(normal, vIn[1].vertex) - offset;
 
         // If the points are behind the plane
         if (distance0 <= 0.0) vOut[numOut++] = vIn[0].clone();
@@ -80,16 +80,16 @@ export class ClipVertex {
         if (distance0 * distance1 < 0.0) {
             // Find intersection point of edge and plane
             const interp = distance0 / (distance0 - distance1);
-            vOut[numOut].v = Vec2.add(vIn[0].v, Vec2.scale(interp, Vec2.sub(vIn[1].v, vIn[0].v)));
+            vOut[numOut].vertex = Vec2.add(vIn[0].vertex, Vec2.scale(interp, Vec2.sub(vIn[1].vertex, vIn[0].vertex)));
 
             if (distance0 > 0.0) {
-                vOut[numOut].fp = vIn[0].fp.clone();
-                vOut[numOut].fp.e.inEdge1 = clipEdge;
-                vOut[numOut].fp.e.inEdge2 = EdgeNumbers.NO_EDGE;
+                vOut[numOut].edges = vIn[0].edges.clone();
+                vOut[numOut].edges.inEdge1 = clipEdge;
+                vOut[numOut].edges.inEdge2 = EdgeNumbers.NO_EDGE;
             } else {
-                vOut[numOut].fp = vIn[1].fp.clone();
-                vOut[numOut].fp.e.outEdge1 = clipEdge;
-                vOut[numOut].fp.e.outEdge2 = EdgeNumbers.NO_EDGE;
+                vOut[numOut].edges = vIn[1].edges.clone();
+                vOut[numOut].edges.outEdge1 = clipEdge;
+                vOut[numOut].edges.outEdge2 = EdgeNumbers.NO_EDGE;
             }
             ++numOut;
         }
@@ -108,48 +108,48 @@ export class ClipVertex {
         if (nAbs.x > nAbs.y) {
             if (Math.sign(n.x) > 0) {
                 // +X edge
-                c[0].v.set(h.x, -h.y);
-                c[0].fp.e.inEdge2 = EdgeNumbers.EDGE3;
-                c[0].fp.e.outEdge2 = EdgeNumbers.EDGE4;
+                c[0].vertex.set(h.x, -h.y);
+                c[0].edges.inEdge2 = EdgeNumbers.EDGE3;
+                c[0].edges.outEdge2 = EdgeNumbers.EDGE4;
 
-                c[1].v.set(h.x, h.y);
-                c[1].fp.e.inEdge2 = EdgeNumbers.EDGE4;
-                c[1].fp.e.outEdge2 = EdgeNumbers.EDGE1;
+                c[1].vertex.set(h.x, h.y);
+                c[1].edges.inEdge2 = EdgeNumbers.EDGE4;
+                c[1].edges.outEdge2 = EdgeNumbers.EDGE1;
             } else {
                 // -X edge
-                c[0].v.set(-h.x, h.y);
-                c[0].fp.e.inEdge2 = EdgeNumbers.EDGE1;
-                c[0].fp.e.outEdge2 = EdgeNumbers.EDGE2;
+                c[0].vertex.set(-h.x, h.y);
+                c[0].edges.inEdge2 = EdgeNumbers.EDGE1;
+                c[0].edges.outEdge2 = EdgeNumbers.EDGE2;
 
-                c[1].v.set(-h.x, -h.y);
-                c[1].fp.e.inEdge2 = EdgeNumbers.EDGE2;
-                c[1].fp.e.outEdge2 = EdgeNumbers.EDGE3;
+                c[1].vertex.set(-h.x, -h.y);
+                c[1].edges.inEdge2 = EdgeNumbers.EDGE2;
+                c[1].edges.outEdge2 = EdgeNumbers.EDGE3;
             }
         } else {
             if (Math.sign(n.y) > 0) {
                 // +Y edge
-                c[0].v.set(h.x, h.y);
-                c[0].fp.e.inEdge2 = EdgeNumbers.EDGE4;
-                c[0].fp.e.outEdge2 = EdgeNumbers.EDGE1;
+                c[0].vertex.set(h.x, h.y);
+                c[0].edges.inEdge2 = EdgeNumbers.EDGE4;
+                c[0].edges.outEdge2 = EdgeNumbers.EDGE1;
 
-                c[1].v.set(-h.x, h.y);
-                c[1].fp.e.inEdge2 = EdgeNumbers.EDGE1;
-                c[1].fp.e.outEdge2 = EdgeNumbers.EDGE2;
+                c[1].vertex.set(-h.x, h.y);
+                c[1].edges.inEdge2 = EdgeNumbers.EDGE1;
+                c[1].edges.outEdge2 = EdgeNumbers.EDGE2;
             } else {
                 // -Y edge
-                c[0].v.set(-h.x, -h.y);
-                c[0].fp.e.inEdge2 = EdgeNumbers.EDGE2;
-                c[0].fp.e.outEdge2 = EdgeNumbers.EDGE3;
+                c[0].vertex.set(-h.x, -h.y);
+                c[0].edges.inEdge2 = EdgeNumbers.EDGE2;
+                c[0].edges.outEdge2 = EdgeNumbers.EDGE3;
 
-                c[1].v.set(h.x, -h.y);
-                c[1].fp.e.inEdge2 = EdgeNumbers.EDGE3;
-                c[1].fp.e.outEdge2 = EdgeNumbers.EDGE4;
+                c[1].vertex.set(h.x, -h.y);
+                c[1].edges.inEdge2 = EdgeNumbers.EDGE3;
+                c[1].edges.outEdge2 = EdgeNumbers.EDGE4;
             }
         }
 
         // Transform to world space: v = pos + Rot * v
-        c[0].v = Vec2.add(pos, Mat22.multiply(Rot, c[0].v));
-        c[1].v = Vec2.add(pos, Mat22.multiply(Rot, c[1].v));
+        c[0].vertex = Vec2.add(pos, Mat22.multiply(Rot, c[0].vertex));
+        c[1].vertex = Vec2.add(pos, Mat22.multiply(Rot, c[1].vertex));
     };
 }
 
@@ -309,7 +309,7 @@ export class Collide {
 
         let numContacts = 0;
         for (let i = 0; i < 2; i++) {
-            const separation = Vec2.dot(frontNormal, clipPoints2[i].v) - front;
+            const separation = Vec2.dot(frontNormal, clipPoints2[i].vertex) - front;
 
             if (separation <= 0) {
                 if (numContacts + 1 > contacts.length) {
@@ -321,11 +321,11 @@ export class Collide {
                 contacts[numContacts].normal = normal;
 
                 // slide contact point onto reference face (easy to cull)
-                contacts[numContacts].position = Vec2.sub(clipPoints2[i].v, Vec2.scale(separation, frontNormal));
-                contacts[numContacts].feature = clipPoints2[i].fp;
+                contacts[numContacts].position = Vec2.sub(clipPoints2[i].vertex, Vec2.scale(separation, frontNormal));
+                contacts[numContacts].edges = clipPoints2[i].edges;
 
                 if (axis === Axis.FACE_B_X || axis === Axis.FACE_B_Y) {
-                    contacts[numContacts].feature.flip();
+                    contacts[numContacts].edges.flip();
                 }
 
                 ++numContacts;
