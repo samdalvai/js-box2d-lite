@@ -8,20 +8,20 @@
 import Utils from '../math/Utils';
 import Vec2 from '../math/Vec2';
 import Body from './Body';
-import { Collide } from './Collide';
+import { Collide, EdgeNumbers } from './Collide';
 import World from './World';
 
 export class Edges {
-    inEdge1: number;
-    outEdge1: number;
-    inEdge2: number;
-    outEdge2: number;
+    inEdge1: EdgeNumbers;
+    outEdge1: EdgeNumbers;
+    inEdge2: EdgeNumbers;
+    outEdge2: EdgeNumbers;
 
     constructor() {
-        this.inEdge1 = 0;
-        this.outEdge1 = 0;
-        this.inEdge2 = 0;
-        this.outEdge2 = 0;
+        this.inEdge1 = EdgeNumbers.NO_EDGE;
+        this.outEdge1 = EdgeNumbers.NO_EDGE;
+        this.inEdge2 = EdgeNumbers.NO_EDGE;
+        this.outEdge2 = EdgeNumbers.NO_EDGE;
     }
 
     // bit-shifts the edge numbers to create a unique ID for this specific contact geometry

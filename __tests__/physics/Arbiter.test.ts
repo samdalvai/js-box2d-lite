@@ -1,4 +1,4 @@
-import { Arbiter, Contact, FeaturePair } from '../../src/physics/Arbiter';
+import { Arbiter, Contact, Edges } from '../../src/physics/Arbiter';
 import Body from '../../src/physics/Body';
 import World from '../../src/physics/World';
 
@@ -10,20 +10,20 @@ const makeContact = (Pn = 0, Pt = 0, Pnb = 0): Contact => {
     return c;
 };
 
-describe('FeaturePair', () => {
-    test('flip() should swap edges of a feature pair', () => {
-        const fp = new FeaturePair();
-        fp.e.inEdge1 = 1;
-        fp.e.outEdge1 = 2;
-        fp.e.inEdge2 = 3;
-        fp.e.outEdge2 = 4;
+describe('Edges', () => {
+    test('flip() should swap in and out edges', () => {
+        const edges = new Edges();
+        edges.inEdge1 = 1;
+        edges.outEdge1 = 2;
+        edges.inEdge2 = 3;
+        edges.outEdge2 = 4;
 
-        fp.flip();
+        edges.flip();
 
-        expect(fp.e.inEdge1).toBe(3);
-        expect(fp.e.outEdge1).toBe(4);
-        expect(fp.e.inEdge2).toBe(1);
-        expect(fp.e.outEdge2).toBe(2);
+        expect(edges.inEdge1).toBe(3);
+        expect(edges.outEdge1).toBe(4);
+        expect(edges.inEdge2).toBe(1);
+        expect(edges.outEdge2).toBe(2);
     });
 });
 
