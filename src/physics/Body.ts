@@ -53,6 +53,7 @@ export default class Body {
         this.color = 'white';
     }
 
+    // TODO: set methods are needed if we do objects pooling, if not we can initialize a Joint directly
     set = (w: Vec2, m: number): void => {
         this.position.set(0.0, 0.0);
         this.rotation = 0.0;
