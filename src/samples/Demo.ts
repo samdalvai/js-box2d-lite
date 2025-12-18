@@ -13,6 +13,7 @@ import World from '../physics/World';
 
 export default class Demo {
     static demoStrings = [
+        'Demo 0: Stress test',
         'Demo 1: A Single Box',
         'Demo 2: Simple Pendulum',
         'Demo 3: Varying Friction Coefficients',
@@ -22,7 +23,6 @@ export default class Demo {
         'Demo 7: A Suspension Bridge',
         'Demo 8: Dominos',
         'Demo 9: Multi-pendulum',
-        'Demo 0: Stress test',
     ];
 
     static demo1 = (world: World) => {
@@ -443,6 +443,7 @@ export default class Demo {
     };
 
     static demoFunctions = [
+        this.demo0,
         this.demo1,
         this.demo2,
         this.demo3,
@@ -452,6 +453,5 @@ export default class Demo {
         this.demo7,
         this.demo8,
         this.demo9,
-        this.demo0,
     ];
 }
