@@ -210,7 +210,7 @@ export default class Application {
                 `(P)osition Correction ${World.positionCorrection ? 'ON' : 'OFF'}`,
                 `(W)arm Starting ${World.warmStarting ? 'ON' : 'OFF'}`,
                 `(D)raw contact points ${World.debugContacts ? 'ON' : 'OFF'}`,
-                `(G)enerate boxes ${World.debugContacts ? 'ON' : 'OFF'}`,
+                `(G)enerate boxes ${this.generateBoxes ? 'ON' : 'OFF'}`,
                 `Num bodies: ${this.world.bodies.length}`,
             ];
 
