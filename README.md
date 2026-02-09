@@ -31,3 +31,7 @@ Now open the browser at http://localhost:1234
 As in the original box2d-lite, this project includes a set of demos demonstrating how the physics engine works.
 
 ![alt text](images/demo.png)
+
+# App demo
+
+A live version of the app can be found at this [link](https://samdalvai.github.io/js-box2d-lite/)
