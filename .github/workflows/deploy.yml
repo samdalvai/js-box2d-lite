@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - deploy-github-pages
 
 permissions:
   contents: read
