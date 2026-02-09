@@ -34,14 +34,6 @@ jobs:
       - name: Build with Parcel
         run: npm run build
 
-      - name: Debug - list dist contents
-        run: |
-          echo "=== dist root ==="
-          ls -la dist
-          echo
-          echo "=== dist recursive ==="
-          ls -R dist
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
